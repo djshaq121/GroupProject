@@ -17,13 +17,15 @@ APlayerCharacter::APlayerCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 400.f;
+	SpringArm->TargetArmLength = 400.f;//Setting the length of the cameraboom
+	SpringArm->SocketOffset = FVector(0, 40, 120);//Setting the position of the camera 
 	SpringArm->bUsePawnControlRotation = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 
+	CameraZoom = SpringArm->TargetArmLength;
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +53,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 
+	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
+	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
@@ -99,5 +103,45 @@ void APlayerCharacter::TurnAtRate(float Rate)
 void APlayerCharacter::LookUpRate(float Rate)
 {
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void APlayerCharacter::CameraZoomIn()
+{
+	
+	//CameraZoom set to tragetarmlength
+	//400-300 = 100
+	CameraZoom = CameraZoom - CameraZoomLength;//TargetArmLenth subtracted by the length we want to Zoom in by 
+
+	//We check if CameraZoom is bigger than 100, if true set the armlength 
+	if (CameraZoom <= 150.f)
+	{
+		SpringArm->TargetArmLength = 150;
+		CameraZoom = 150.F;
+		UE_LOG(LogTemp,Warning, TEXT("Working"))
+	}
+	else
+	{
+		//This condition is excuteded when the CameraZoom i smore than the desired zoom
+		SpringArm->TargetArmLength = CameraZoom;
+		UE_LOG(LogTemp, Warning, TEXT("Shouldnt be called"))
+	}
+}
+
+void APlayerCharacter::CameraZoomOut()
+{
+	//100+300 = 400
+	CameraZoom = CameraZoom + CameraZoomLength;
+
+	if (CameraZoom >= 400.f)
+	{
+		SpringArm->TargetArmLength = 400.f;
+		CameraZoom = 400.f;
+		UE_LOG(LogTemp, Warning, TEXT("Working1"))
+	}
+	else
+	{
+		SpringArm->TargetArmLength = CameraZoom;
+		UE_LOG(LogTemp, Warning, TEXT("Shouldnt be called1"))
+	}
 }
 
