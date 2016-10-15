@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+class AHumanPlayerController;
+
 UCLASS()
 class GROUPPROJECT_API APlayerCharacter : public ACharacter
 {
@@ -38,6 +40,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 		float BaseLookUpRate;
 
+	AHumanPlayerController* GetHumanController();
 
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
@@ -48,6 +51,8 @@ public:
 	void TurnAtRate(float Rate);
 
 	void LookUpRate(float Rate);
+
+	void OnFire();
 
 protected:
 	void CameraZoomIn();

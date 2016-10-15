@@ -2,6 +2,7 @@
 
 #include "GroupProject.h"
 #include "PlayerCharacter.h"
+#include "HumanPlayerController.h"
 
 
 // Sets default values
@@ -56,11 +57,35 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
 	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
+
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
+
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	
 
+}
+
+
+void APlayerCharacter::OnFire()
+{
+
+
+	//This calls the method 'AimTowardsCrosshair' everytime is pressed
+	//ATPSHumanController* PlayerController = Cast<ATPSHumanController>(GetController());
+
+
+	if (GetHumanController())//Checks if the player has a controller
+	{
+		//Calls the method from the controller
+		GetHumanController()->AimTowardsCrosshair();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Fire Not Working"));
+	}
+	
 }
 
 void APlayerCharacter::MoveForward(float Value)
@@ -95,9 +120,6 @@ void APlayerCharacter::MoveRight(float Value)
 void APlayerCharacter::TurnAtRate(float Rate)
 {
 	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
-
-	
-	
 }
 
 void APlayerCharacter::LookUpRate(float Rate)
@@ -143,5 +165,11 @@ void APlayerCharacter::CameraZoomOut()
 		SpringArm->TargetArmLength = CameraZoom;
 		UE_LOG(LogTemp, Warning, TEXT("Shouldnt be called1"))
 	}
+}
+
+//This gets the controller of the pawn
+AHumanPlayerController* APlayerCharacter::GetHumanController()
+{
+	return Cast<AHumanPlayerController>(GetController());
 }
 
