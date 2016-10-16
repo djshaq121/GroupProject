@@ -29,6 +29,9 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
+
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
@@ -54,6 +57,12 @@ public:
 
 	void OnFire();
 
+	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
+	int GetCurrentHealth() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
+	int GetCurrentArmor() const;
+
 protected:
 	void CameraZoomIn();
 
@@ -66,5 +75,20 @@ protected:
 	//The length of which that subtracts and adds to the target arm and lengths 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	float CameraZoomLength = 250;
-	
+
+private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
+
+	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+	int32 CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
+
+	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+		int32 CurrentArmor;
+
+
 };

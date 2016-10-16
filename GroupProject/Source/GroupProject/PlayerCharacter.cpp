@@ -33,14 +33,44 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	CurrentHealth = MaximumHealth;
+	CurrentArmor = MaximumArmor;
 }
 
 // Called every frame
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+	
+}
 
+//If the player takes damage this method is called
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
+	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+
+	UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
+
+		if (CurrentArmor <= 0)
+		{
+			CurrentHealth -= DamageToApply;
+			if (CurrentHealth <= 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
+					//OnDeath() - Destroies the player and restarts the game
+			}
+		}
+		else
+		{
+			CurrentArmor -= (DamageToApply * 2);//More damage is done to the armor
+			if (CurrentArmor <= 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
+			}
+		}
+
+	return DamageToApply;
 }
 
 // Called to bind functionality to input
@@ -86,6 +116,16 @@ void APlayerCharacter::OnFire()
 		UE_LOG(LogTemp, Warning, TEXT("Fire Not Working"));
 	}
 	
+}
+
+int APlayerCharacter::GetCurrentHealth() const
+{
+	return CurrentHealth;
+}
+
+int APlayerCharacter::GetCurrentArmor() const
+{
+	return CurrentArmor;
 }
 
 void APlayerCharacter::MoveForward(float Value)
