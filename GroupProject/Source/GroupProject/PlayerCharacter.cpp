@@ -51,8 +51,9 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 {
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
-
+	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
 	//UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
+	//CurrentArmor = FMath::Clamp(CurrentArmor, 0, 100);
 
 		if (CurrentArmor <= 0)
 		{
@@ -62,11 +63,17 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 				UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
 					//OnDeath() - Destroies the player and restarts the game
 					OnDeath.Broadcast();
+				isDead = true;//Sets it to true, so in blueprint it plays the death animation 
+				StopAnimMontage();
+			}
+			else
+			{
+				isDead = false;
 			}
 		}
 		else
 		{
-			CurrentArmor -= (DamageToApply * 2);//More damage is done to the armor
+			CurrentArmor -= DamageToApplyArmor; 
 			if (CurrentArmor <= 0)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
