@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
+
 class AHumanPlayerController;
 
 UCLASS()
@@ -18,8 +20,12 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
+		
 
 public:
+
+	FPlayerDelegate OnDeath;
+
 	// Sets default values for this character's properties
 	APlayerCharacter();
 

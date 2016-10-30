@@ -2,7 +2,26 @@
 
 #include "GroupProject.h"
 #include "HumanPlayerController.h"
+#include "PlayerCharacter.h"
 
+
+void  AHumanPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)//Check is the player is there
+	{
+		auto PossessedPlayer = Cast<APlayerCharacter>(InPawn);
+		if (!ensure(PossessedPlayer)) { return; }
+
+		//Subscribe our local methods to the players deaths
+		PossessedPlayer->OnDeath.AddUniqueDynamic(this, &AHumanPlayerController::OnPossesPlayerDeath);
+	}
+}
+
+void AHumanPlayerController::OnPossesPlayerDeath()
+{
+	StartSpectatingOnly();//When the player dies go into spectating mode 
+}
 
 void AHumanPlayerController::BeginPlay()
 {

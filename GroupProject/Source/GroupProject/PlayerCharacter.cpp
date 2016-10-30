@@ -44,13 +44,15 @@ void APlayerCharacter::Tick( float DeltaTime )
 	
 }
 
+
+
 //If the player takes damage this method is called
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
 
-	UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
+	//UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
 
 		if (CurrentArmor <= 0)
 		{
@@ -59,6 +61,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
 					//OnDeath() - Destroies the player and restarts the game
+					OnDeath.Broadcast();
 			}
 		}
 		else
