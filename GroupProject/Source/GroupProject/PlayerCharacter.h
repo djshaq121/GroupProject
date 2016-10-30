@@ -20,8 +20,6 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
-		
-
 public:
 
 	FPlayerDelegate OnDeath;
@@ -40,7 +38,6 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
-
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -74,17 +71,14 @@ public:
 	int GetCurrentArmor() const;
 
 protected:
+	
 	void CameraZoomIn();
 
 	void CameraZoomOut();
 
-
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	float CameraZoom;
-	
-	//The length of which that subtracts and adds to the target arm and lengths 
-	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	float CameraZoomLength = 250;
+	float CameraZoomLength;
+
 
 private:
 
