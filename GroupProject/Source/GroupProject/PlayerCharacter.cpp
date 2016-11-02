@@ -15,7 +15,6 @@ APlayerCharacter::APlayerCharacter()
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->TargetArmLength = 400.f;//Setting the length of the cameraboom
@@ -26,7 +25,7 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 
-	CameraZoom = SpringArm->TargetArmLength;
+	CameraZoomLength = SpringArm->TargetArmLength;
 }
 
 // Called when the game starts or when spawned
@@ -41,37 +40,55 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
+	//This is what makes the zoomIN/OUT smooth 
+	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 9.0f);//Change the interpSpeed to make smooth longer or more faster
 }
+
+
 
 //If the player takes damage this method is called
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
+	//UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
+	//CurrentArmor = FMath::Clamp(CurrentArmor, 0, 100);
 
-	UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
+	//isTakingDamage = true;
+
+	
 
 		if (CurrentArmor <= 0)
 		{
 			CurrentHealth -= DamageToApply;
 			if (CurrentHealth <= 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
+				//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
 					//OnDeath() - Destroies the player and restarts the game
+					OnDeath.Broadcast();
+					bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
+				StopAnimMontage();
+			}
+			else
+			{
+				bIsDead = false;
 			}
 		}
 		else
 		{
-			CurrentArmor -= (DamageToApply * 2);//More damage is done to the armor
+			CurrentArmor -= DamageToApplyArmor; 
 			if (CurrentArmor <= 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
+				//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
 			}
 		}
 
+
 	return DamageToApply;
 }
+
+
 
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -169,41 +186,31 @@ void APlayerCharacter::LookUpRate(float Rate)
 
 void APlayerCharacter::CameraZoomIn()
 {
-	
-	//CameraZoom set to tragetarmlength
-	//400-300 = 100
-	CameraZoom = CameraZoom - CameraZoomLength;//TargetArmLenth subtracted by the length we want to Zoom in by 
+	if (GetCharacterMovement()->MaxWalkSpeed <= 350) //This stops the player from aiming when joggging 
+	{
+		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
+		{
+			CameraZoomLength -= 250.f; // decrease the length of the springarm 
+			bIsAiming = true;
+			if (CameraZoomLength < 150.f)
+			{
+				CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
+			}
+		}
+	}
 
-	//We check if CameraZoom is bigger than 100, if true set the armlength 
-	if (CameraZoom <= 150.f)
-	{
-		SpringArm->TargetArmLength = 150;
-		CameraZoom = 150.F;
-		UE_LOG(LogTemp,Warning, TEXT("Working"))
-	}
-	else
-	{
-		//This condition is excuteded when the CameraZoom i smore than the desired zoom
-		SpringArm->TargetArmLength = CameraZoom;
-		UE_LOG(LogTemp, Warning, TEXT("Shouldnt be called"))
-	}
 }
 
 void APlayerCharacter::CameraZoomOut()
 {
-	//100+300 = 400
-	CameraZoom = CameraZoom + CameraZoomLength;
-
-	if (CameraZoom >= 400.f)
+	if (SpringArm->TargetArmLength < 400.f)// Cheacks to see if we are bigger than our maximum camera length
 	{
-		SpringArm->TargetArmLength = 400.f;
-		CameraZoom = 400.f;
-		UE_LOG(LogTemp, Warning, TEXT("Working1"))
-	}
-	else
-	{
-		SpringArm->TargetArmLength = CameraZoom;
-		UE_LOG(LogTemp, Warning, TEXT("Shouldnt be called1"))
+		CameraZoomLength += 250.f; //Adds back the length we decrease from the zoom out
+		bIsAiming = false;
+		if (CameraZoomLength > 400.f) //Checks to see if we are above 400
+		{
+			CameraZoomLength = 400.f;//If so set arm length back to 400
+		}
 	}
 }
 

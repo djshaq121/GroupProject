@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
+
 class AHumanPlayerController;
 
 UCLASS()
@@ -18,8 +20,17 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
-
 public:
+
+	FPlayerDelegate OnDeath;
+
+	//Make an IsDead property - So it can be caled in blueprint
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+	bool bIsDead = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+	bool bIsAiming = false;
+
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
@@ -30,7 +41,6 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
-
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -64,17 +74,14 @@ public:
 	int GetCurrentArmor() const;
 
 protected:
+	
 	void CameraZoomIn();
 
 	void CameraZoomOut();
 
-
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	float CameraZoom;
-	
-	//The length of which that subtracts and adds to the target arm and lengths 
-	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	float CameraZoomLength = 250;
+	float CameraZoomLength;
+
 
 private:
 
