@@ -67,12 +67,12 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 				//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
 					//OnDeath() - Destroies the player and restarts the game
 					OnDeath.Broadcast();
-				isDead = true;//Sets it to true, so in blueprint it plays the death animation 
+					bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
 				StopAnimMontage();
 			}
 			else
 			{
-				isDead = false;
+				bIsDead = false;
 			}
 		}
 		else
@@ -186,14 +186,19 @@ void APlayerCharacter::LookUpRate(float Rate)
 
 void APlayerCharacter::CameraZoomIn()
 {
-	if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
+	if (GetCharacterMovement()->MaxWalkSpeed <= 350) //This stops the player from aiming when joggging 
 	{
-		CameraZoomLength -= 250.f; // decrease the length of the springarm 
-		if (CameraZoomLength < 150.f)
+		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
 		{
-			CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
+			CameraZoomLength -= 250.f; // decrease the length of the springarm 
+			bIsAiming = true;
+			if (CameraZoomLength < 150.f)
+			{
+				CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
+			}
 		}
 	}
+
 }
 
 void APlayerCharacter::CameraZoomOut()
@@ -201,6 +206,7 @@ void APlayerCharacter::CameraZoomOut()
 	if (SpringArm->TargetArmLength < 400.f)// Cheacks to see if we are bigger than our maximum camera length
 	{
 		CameraZoomLength += 250.f; //Adds back the length we decrease from the zoom out
+		bIsAiming = false;
 		if (CameraZoomLength > 400.f) //Checks to see if we are above 400
 		{
 			CameraZoomLength = 400.f;//If so set arm length back to 400

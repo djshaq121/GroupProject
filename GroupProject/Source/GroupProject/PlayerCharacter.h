@@ -26,7 +26,10 @@ public:
 
 	//Make an IsDead property - So it can be caled in blueprint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-		bool isDead = false;
+	bool bIsDead = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+	bool bIsAiming = false;
 
 	// Sets default values for this character's properties
 	APlayerCharacter();
