@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "GroupProject.h"
 #include "PlayerCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
@@ -21,6 +22,8 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		class UCameraComponent* Camera;
 
 public:
+
+	void AddToInventory(class AWeaponBase* NewWeapon);
 
 	FPlayerDelegate OnDeath;
 
@@ -84,6 +87,9 @@ protected:
 
 
 private:
+
+	//Struct Iventory
+	FPlayerInventory Inventory;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero

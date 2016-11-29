@@ -5,6 +5,8 @@
 #include "HumanPlayerController.h"
 
 
+
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -220,3 +222,7 @@ AHumanPlayerController* APlayerCharacter::GetHumanController()
 	return Cast<AHumanPlayerController>(GetController());
 }
 
+void APlayerCharacter::AddToInventory(AWeaponBase * NewWeapon)
+{
+
+}
