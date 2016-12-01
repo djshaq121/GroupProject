@@ -3,6 +3,9 @@
 #include "GroupProject.h"
 #include "PlayerCharacter.h"
 #include "HumanPlayerController.h"
+#include "AssaultRifleBase.h"
+#include "LaserRifleBase.h"
+#include "WeaponBase.h"
 
 
 
@@ -109,6 +112,9 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
 
+	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::StartFire);
+	InputComponent->BindAction("Test", IE_Released, this, &APlayerCharacter::StopFire);
+
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -116,6 +122,63 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 }
 
+void APlayerCharacter::StartFire()
+{
+	//AWeaponBase* Weapon1 = Cast<AWeaponBase>(GetWorld()->Get);
+	//Weapon->StartFire();//This is called when its in no if statement
+	//if (CWeapon)
+	//{
+	//	CWeapon->StartFire();//Not being called
+	//}
+
+	if (Inventory.CurrentWeapon)
+	{
+		Inventory.CurrentWeapon->StartFire();//not being called
+	}
+	
+
+}
+
+void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
+	//NewWeapon->SetCanInteract(false);
+	NewWeapon->SetActorEnableCollision(false);
+	NewWeapon->ChangeOwner(this);
+	//NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);
+	NewWeapon->SetActorHiddenInGame(true);
+
+	////if weapon is AssaultRifleBase
+	//if (NewWeapon->IsA(AAssaultRifleBase::StaticClass())) {
+	//	if (Inventory.AssaultRifle) {
+	//		Inventory.AssaultRifle->Destroy();
+	//	}
+	//	Inventory.AssaultRifle = Cast<AAssaultRifleBase>(NewWeapon);
+
+	//	if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+	//		EquipWeapon(Inventory.AssaultRifle);
+	//	}
+	//}
+	////if weapon is laser rifle
+	//else if (NewWeapon->IsA(ALaserRifleBase::StaticClass())) {
+	//	if (Inventory.LaserRifle) {
+	//		Inventory.LaserRifle->Destroy();
+	//	}
+	//	Inventory.LaserRifle = Cast<ALaserRifleBase>(NewWeapon);
+
+	//	if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+	//		EquipWeapon(Inventory.LaserRifle);
+	//	}
+	//}
+	
+	
+}
+
+void APlayerCharacter::StopFire()
+{
+	if (Inventory.CurrentWeapon)
+	{
+		Inventory.CurrentWeapon->StopFire();
+	}
+}
 
 void APlayerCharacter::OnFire()
 {
@@ -222,7 +285,3 @@ AHumanPlayerController* APlayerCharacter::GetHumanController()
 	return Cast<AHumanPlayerController>(GetController());
 }
 
-void APlayerCharacter::AddToInventory(AWeaponBase * NewWeapon)
-{
-
-}

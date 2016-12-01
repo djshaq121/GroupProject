@@ -76,6 +76,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentArmor() const;
 
+	void StartFire();
+	
+
+	void StopFire();
+
+
+	class AWeaponBase* CWeapon;
+
+	/* All weapons/items the player currently holds */
+	//UPROPERTY(Transient, Replicated)
+	//TArray<class AWeaponBase*> Inventoryw;
+
 protected:
 	
 	void CameraZoomIn();
@@ -89,6 +101,7 @@ protected:
 private:
 
 	//Struct Iventory
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
 	FPlayerInventory Inventory;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
