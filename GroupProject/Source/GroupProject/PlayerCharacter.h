@@ -25,6 +25,8 @@ public:
 
 	void AddToInventory(class AWeaponBase* NewWeapon);
 
+	void EquipWeapon(AWeaponBase * WeaponToEquip);
+
 	FPlayerDelegate OnDeath;
 
 	//Make an IsDead property - So it can be caled in blueprint
@@ -99,6 +101,11 @@ protected:
 
 
 private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	bool bEquipNewWeapon = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	FName WeaponSocketName;
 
 	//Struct Iventory
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)

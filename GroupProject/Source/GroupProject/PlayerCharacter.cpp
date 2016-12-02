@@ -134,40 +134,7 @@ void APlayerCharacter::StartFire()
 
 }
 
-void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
-	
-	UE_LOG(LogTemp, Warning, TEXT("Calling inven"));
-	//NewWeapon->SetCanInteract(false);
-	NewWeapon->SetActorEnableCollision(false);
-	NewWeapon->ChangeOwner(this);
-	//NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);
-	NewWeapon->SetActorHiddenInGame(true);
 
-	////if weapon is AssaultRifleBase
-	//if (NewWeapon->IsA(AAssaultRifleBase::StaticClass())) {
-	//	if (Inventory.AssaultRifle) {
-	//		Inventory.AssaultRifle->Destroy();
-	//	}
-	//	Inventory.AssaultRifle = Cast<AAssaultRifleBase>(NewWeapon);
-
-	//	if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
-	//		EquipWeapon(Inventory.AssaultRifle);
-	//	}
-	//}
-	////if weapon is laser rifle
-	//else if (NewWeapon->IsA(ALaserRifleBase::StaticClass())) {
-	//	if (Inventory.LaserRifle) {
-	//		Inventory.LaserRifle->Destroy();
-	//	}
-	//	Inventory.LaserRifle = Cast<ALaserRifleBase>(NewWeapon);
-
-	//	if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
-	//		EquipWeapon(Inventory.LaserRifle);
-	//	}
-	//}
-	
-	
-}
 
 void APlayerCharacter::StopFire()
 {
@@ -274,6 +241,62 @@ void APlayerCharacter::CameraZoomOut()
 			CameraZoomLength = 400.f;//If so set arm length back to 400
 		}
 	}
+}
+
+void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
+
+	UE_LOG(LogTemp, Warning, TEXT("Calling inven"));
+	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
+	NewWeapon->SetActorEnableCollision(false);
+	NewWeapon->ChangeOwner(this);//Select to new gun
+	NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);//Attching the new weapon to the weapon socket
+	NewWeapon->SetActorHiddenInGame(true);//Hide the weapon after we pick it up 
+
+	//if weapon is AssaultRifleBase
+	if (NewWeapon->IsA(AAssaultRifleBase::StaticClass())) {
+		if (Inventory.AssaultRifle) {
+			Inventory.AssaultRifle->Destroy();
+		}
+		Inventory.AssaultRifle = Cast<AAssaultRifleBase>(NewWeapon);
+
+		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+			EquipWeapon(Inventory.AssaultRifle);
+		}
+	}
+	//if weapon is laser rifle
+	else if (NewWeapon->IsA(ALaserRifleBase::StaticClass())) {
+		if (Inventory.LaserRifle) {
+			Inventory.LaserRifle->Destroy();
+		}
+		Inventory.LaserRifle = Cast<ALaserRifleBase>(NewWeapon);
+
+		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+			EquipWeapon(Inventory.LaserRifle);
+		}
+	}
+
+
+}
+
+void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if weapon is in the inventory
+{
+	if (WeaponToEquip == Inventory.CurrentWeapon) {
+		return;//Return if we already have the weapon equiped
+	}
+
+	if (Inventory.CurrentWeapon) {
+		Inventory.CurrentWeapon->SetActorHiddenInGame(true);//Hide the weapon could move the weapon to the back
+	}
+
+	if (WeaponToEquip == Inventory.AssaultRifle) {
+		Inventory.CurrentWeapon = Inventory.AssaultRifle;
+	}
+	else if (WeaponToEquip == Inventory.LaserRifle) {
+	Inventory.CurrentWeapon = Inventory.LaserRifle;
+	}
+	
+
+	Inventory.CurrentWeapon->SetActorHiddenInGame(false);
 }
 
 //This gets the controller of the pawn

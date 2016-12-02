@@ -26,8 +26,11 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+	if (bCanInteract)
+	{
+		CollisonSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPlayerEnterPickupBox);
+	}
 	
-	CollisonSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPlayerEnterPickupBox);
 	//CurrentAmmoInClip = StartAmmoClip;
 	//CurrentMaxAmmoInGun = StartMaxAmmo;
 
@@ -217,8 +220,16 @@ void AWeaponBase::OnPlayerEnterPickupBox(UPrimitiveComponent * OverlappedComp, A
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Not Working"))
 	}*/
+	if (bCanInteract)
+	{
+		OnInteract(OtherActor);
+	}
+	
+}
 
-	OnInteract(OtherActor);
+void AWeaponBase::SetCanInteract(bool NewInteract)
+{
+	bCanInteract = NewInteract;
 }
 
 class APlayerCharacter* AWeaponBase::GetPawnOwner() const

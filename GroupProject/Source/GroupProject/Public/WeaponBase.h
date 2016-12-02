@@ -41,6 +41,8 @@ public:
 	UFUNCTION()//Actor is gonna be us - We need to type check it so only the player can pick it up
 		virtual void OnPlayerEnterPickupBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult& SweepResult);
 
+	void SetCanInteract(bool NewInteract);
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
 		USphereComponent* CollisonSphere;
@@ -51,6 +53,8 @@ protected:
 		FName MuzzleSocketName;
 private:
 
+	UPROPERTY(EditDefaultsOnly)
+	bool bCanInteract = true;
 
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 
