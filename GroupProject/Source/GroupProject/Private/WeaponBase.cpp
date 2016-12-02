@@ -19,7 +19,7 @@ AWeaponBase::AWeaponBase()
 	
 	CurrentAmmoInClip = StartAmmoClip;
 	
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +32,14 @@ void AWeaponBase::BeginPlay()
 
 }
 
+class APlayerCharacter* AWeaponBase::GetPawnOwner() const
+{
+	auto playerpawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!playerpawn) { return nullptr; }
+
+	return Cast<APlayerCharacter>(playerpawn);
+}
+
 // Called every frame
 void AWeaponBase::Tick( float DeltaTime )
 {
@@ -41,7 +49,22 @@ void AWeaponBase::Tick( float DeltaTime )
 
 void  AWeaponBase::DealDamage(const FHitResult& Hit)
 {
+	//Check to see if we hit and actor again
+	if (Hit.GetActor())
+	{
+		float DealtDamage = BaseDamage;//Later maybe damage multipler 
+		FVector ShotDirection = GetActorLocation() - Hit.ImpactPoint;//Gets the location of the gun subtract from the hit point location to find the direction
+		
+		//This fully describes the damage recieved 
+		FPointDamageEvent DamageEvent;
+		DamageEvent.Damage = DealtDamage;
+		DamageEvent.HitInfo = Hit;
+		DamageEvent.ShotDirection = ShotDirection;
+		DamageEvent.ShotDirection.Normalize();
 
+		//Calls the method on the actor that takes damage
+		Hit.GetActor()->TakeDamage(DealtDamage, DamageEvent, GetPawnOwner()->GetController(), this);
+	}
 }
 
 /*The method that is called in weapon class*/
@@ -82,21 +105,28 @@ void  AWeaponBase::DoFire()
 	FHitResult Hit = FHitResult();
 	FVector Start;
 
-	FVector HitLocation;//Out parameter
+	
 
 
 		//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
 
 
 	CurrentAmmoInClip--;
-	UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
+	//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
 
-		if (GetSightRayHitLocation(Hit))
-		{
+	if (GetSightRayHitLocation(Hit))
+	{
 			auto HitLocation = Hit.Location;
-			UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
+			//UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
 
-		}
+	}
+	if (Hit.GetActor())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Actor hit: %s "), *Hit.GetActor()->GetName());
+		//Calls DealDamage passing the actor we hit
+		DealDamage(Hit);
+		//SpawnImpactEffect
+	}
 }
 
 bool AWeaponBase::GetSightRayHitLocation(FHitResult &HitResult) const
@@ -142,7 +172,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		//The Second line trace starts from the character and the the endlocation is the impact point of the first line trace 
 		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
-		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Visibility);
+		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
 		
 		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(0, 0, 255), true);
 		return true;

@@ -82,7 +82,7 @@ public:
 	void StopFire();
 
 
-	class AWeaponBase* CWeapon;
+	class AWeaponBase* Weapon;
 
 	/* All weapons/items the player currently holds */
 	//UPROPERTY(Transient, Replicated)

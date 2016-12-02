@@ -39,6 +39,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	CurrentHealth = MaximumHealth;
 	CurrentArmor = MaximumArmor;
+	
 }
 
 // Called every frame
@@ -46,7 +47,7 @@ void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 	//This is what makes the zoomIN/OUT smooth 
-	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 9.0f);//Change the interpSpeed to make smooth longer or more faster
+	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
 }
 
 
@@ -110,10 +111,10 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
+	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::OnFire);
 
-	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::StartFire);
-	InputComponent->BindAction("Test", IE_Released, this, &APlayerCharacter::StopFire);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
+	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
 
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
@@ -124,13 +125,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 void APlayerCharacter::StartFire()
 {
-	//AWeaponBase* Weapon1 = Cast<AWeaponBase>(GetWorld()->Get);
-	//Weapon->StartFire();//This is called when its in no if statement
-	//if (CWeapon)
-	//{
-	//	CWeapon->StartFire();//Not being called
-	//}
-
+	
 	if (Inventory.CurrentWeapon)
 	{
 		Inventory.CurrentWeapon->StartFire();//not being called

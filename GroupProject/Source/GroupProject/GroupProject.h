@@ -2,7 +2,7 @@
 
 #pragma once
 
-#define ECC_Weapon ECC_GameTraceChannell
+#define ECC_Weapon ECC_GameTraceChannel1
 
 #include "Engine.h"
 #include "GroupProject.generated.h"

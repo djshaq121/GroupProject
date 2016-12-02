@@ -19,6 +19,9 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	APlayerCharacter * GetPawnOwner() const;
 	
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
@@ -67,7 +70,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		int32 CurrentMaxAmmoInGun = 440;
 	UPROPERTY(EditDefaultsOnly)
-		int32 BaseDamage;
+		float BaseDamage;
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 5000;
 	UPROPERTY(EditDefaultsOnly)
