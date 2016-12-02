@@ -27,18 +27,13 @@ void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CollisonSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPlayerEnterPickupBox);
 	//CurrentAmmoInClip = StartAmmoClip;
 	//CurrentMaxAmmoInGun = StartMaxAmmo;
 
 }
 
-class APlayerCharacter* AWeaponBase::GetPawnOwner() const
-{
-	auto playerpawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-	if (!playerpawn) { return nullptr; }
-
-	return Cast<APlayerCharacter>(playerpawn);
-}
+/*PickUp*/
 
 // Called every frame
 void AWeaponBase::Tick( float DeltaTime )
@@ -46,6 +41,8 @@ void AWeaponBase::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 	
 }
+
+
 
 void  AWeaponBase::DealDamage(const FHitResult& Hit)
 {
@@ -163,7 +160,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 	auto StartLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();//The start location of the line trace 
 	auto EndLocation = StartLocation + (LookDirection * LineTraceRange); //The end location of the line trace
 
-	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Visibility))
+	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Weapon, TraceParams))
 	{
 		HitResult = HitInfo;
 		auto HitLocation = HitResult.Location;
@@ -201,10 +198,33 @@ void AWeaponBase::ChangeOwner(AActor * NewOwner)
 }
 
 
-void AWeaponBase::OnInteract_Implementation(AActor* Caller) {
+void AWeaponBase::OnInteract(AActor* Caller) {
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Caller);
 	if (Player)
 	{
 		Player->AddToInventory(this);
 	}
+}
+
+void AWeaponBase::OnPlayerEnterPickupBox(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult & SweepResult)
+{
+	/*class APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
+	if (Player)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hi"))
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not Working"))
+	}*/
+
+	OnInteract(OtherActor);
+}
+
+class APlayerCharacter* AWeaponBase::GetPawnOwner() const
+{
+	auto playerpawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!playerpawn) { return nullptr; }
+
+	return Cast<APlayerCharacter>(playerpawn);
 }

@@ -135,6 +135,8 @@ void APlayerCharacter::StartFire()
 }
 
 void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
+	
+	UE_LOG(LogTemp, Warning, TEXT("Calling inven"));
 	//NewWeapon->SetCanInteract(false);
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);

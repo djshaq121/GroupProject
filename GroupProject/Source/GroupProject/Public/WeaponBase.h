@@ -35,8 +35,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ChangeOwner(AActor* NewOwner);
 
-	void OnInteract_Implementation(AActor* Caller) ;
 	
+	virtual void OnInteract(AActor* Caller) ;
+	
+	UFUNCTION()//Actor is gonna be us - We need to type check it so only the player can pick it up
+		virtual void OnPlayerEnterPickupBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult& SweepResult);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
