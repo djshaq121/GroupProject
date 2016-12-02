@@ -41,6 +41,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
 		USkeletalMeshComponent* WeaponMesh;
 	class APlayerCharacter* OwningPlayer;
+	UPROPERTY(EditDefaultsOnly)
+		FName MuzzleSocketName;
 private:
 
 

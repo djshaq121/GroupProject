@@ -93,7 +93,8 @@ void  AWeaponBase::DoFire()
 
 		if (GetSightRayHitLocation(Hit))
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
+			auto HitLocation = Hit.Location;
+			UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
 
 		}
 }
@@ -135,13 +136,15 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Visibility))
 	{
 		HitResult = HitInfo;
-
+		auto HitLocation = HitResult.Location;
 
 		// Once we done the first line trace we return the impact point
 		//The Second line trace starts from the character and the the endlocation is the impact point of the first line trace 
-		//auto Start = GetWorld()->GetFirstPlayerController->GetPawn()->GetMesh()->GetSocketLocation("WeaponSocket");
-		//GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Visibility);
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor(0, 0, 255), true);
+		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
+		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Visibility);
+		
+		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(0, 0, 255), true);
 		return true;
 	}
 
