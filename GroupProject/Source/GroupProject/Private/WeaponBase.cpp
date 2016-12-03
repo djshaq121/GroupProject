@@ -13,6 +13,7 @@ AWeaponBase::AWeaponBase()
 	CollisonSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisonSphere"));
 	RootComponent = CollisonSphere;
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMesh"));
+	
 	WeaponMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
@@ -30,7 +31,7 @@ void AWeaponBase::BeginPlay()
 	{
 		CollisonSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPlayerEnterPickupBox);
 	}
-	
+
 	//CurrentAmmoInClip = StartAmmoClip;
 	//CurrentMaxAmmoInGun = StartMaxAmmo;
 
@@ -64,6 +65,7 @@ void  AWeaponBase::DealDamage(const FHitResult& Hit)
 
 		//Calls the method on the actor that takes damage
 		Hit.GetActor()->TakeDamage(DealtDamage, DamageEvent, GetPawnOwner()->GetController(), this);
+		//Had a problem were if the player look down or up they could shoot themselves. Fixed by using custom preset on player
 	}
 }
 

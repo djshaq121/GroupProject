@@ -8,7 +8,7 @@
 #include "WeaponBase.h"
 
 
-
+/*Created a custom preset in the Player_BP so that ECC_weapons ignores the Player_BP*/
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
