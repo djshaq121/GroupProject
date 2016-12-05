@@ -10,6 +10,8 @@
 
 /*Created a custom preset in the Player_BP so that ECC_weapons ignores the Player_BP*/
 
+
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -58,11 +60,6 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
 	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
-	//UE_LOG(LogTemp, Warning, TEXT("DamageAmount: %f, DamageToApply: %i"), DamageAmount, DamageToApply)
-	//CurrentArmor = FMath::Clamp(CurrentArmor, 0, 100);
-
-	//isTakingDamage = true;
-
 	
 
 		if (CurrentArmor <= 0)
@@ -74,7 +71,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 					//OnDeath() - Destroies the player and restarts the game
 					OnDeath.Broadcast();
 					bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
-				StopAnimMontage();
+					StopAnimMontage();
 			}
 			else
 			{
@@ -116,6 +113,9 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
 
+	InputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
+	InputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
+
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -125,12 +125,11 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 void APlayerCharacter::StartFire()
 {
-	
-	if (Inventory.CurrentWeapon)
-	{
-		Inventory.CurrentWeapon->StartFire();//not being called
-	}
-	
+
+		if (Inventory.CurrentWeapon)
+		{
+			Inventory.CurrentWeapon->StartFire();//not being called
+		}
 
 }
 
@@ -142,6 +141,23 @@ void APlayerCharacter::StopFire()
 	{
 		Inventory.CurrentWeapon->StopFire();
 	}
+}
+
+void APlayerCharacter::SwitchToAssaultRifle()
+{
+	if (Inventory.AssaultRifle)
+	{
+		EquipWeapon(Inventory.AssaultRifle);
+	}
+}
+
+void APlayerCharacter::SwitchToLaserLaser()
+{
+	if (Inventory.LaserRifle)
+	{
+		EquipWeapon(Inventory.LaserRifle);
+	}
+
 }
 
 void APlayerCharacter::OnFire()
@@ -172,6 +188,11 @@ int APlayerCharacter::GetCurrentHealth() const
 int APlayerCharacter::GetCurrentArmor() const
 {
 	return CurrentArmor;
+}
+
+bool APlayerCharacter::GetIsDead()
+{
+	return bIsDead;
 }
 
 void APlayerCharacter::MoveForward(float Value)
@@ -259,7 +280,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 		}
 		Inventory.AssaultRifle = Cast<AAssaultRifleBase>(NewWeapon);
 
-		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {//bEquipnew weapon allows the user to equipt the weapon upon pick up
 			EquipWeapon(Inventory.AssaultRifle);
 		}
 	}
@@ -285,15 +306,16 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 	}
 
 	if (Inventory.CurrentWeapon) {
-		Inventory.CurrentWeapon->SetActorHiddenInGame(true);//Hide the weapon could move the weapon to the back
+		Inventory.CurrentWeapon->SetActorHiddenInGame(true);//Hide the weapon could move the weapon to the back instead of hiding
 	}
 
+	//Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
 		Inventory.CurrentWeapon = Inventory.AssaultRifle;
 	}
 	else if (WeaponToEquip == Inventory.LaserRifle) {
 	Inventory.CurrentWeapon = Inventory.LaserRifle;
-	}
+	}//else if...for more types of gun
 	
 
 	Inventory.CurrentWeapon->SetActorHiddenInGame(false);

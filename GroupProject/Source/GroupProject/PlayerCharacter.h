@@ -6,6 +6,7 @@
 #include "GroupProject.h"
 #include "PlayerCharacter.generated.h"
 
+//Death
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
 
 class AHumanPlayerController;
@@ -78,6 +79,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentArmor() const;
 
+	bool GetIsDead();
+
 	void StartFire();
 	
 
@@ -86,9 +89,9 @@ public:
 
 	class AWeaponBase* Weapon;
 
-	/* All weapons/items the player currently holds */
-	//UPROPERTY(Transient, Replicated)
-	//TArray<class AWeaponBase*> Inventoryw;
+	void SwitchToAssaultRifle();
+	void SwitchToLaserLaser();
+	
 
 protected:
 	

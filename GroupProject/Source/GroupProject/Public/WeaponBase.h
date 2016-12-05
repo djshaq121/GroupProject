@@ -27,7 +27,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	void DealDamage(const FHitResult& Hit);
-	void DoFire();
+	virtual void DoFire();
 	void StartFire();
 	void StopFire();
 
@@ -51,12 +51,21 @@ protected:
 	class APlayerCharacter* OwningPlayer;
 	UPROPERTY(EditDefaultsOnly)
 		FName MuzzleSocketName;
+
+	bool bIsFiring = true; //Check if the player is firing
+
+	bool GetSightRayHitLocation(FHitResult& HitResult) const;
+
+	UPROPERTY(EditDefaultsOnly)
+		int32 CurrentAmmoInClip;
+
+	bool bCanFire = true;
 private:
 
 	UPROPERTY(EditDefaultsOnly)
 	bool bCanInteract = true;
 
-	bool GetSightRayHitLocation(FHitResult& HitResult) const;
+	
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FHitResult& HitResult) const;
 
@@ -71,8 +80,7 @@ private:
 		int32 MaxAmmo = 500;
 	UPROPERTY(EditDefaultsOnly)
 		int32 MaxAmmoPerClip = 60;
-	UPROPERTY(EditDefaultsOnly)
-		int32 CurrentAmmoInClip;
+
 	/*The amount of total bullets the gun can have*/
 	UPROPERTY(EditDefaultsOnly)
 		int32 CurrentMaxAmmoInGun = 440;
