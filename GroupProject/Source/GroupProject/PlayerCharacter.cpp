@@ -112,7 +112,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
-
+	InputComponent->BindAction("Reload", IE_Pressed, this, &APlayerCharacter::Reload);
 	InputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
 	InputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
 
@@ -128,7 +128,7 @@ void APlayerCharacter::StartFire()
 
 		if (Inventory.CurrentWeapon)
 		{
-			Inventory.CurrentWeapon->StartFire();//not being called
+			Inventory.CurrentWeapon->StartFire();
 		}
 
 }
@@ -140,6 +140,14 @@ void APlayerCharacter::StopFire()
 	if (Inventory.CurrentWeapon)
 	{
 		Inventory.CurrentWeapon->StopFire();
+	}
+}
+
+void APlayerCharacter::Reload()
+{
+	if (Inventory.CurrentWeapon)
+	{
+		Inventory.CurrentWeapon->Reload();
 	}
 }
 
@@ -270,7 +278,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);//Select to new gun
-	NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);//Attching the new weapon to the weapon socket
+	NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);//Attching the new weapon to the weapon socket - New to update
 	NewWeapon->SetActorHiddenInGame(true);//Hide the weapon after we pick it up 
 
 	//if weapon is AssaultRifleBase

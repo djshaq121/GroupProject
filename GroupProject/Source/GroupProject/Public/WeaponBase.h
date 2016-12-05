@@ -26,6 +26,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
+	void Reload();
+
 	void DealDamage(const FHitResult& Hit);
 	virtual void DoFire();
 	void StartFire();
@@ -43,6 +45,15 @@ public:
 
 	void SetCanInteract(bool NewInteract);
 
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+		int32 GetCurrentAmmoInClip() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+		int32 GetCurrentAmmoInGun() const;
+
+	void UseAmmo();
+
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
 		USphereComponent* CollisonSphere;
@@ -56,16 +67,14 @@ protected:
 
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 
-	UPROPERTY(EditDefaultsOnly)
-		int32 CurrentAmmoInClip;
+	//nEEDS TO MOVE INTO
+	
 
 	bool bCanFire = true;
 private:
 
 	UPROPERTY(EditDefaultsOnly)
 	bool bCanInteract = true;
-
-	
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FHitResult& HitResult) const;
 
@@ -74,16 +83,16 @@ private:
 	FTimerHandle FireRateHandle;
 
 	/*Weapon ammo on spawn*/
+	//Need starting max ammo in clip 
+	
 	UPROPERTY(EditDefaultsOnly)
-		int32 StartAmmoClip = 60;
+		int32 MaxAmmoInGun = 500;
 	UPROPERTY(EditDefaultsOnly)
-		int32 MaxAmmo = 500;
-	UPROPERTY(EditDefaultsOnly)
-		int32 MaxAmmoPerClip = 60;
-
-	/*The amount of total bullets the gun can have*/
-	UPROPERTY(EditDefaultsOnly)
-		int32 CurrentMaxAmmoInGun = 440;
+		int32 MaxAmmoPerClip = 60;//This is the starting clip
+	//Dont need to see this 
+		int32 CurrentAmmoInClip;
+	/*The current amount of bullets in the gun can have*/
+		int32 CurrentAmmoInGun;
 	UPROPERTY(EditDefaultsOnly)
 		float BaseDamage;
 	UPROPERTY(EditDefaultsOnly)

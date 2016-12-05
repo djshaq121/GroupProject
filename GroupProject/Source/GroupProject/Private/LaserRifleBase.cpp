@@ -26,7 +26,7 @@ void ALaserRifleBase::BeginPlay()
 void ALaserRifleBase::FiringGun()
 {
 	Heat += OverHeatTime * GetWorld()->GetDeltaSeconds();
-	newHeat = FMath::Clamp(Heat, 0.f, HeatTheshold);
+	float newHeat = FMath::Clamp(Heat, 0.f, HeatTheshold);
 	
 	if (newHeat >= HeatTheshold) {//Check to see if the heat of the gun is larger than the threshold
 		bIsCoolingDown = true;  //If its true than, guns goes on cool down
@@ -44,7 +44,7 @@ void ALaserRifleBase::DoFire()
 	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
 
 
-	CurrentAmmoInClip--;
+	UseAmmo();
 	FiringGun();
 	//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
 	

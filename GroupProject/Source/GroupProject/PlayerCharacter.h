@@ -86,6 +86,8 @@ public:
 
 	void StopFire();
 
+	void Reload();
+
 
 	class AWeaponBase* Weapon;
 
@@ -121,7 +123,7 @@ private:
 	int32 CurrentHealth;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
+	int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
 
 	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
 		int32 CurrentArmor;

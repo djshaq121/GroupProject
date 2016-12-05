@@ -18,7 +18,6 @@ AWeaponBase::AWeaponBase()
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
 	
-	CurrentAmmoInClip = StartAmmoClip;
 	
 	
 }
@@ -32,9 +31,8 @@ void AWeaponBase::BeginPlay()
 		CollisonSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnPlayerEnterPickupBox);
 	}
 
-	//CurrentAmmoInClip = StartAmmoClip;
-	//CurrentMaxAmmoInGun = StartMaxAmmo;
-
+	CurrentAmmoInClip = MaxAmmoPerClip;
+	CurrentAmmoInGun = MaxAmmoInGun;
 }
 
 /*PickUp*/
@@ -54,6 +52,30 @@ class APlayerCharacter* AWeaponBase::GetPawnOwner() const
 	return Cast<APlayerCharacter>(playerpawn);
 }
 
+void AWeaponBase::Reload()
+{
+
+	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
+
+	if (CurrentAmmoInGun >= NeededAmmo)
+	{
+		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
+		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
+	}
+	else {
+
+		if(CurrentAmmoInGun > 0)
+		{
+			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+		}
+	}
+	
+
+}
 void  AWeaponBase::DealDamage(const FHitResult& Hit)
 {
 	
@@ -88,7 +110,7 @@ void  AWeaponBase::DealDamage(const FHitResult& Hit)
 /*The method that is called in weapon class*/
 void  AWeaponBase::StartFire()
 {
-	if (GetPawnOwner() != nullptr)//Stops the game from crashing when the player shoots and dies at the same time
+	if (GetPawnOwner() != nullptr)//Stops the game from crashing when the player shoots and dies at the same time  
 	{
 		if (CurrentAmmoInClip > 0 && bCanFire)
 		{
@@ -133,7 +155,7 @@ void  AWeaponBase::DoFire()
 	FVector Start;
 
 
-	CurrentAmmoInClip--;
+	UseAmmo();
 	//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
 
 	if (GetSightRayHitLocation(Hit))
@@ -173,6 +195,27 @@ bool AWeaponBase::GetSightRayHitLocation(FHitResult &HitResult) const
 	}
 
 	return true;
+}
+
+//void AWeaponBase::GetAmmo(int32 & Current, int32 & Max)
+//{
+//	Current = CurrentAmmoInClip;
+//	Max = CurrentAmmoInGun;
+//}
+
+int32 AWeaponBase::GetCurrentAmmoInClip() const
+{
+	return CurrentAmmoInClip;
+}
+
+int32 AWeaponBase::GetCurrentAmmoInGun() const
+{
+	return CurrentAmmoInGun;
+}
+
+void AWeaponBase::UseAmmo()
+{
+	CurrentAmmoInClip--;
 }
 
 bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & HitResult) const
