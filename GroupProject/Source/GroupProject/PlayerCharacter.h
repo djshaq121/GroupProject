@@ -79,6 +79,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentArmor() const;
 
+	void Heal(int Amount);
+
 	bool GetIsDead();
 
 	void StartFire();
