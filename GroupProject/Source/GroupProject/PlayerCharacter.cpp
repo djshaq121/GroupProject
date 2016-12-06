@@ -145,6 +145,17 @@ int APlayerCharacter::GetCurrentArmor() const
 	return CurrentArmor;
 }
 
+void APlayerCharacter::Heal(int Amount)
+{
+	// Currently polayer can still pickup when his health is 100 and item is destroyed but no health is gained
+	if (CurrentHealth < 100)
+	{
+		CurrentHealth = CurrentHealth + Amount;
+		UE_LOG(LogTemp, Warning, TEXT("hEALTH: %f"), CurrentHealth)
+	}
+}
+
+
 void APlayerCharacter::MoveForward(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))

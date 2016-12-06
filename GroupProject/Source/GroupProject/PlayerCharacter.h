@@ -73,6 +73,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentArmor() const;
 
+	void Heal(int amount);
+
 protected:
 	
 	void CameraZoomIn();
@@ -96,6 +98,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
 		int32 CurrentArmor;
-
+	
+	
 
 };
