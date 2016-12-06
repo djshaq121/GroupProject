@@ -3,8 +3,10 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "GroupProject.h"
 #include "PlayerCharacter.generated.h"
 
+//Death
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
 
 class AHumanPlayerController;
@@ -21,6 +23,10 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		class UCameraComponent* Camera;
 
 public:
+
+	void AddToInventory(class AWeaponBase* NewWeapon);
+
+	void EquipWeapon(AWeaponBase * WeaponToEquip);
 
 	FPlayerDelegate OnDeath;
 
@@ -73,6 +79,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentArmor() const;
 
+	bool GetIsDead();
+
+	void StartFire();
+	
+
+	void StopFire();
+
+	void Reload();
+
+
+	class AWeaponBase* Weapon;
+
+	void SwitchToAssaultRifle();
+	void SwitchToLaserLaser();
+	
+
 protected:
 	
 	void CameraZoomIn();
@@ -86,13 +108,22 @@ protected:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	bool bEquipNewWeapon = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	FName WeaponSocketName;
+
+	//Struct Iventory
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
+	FPlayerInventory Inventory;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
 	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
 	int32 CurrentHealth;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
+	int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
 
 	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
 		int32 CurrentArmor;
