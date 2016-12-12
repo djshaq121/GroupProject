@@ -53,6 +53,8 @@ public:
 
 	void UseAmmo();
 
+	void FireEffect();
+
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
@@ -72,6 +74,9 @@ protected:
 
 	bool bCanFire = true;
 private:
+
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ShotEffect;
 
 	UPROPERTY(EditDefaultsOnly)
 	bool bCanInteract = true;
