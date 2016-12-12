@@ -385,7 +385,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);//Select to new gun
-	NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);//Attching the new weapon to the weapon socket - New to update
+	NewWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
 	NewWeapon->SetActorHiddenInGame(true);//Hide the weapon after we pick it up 
 
 	//if weapon is AssaultRifleBase

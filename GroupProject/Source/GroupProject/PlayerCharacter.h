@@ -60,10 +60,6 @@ public:
 
 	AHumanPlayerController* GetHumanController();
 
-	
-
-	void OnFire();
-
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	int GetCurrentHealth() const;
 
@@ -179,6 +175,7 @@ protected:
 	float CameraZoomLength;
 
 	float CamCrouchHeight;
+
 	FVector StartingCameraPosition;
 	
 

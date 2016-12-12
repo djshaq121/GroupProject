@@ -56,7 +56,7 @@ void ALaserRifleBase::DoFire()
 	}
 	if (Hit.GetActor())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor hit: %s "), *Hit.GetActor()->GetName());
+		
 		//Calls DealDamage passing the actor we hit
 		DealDamage(Hit);
 		//SpawnImpactEffect

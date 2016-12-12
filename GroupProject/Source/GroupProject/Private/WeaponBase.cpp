@@ -17,9 +17,6 @@ AWeaponBase::AWeaponBase()
 	WeaponMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
-	
-	
-	
 }
 
 // Called when the game starts or when spawned
@@ -144,7 +141,6 @@ void  AWeaponBase::StartFire()
 void  AWeaponBase::StopFire()
 {
 	bIsFiring = false;
-	UE_LOG(LogTemp, Warning, TEXT("Stop Fire"));
 	GetWorld()->GetTimerManager().ClearTimer(FireRateHandle);
 	FireRateHandle.Invalidate();
 }
@@ -239,7 +235,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
 		
-		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(0, 0, 255), true);
+		
 		return true;
 	}
 
