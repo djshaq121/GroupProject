@@ -52,6 +52,8 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	CurrentHealth = MaximumHealth;
 	CurrentArmor = MaximumArmor;
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
 }
 
@@ -61,7 +63,7 @@ void APlayerCharacter::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
-	
+	//This makes a smooth transition when the player is crouched
 	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
 	
 
@@ -84,6 +86,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::ToggleCrouch);
 
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::EndSprint);
 
 	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::OnFire);
 
@@ -105,27 +109,80 @@ void APlayerCharacter::ToggleCrouch()
 	
 	if (!bIsCrouching)
 	{
-		//Crouch();
-		//Call method to 
-		bIsCrouching = true;
-		CamCrouchHeight = 30.f;//Change these values to effect the height of the camera when crouch
-		//GetCapsuleComponent()->SetCapsuleHalfHeight(65,false);
+		Crouching();
 	
 	}
 	else
 	{
-		//UnCrouch();
-		CamCrouchHeight = 50.f;
-		bIsCrouching = false;
-		//GetCapsuleComponent()->SetCapsuleHalfHeight(88, false);
+		UnCrouching();
+		
 	}
 }
 
+void APlayerCharacter::Crouching()
+{
+	bIsCrouching = true;
+	CamCrouchHeight = 30.f;
 
+}
+
+void APlayerCharacter::UnCrouching()
+{
+	CamCrouchHeight = 50.f;
+	bIsCrouching = false;
+
+}
 
 bool APlayerCharacter::GetIsCrouching() const
 {
 	return bIsCrouching;
+}
+
+
+void APlayerCharacter::StartSprint()
+{
+	SetSprint(true);
+}
+
+void APlayerCharacter::EndSprint()
+{
+	SetSprint(false);
+}
+
+void APlayerCharacter::SetSprint(bool NewSprintState)
+{
+	bIsSprinting = NewSprintState;
+
+	if (bIsSprinting)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		if (bIsCrouching)//If we are crouching, uncrouch before we run running 
+		{
+			UnCrouching();
+		}
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+
+}
+
+bool APlayerCharacter::GetIsSprinting() const
+{
+	return bIsSprinting;
+}
+
+
+void APlayerCharacter::SetPlayersSpeed(bool NewSprintState)
+{
+	bIsSprinting = NewSprintState;
+
+}
+
+bool APlayerCharacter::CheckIfCanSprint()
+{
+	return !GetIsAiming() && (FVector::DotProduct(GetActorForwardVector(), GetVelocity().GetSafeNormal()) > 0.8);
 }
 
 bool APlayerCharacter::GetIsAiming() const
@@ -302,23 +359,24 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 
 void APlayerCharacter::CameraZoomIn()
 {
-	if (GetCharacterMovement()->MaxWalkSpeed <= 350) //This stops the player from aiming when joggging 
-	{
+	bIsAiming = true;
+		
 		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
 		{
+			
 			CameraZoomLength -= 150.f; // decrease the length of the springarm 
-			bIsAiming = true;
+			
 			if (CameraZoomLength < 150.f)
 			{
 				CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
 			}
 		}
-	}
 
 }
 
 void APlayerCharacter::CameraZoomOut()
 {
+	bIsAiming = false;
 	if (SpringArm->TargetArmLength < 300.f)// Cheacks to see if we are bigger than our maximum camera length
 	{
 		CameraZoomLength += 150.f; //Adds back the length we decrease from the zoom out

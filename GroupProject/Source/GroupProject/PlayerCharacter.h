@@ -101,10 +101,35 @@ public:
 
 	void LookUpRate(float Rate);
 
+	void StartSprint();
+
+	void EndSprint();
+
+	void SetSprint(bool NewSprintState);
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool GetIsSprinting() const;
+
+	void SetPlayersSpeed(bool NewSprintState);
+
+	bool CheckIfCanSprint();
+
+	void Crouching();
+	
+
+	void UnCrouching();
+	
+
 
 private:
 	
 	bool bIsCrouching = false;
+
+	bool bIsSprinting;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Movement")
+	float WalkSpeed = 400;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Movement ")
+	float SprintSpeed = 700;
 
 /*Weapon*/
 public:
