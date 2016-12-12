@@ -24,15 +24,26 @@ APlayerCharacter::APlayerCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 400.f;//Setting the length of the cameraboom
-	SpringArm->SocketOffset = FVector(0, 40, 120);//Setting the position of the camera 
+	SpringArm->TargetArmLength = 300.f;//Setting the length of the cameraboom
+	SpringArm->SocketOffset = FVector(0, 50, 50);//Setting the position of the camera 
 	SpringArm->bUsePawnControlRotation = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 
+	
+	CamCrouchHeight = SpringArm->SocketOffset.Z;
+	
 	CameraZoomLength = SpringArm->TargetArmLength;
+
+	//Initialise the can crouch property
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	/* Ignore this channel or it will absorb the trace impacts instead of the skeletal mesh */
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Weapon, ECR_Ignore);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +52,8 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 	CurrentHealth = MaximumHealth;
 	CurrentArmor = MaximumArmor;
+
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
 }
 
@@ -50,47 +63,19 @@ void APlayerCharacter::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
-}
-
-
-
-//If the player takes damage this method is called
-float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
-{
-	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
-	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
-	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
+	//This makes a smooth transition when the player is crouched
+	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
 	
-
-		if (CurrentArmor <= 0)
-		{
-			CurrentHealth -= DamageToApply;
-			if (CurrentHealth <= 0)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
-					//OnDeath() - Destroies the player and restarts the game
-					OnDeath.Broadcast();
-					bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
-					StopAnimMontage();
-			}
-			else
-			{
-				bIsDead = false;
-			}
-		}
-		else
-		{
-			CurrentArmor -= DamageToApplyArmor; 
-			if (CurrentArmor <= 0)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
-			}
-		}
-
-
-	return DamageToApply;
+	if (bIsSprinting && CheckIfCanSprint())
+	{
+		SetSprint(true);
+	}
+	else
+	{
+		SetSprint(false);
+	}
+	
 }
-
 
 
 // Called to bind functionality to input
@@ -107,8 +92,10 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
 	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::ToggleCrouch);
 
-	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::OnFire);
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::EndSprint);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
@@ -123,11 +110,101 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 }
 
+void APlayerCharacter::ToggleCrouch()
+{
+	
+	if (!bIsCrouching)
+	{
+		Crouching();
+	
+	}
+	else
+	{
+		UnCrouching();
+		
+	}
+}
+
+void APlayerCharacter::Crouching()
+{
+	bIsCrouching = true;
+	CamCrouchHeight = 30.f;
+
+}
+
+void APlayerCharacter::UnCrouching()
+{
+	CamCrouchHeight = 50.f;
+	bIsCrouching = false;
+
+}
+
+bool APlayerCharacter::GetIsCrouching() const
+{
+	return bIsCrouching;
+}
+
+
+void APlayerCharacter::StartSprint()
+{
+	SetSprint(true);
+}
+
+void APlayerCharacter::EndSprint()
+{
+	SetSprint(false);
+}
+
+void APlayerCharacter::SetSprint(bool NewSprintState)
+{
+	bIsSprinting = NewSprintState;
+
+	if (bIsSprinting)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+		if (bIsCrouching)//If we are crouching, uncrouch before we run running 
+		{
+			UnCrouching();
+		}
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+
+}
+
+bool APlayerCharacter::GetIsSprinting() const
+{
+	return bIsSprinting;
+}
+
+
+void APlayerCharacter::SetPlayersSpeed(bool NewSprintState)
+{
+	bIsSprinting = NewSprintState;
+
+}
+
+bool APlayerCharacter::CheckIfCanSprint()
+{
+	return bIsSprinting && !bIsFiring &&
+		!GetVelocity().IsZero() &&
+		!GetIsAiming() && 
+		(FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8);//Checks to see if the player is moving forward, and if they are set to true else false - Taken from tomlooman
+}
+
+bool APlayerCharacter::GetIsAiming() const
+{
+	return bIsAiming;
+}
+
 void APlayerCharacter::StartFire()
 {
 
 		if (Inventory.CurrentWeapon)
 		{
+			bIsFiring = true;
 			Inventory.CurrentWeapon->StartFire();
 		}
 
@@ -139,6 +216,7 @@ void APlayerCharacter::StopFire()
 {
 	if (Inventory.CurrentWeapon)
 	{
+		bIsFiring = false;
 		Inventory.CurrentWeapon->StopFire();
 	}
 }
@@ -166,26 +244,6 @@ void APlayerCharacter::SwitchToLaserLaser()
 		EquipWeapon(Inventory.LaserRifle);
 	}
 
-}
-
-void APlayerCharacter::OnFire()
-{
-
-
-	//This calls the method 'AimTowardsCrosshair' everytime is pressed
-	//ATPSHumanController* PlayerController = Cast<ATPSHumanController>(GetController());
-
-
-	if (GetHumanController())//Checks if the player has a controller
-	{
-		//Calls the method from the controller
-		GetHumanController()->AimTowardsCrosshair();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire Not Working"));
-	}
-	
 }
 
 int APlayerCharacter::GetCurrentHealth() const
@@ -253,32 +311,70 @@ void APlayerCharacter::LookUpRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
+//If the player takes damage this method is called
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
+	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
+
+
+	if (CurrentArmor <= 0)
+	{
+		CurrentHealth -= DamageToApply;
+		if (CurrentHealth <= 0)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
+			//OnDeath() - Destroies the player and restarts the game
+			OnDeath.Broadcast();
+			bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
+			StopAnimMontage();
+		}
+		else
+		{
+			bIsDead = false;
+		}
+	}
+	else
+	{
+		CurrentArmor -= DamageToApplyArmor;
+		if (CurrentArmor <= 0)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
+		}
+	}
+
+
+	return DamageToApply;
+}
+
 void APlayerCharacter::CameraZoomIn()
 {
-	if (GetCharacterMovement()->MaxWalkSpeed <= 350) //This stops the player from aiming when joggging 
-	{
+	bIsAiming = true;
+		
 		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
 		{
-			CameraZoomLength -= 250.f; // decrease the length of the springarm 
-			bIsAiming = true;
+			
+			CameraZoomLength -= 150.f; // decrease the length of the springarm 
+			
 			if (CameraZoomLength < 150.f)
 			{
 				CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
 			}
 		}
-	}
 
 }
 
 void APlayerCharacter::CameraZoomOut()
 {
-	if (SpringArm->TargetArmLength < 400.f)// Cheacks to see if we are bigger than our maximum camera length
+	bIsAiming = false;
+	if (SpringArm->TargetArmLength < 300.f)// Cheacks to see if we are bigger than our maximum camera length
 	{
-		CameraZoomLength += 250.f; //Adds back the length we decrease from the zoom out
+		CameraZoomLength += 150.f; //Adds back the length we decrease from the zoom out
 		bIsAiming = false;
-		if (CameraZoomLength > 400.f) //Checks to see if we are above 400
+		if (CameraZoomLength > 300.f) //Checks to see if we are above 400
 		{
-			CameraZoomLength = 400.f;//If so set arm length back to 400
+			CameraZoomLength = 300.f;//If so set arm length back to 400
 		}
 	}
 }
@@ -289,7 +385,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);//Select to new gun
-	NewWeapon->AttachRootComponentTo(GetMesh(), WeaponSocketName, EAttachLocation::SnapToTarget);//Attching the new weapon to the weapon socket - New to update
+	NewWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
 	NewWeapon->SetActorHiddenInGame(true);//Hide the weapon after we pick it up 
 
 	//if weapon is AssaultRifleBase

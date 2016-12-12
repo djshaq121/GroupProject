@@ -13,13 +13,13 @@ AWeaponBase::AWeaponBase()
 	CollisonSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisonSphere"));
 	RootComponent = CollisonSphere;
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMesh"));
-	
 	WeaponMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
-	
-	
-	
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -114,6 +114,7 @@ void  AWeaponBase::StartFire()
 	{
 		if (CurrentAmmoInClip > 0 && bCanFire)
 		{
+			FireEffect();
 			bIsFiring = true;
 			DoFire();
 			//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo %d"), CurrentAmmoInClip)
@@ -144,7 +145,6 @@ void  AWeaponBase::StartFire()
 void  AWeaponBase::StopFire()
 {
 	bIsFiring = false;
-	UE_LOG(LogTemp, Warning, TEXT("Stop Fire"));
 	GetWorld()->GetTimerManager().ClearTimer(FireRateHandle);
 	FireRateHandle.Invalidate();
 }
@@ -197,26 +197,7 @@ bool AWeaponBase::GetSightRayHitLocation(FHitResult &HitResult) const
 	return true;
 }
 
-//void AWeaponBase::GetAmmo(int32 & Current, int32 & Max)
-//{
-//	Current = CurrentAmmoInClip;
-//	Max = CurrentAmmoInGun;
-//}
 
-int32 AWeaponBase::GetCurrentAmmoInClip() const
-{
-	return CurrentAmmoInClip;
-}
-
-int32 AWeaponBase::GetCurrentAmmoInGun() const
-{
-	return CurrentAmmoInGun;
-}
-
-void AWeaponBase::UseAmmo()
-{
-	CurrentAmmoInClip--;
-}
 
 bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & HitResult) const
 {
@@ -239,7 +220,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
 		
-		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(0, 0, 255), true);
+		
 		return true;
 	}
 
@@ -254,6 +235,34 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 	//Convert current mouse 2D position to World Space 3D position and direction. Returns false if unable to determine value.
 	return GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
 
+}
+
+//void AWeaponBase::GetAmmo(int32 & Current, int32 & Max)
+//{
+//	Current = CurrentAmmoInClip;
+//	Max = CurrentAmmoInGun;
+//}
+
+int32 AWeaponBase::GetCurrentAmmoInClip() const
+{
+	return CurrentAmmoInClip;
+}
+
+int32 AWeaponBase::GetCurrentAmmoInGun() const
+{
+	return CurrentAmmoInGun;
+}
+
+void AWeaponBase::UseAmmo()
+{
+	CurrentAmmoInClip--;
+}
+
+void AWeaponBase::FireEffect()
+{
+	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
 }
 
 void AWeaponBase::ChangeOwner(AActor * NewOwner)
