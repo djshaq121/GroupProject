@@ -24,8 +24,8 @@ APlayerCharacter::APlayerCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 400.f;//Setting the length of the cameraboom
-	SpringArm->SocketOffset = FVector(0, 40, 120);//Setting the position of the camera 
+	SpringArm->TargetArmLength = 300.f;//Setting the length of the cameraboom
+	SpringArm->SocketOffset = FVector(0, 50, 50);//Setting the position of the camera 
 	SpringArm->bUsePawnControlRotation = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -39,6 +39,11 @@ APlayerCharacter::APlayerCharacter()
 
 	//Initialise the can crouch property
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	/* Ignore this channel or it will absorb the trace impacts instead of the skeletal mesh */
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Weapon, ECR_Ignore);
+
+	
 }
 
 // Called when the game starts or when spawned
@@ -103,16 +108,16 @@ void APlayerCharacter::ToggleCrouch()
 		//Crouch();
 		//Call method to 
 		bIsCrouching = true;
-		CamCrouchHeight = 30.f;
-		//GetCapsuleComponent()->SetCapsuleHalfHeight(30,false);
+		CamCrouchHeight = 30.f;//Change these values to effect the height of the camera when crouch
+		//GetCapsuleComponent()->SetCapsuleHalfHeight(65,false);
 	
 	}
 	else
 	{
 		//UnCrouch();
-		CamCrouchHeight = 120.f;
+		CamCrouchHeight = 50.f;
 		bIsCrouching = false;
-		//GetCapsuleComponent()->SetCapsuleHalfHeight(60, false);
+		//GetCapsuleComponent()->SetCapsuleHalfHeight(88, false);
 	}
 }
 
@@ -301,7 +306,7 @@ void APlayerCharacter::CameraZoomIn()
 	{
 		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
 		{
-			CameraZoomLength -= 250.f; // decrease the length of the springarm 
+			CameraZoomLength -= 150.f; // decrease the length of the springarm 
 			bIsAiming = true;
 			if (CameraZoomLength < 150.f)
 			{
@@ -314,13 +319,13 @@ void APlayerCharacter::CameraZoomIn()
 
 void APlayerCharacter::CameraZoomOut()
 {
-	if (SpringArm->TargetArmLength < 400.f)// Cheacks to see if we are bigger than our maximum camera length
+	if (SpringArm->TargetArmLength < 300.f)// Cheacks to see if we are bigger than our maximum camera length
 	{
-		CameraZoomLength += 250.f; //Adds back the length we decrease from the zoom out
+		CameraZoomLength += 150.f; //Adds back the length we decrease from the zoom out
 		bIsAiming = false;
-		if (CameraZoomLength > 400.f) //Checks to see if we are above 400
+		if (CameraZoomLength > 300.f) //Checks to see if we are above 400
 		{
-			CameraZoomLength = 400.f;//If so set arm length back to 400
+			CameraZoomLength = 300.f;//If so set arm length back to 400
 		}
 	}
 }
