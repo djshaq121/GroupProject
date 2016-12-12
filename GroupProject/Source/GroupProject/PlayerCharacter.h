@@ -22,20 +22,27 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
+/*Health & Armor*/
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
+
+	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+		int32 CurrentHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
+
+	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+		int32 CurrentArmor;
+
 public:
-
-	void AddToInventory(class AWeaponBase* NewWeapon);
-
-	void EquipWeapon(AWeaponBase * WeaponToEquip);
 
 	FPlayerDelegate OnDeath;
 
 	//Make an IsDead property - So it can be caled in blueprint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 	bool bIsDead = false;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-	bool bIsAiming = false;
 
 	// Sets default values for this character's properties
 	APlayerCharacter();
@@ -51,25 +58,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-		float BaseTurnRate;
-
-	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-		float BaseLookUpRate;
-
 	AHumanPlayerController* GetHumanController();
 
-	/** Called for forwards/backward input */
-	void MoveForward(float Value);
-
-	/** Called for side to side input */
-	void MoveRight(float Value);
-
-	void TurnAtRate(float Rate);
-
-	void LookUpRate(float Rate);
+	
 
 	void OnFire();
 
@@ -83,19 +74,73 @@ public:
 
 	bool GetIsDead();
 
+
+/*Movement*/
+
+public:
+	void ToggleCrouch();
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool GetIsCrouching() const;
+
+	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+		float BaseTurnRate;
+
+	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+		float BaseLookUpRate;
+
+	/** Called for forwards/backward input */
+	void MoveForward(float Value);
+
+	/** Called for side to side input */
+	void MoveRight(float Value);
+
+	void TurnAtRate(float Rate);
+
+	void LookUpRate(float Rate);
+
+
+private:
+	
+	bool bIsCrouching = false;
+
+/*Weapon*/
+public:
+	void AddToInventory(class AWeaponBase* NewWeapon);
+
+	void EquipWeapon(AWeaponBase * WeaponToEquip);
+
 	void StartFire();
 	
-
 	void StopFire();
 
 	void Reload();
 
-
 	class AWeaponBase* Weapon;
 
 	void SwitchToAssaultRifle();
+
 	void SwitchToLaserLaser();
-	
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+	bool bIsAiming = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Aiming")
+	bool GetIsAiming() const;
+private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		bool bEquipNewWeapon = true;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		FName WeaponSocketName;
+
+	//Struct Iventory
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
+	FPlayerInventory Inventory;
+
 
 protected:
 	
@@ -106,29 +151,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	float CameraZoomLength;
 
-
-private:
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	bool bEquipNewWeapon = true;
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	FName WeaponSocketName;
-
-	//Struct Iventory
-	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
-	FPlayerInventory Inventory;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
-
-	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
-	int32 CurrentHealth;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
-
-	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
-		int32 CurrentArmor;
+	float CamCrouchHeight;
+	FVector StartingCameraPosition;
+	
 
 
 };

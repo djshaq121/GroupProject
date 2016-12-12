@@ -32,7 +32,13 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 
+	
+	CamCrouchHeight = SpringArm->SocketOffset.Z;
+	
 	CameraZoomLength = SpringArm->TargetArmLength;
+
+	//Initialise the can crouch property
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -50,47 +56,11 @@ void APlayerCharacter::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
-}
-
-
-
-//If the player takes damage this method is called
-float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
-{
-	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
-	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
-	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
+	
+	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
 	
 
-		if (CurrentArmor <= 0)
-		{
-			CurrentHealth -= DamageToApply;
-			if (CurrentHealth <= 0)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
-					//OnDeath() - Destroies the player and restarts the game
-					OnDeath.Broadcast();
-					bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
-					StopAnimMontage();
-			}
-			else
-			{
-				bIsDead = false;
-			}
-		}
-		else
-		{
-			CurrentArmor -= DamageToApplyArmor; 
-			if (CurrentArmor <= 0)
-			{
-				//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
-			}
-		}
-
-
-	return DamageToApply;
 }
-
 
 
 // Called to bind functionality to input
@@ -107,6 +77,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
 	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::ToggleCrouch);
+
 
 	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::OnFire);
 
@@ -121,6 +93,39 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	
 
+}
+
+void APlayerCharacter::ToggleCrouch()
+{
+	
+	if (!bIsCrouching)
+	{
+		//Crouch();
+		//Call method to 
+		bIsCrouching = true;
+		CamCrouchHeight = 30.f;
+		//GetCapsuleComponent()->SetCapsuleHalfHeight(30,false);
+	
+	}
+	else
+	{
+		//UnCrouch();
+		CamCrouchHeight = 120.f;
+		bIsCrouching = false;
+		//GetCapsuleComponent()->SetCapsuleHalfHeight(60, false);
+	}
+}
+
+
+
+bool APlayerCharacter::GetIsCrouching() const
+{
+	return bIsCrouching;
+}
+
+bool APlayerCharacter::GetIsAiming() const
+{
+	return bIsAiming;
 }
 
 void APlayerCharacter::StartFire()
@@ -251,6 +256,43 @@ void APlayerCharacter::TurnAtRate(float Rate)
 void APlayerCharacter::LookUpRate(float Rate)
 {
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+//If the player takes damage this method is called
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
+	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
+
+
+	if (CurrentArmor <= 0)
+	{
+		CurrentHealth -= DamageToApply;
+		if (CurrentHealth <= 0)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
+			//OnDeath() - Destroies the player and restarts the game
+			OnDeath.Broadcast();
+			bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
+			StopAnimMontage();
+		}
+		else
+		{
+			bIsDead = false;
+		}
+	}
+	else
+	{
+		CurrentArmor -= DamageToApplyArmor;
+		if (CurrentArmor <= 0)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
+		}
+	}
+
+
+	return DamageToApply;
 }
 
 void APlayerCharacter::CameraZoomIn()
