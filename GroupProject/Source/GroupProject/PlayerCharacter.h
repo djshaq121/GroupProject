@@ -161,6 +161,8 @@ private:
 		bool bEquipNewWeapon = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		FName WeaponSocketName;
+	
+	bool bIsFiring;
 
 	//Struct Iventory
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)

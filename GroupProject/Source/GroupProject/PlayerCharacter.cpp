@@ -66,7 +66,15 @@ void APlayerCharacter::Tick( float DeltaTime )
 	//This makes a smooth transition when the player is crouched
 	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
 	
-
+	if (bIsSprinting && CheckIfCanSprint())
+	{
+		SetSprint(true);
+	}
+	else
+	{
+		SetSprint(false);
+	}
+	
 }
 
 
@@ -88,8 +96,6 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::EndSprint);
-
-	InputComponent->BindAction("Test", IE_Pressed, this, &APlayerCharacter::OnFire);
 
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
@@ -182,7 +188,10 @@ void APlayerCharacter::SetPlayersSpeed(bool NewSprintState)
 
 bool APlayerCharacter::CheckIfCanSprint()
 {
-	return !GetIsAiming() && (FVector::DotProduct(GetActorForwardVector(), GetVelocity().GetSafeNormal()) > 0.8);
+	return bIsSprinting && !bIsFiring &&
+		!GetVelocity().IsZero() &&
+		!GetIsAiming() && 
+		(FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8);//Checks to see if the player is moving forward, and if they are set to true else false - Taken from tomlooman
 }
 
 bool APlayerCharacter::GetIsAiming() const
@@ -195,6 +204,7 @@ void APlayerCharacter::StartFire()
 
 		if (Inventory.CurrentWeapon)
 		{
+			bIsFiring = true;
 			Inventory.CurrentWeapon->StartFire();
 		}
 
@@ -206,6 +216,7 @@ void APlayerCharacter::StopFire()
 {
 	if (Inventory.CurrentWeapon)
 	{
+		bIsFiring = false;
 		Inventory.CurrentWeapon->StopFire();
 	}
 }
@@ -233,26 +244,6 @@ void APlayerCharacter::SwitchToLaserLaser()
 		EquipWeapon(Inventory.LaserRifle);
 	}
 
-}
-
-void APlayerCharacter::OnFire()
-{
-
-
-	//This calls the method 'AimTowardsCrosshair' everytime is pressed
-	//ATPSHumanController* PlayerController = Cast<ATPSHumanController>(GetController());
-
-
-	if (GetHumanController())//Checks if the player has a controller
-	{
-		//Calls the method from the controller
-		GetHumanController()->AimTowardsCrosshair();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire Not Working"));
-	}
-	
 }
 
 int APlayerCharacter::GetCurrentHealth() const
