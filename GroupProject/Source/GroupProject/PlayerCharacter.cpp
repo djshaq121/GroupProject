@@ -103,11 +103,59 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
 	InputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
 
-	//InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	//InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
+	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
+	
 
 	
 
+}
+
+void APlayerCharacter::OnJump()
+{
+	SetIsJumping(true);
+	
+}
+
+void APlayerCharacter::EndJump()
+{
+	SetIsJumping(false);
+}
+
+void APlayerCharacter::SetIsJumping(bool newJumpState)
+{
+	JumpHeight = GetCharacterMovement()->JumpZVelocity;
+	
+	UE_LOG(LogTemp, Warning, TEXT("SetIsJumping"));
+	if (newJumpState!= bIsJumping)
+	{
+		bIsJumping = newJumpState;
+
+		if (GetCharacterMovement()->MaxWalkSpeed == WalkSpeed)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Walk"));
+			JumpHeight = 300.f;
+			Jump();
+			
+		}
+		else if (GetCharacterMovement()->MaxWalkSpeed == SprintSpeed)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Run"));
+			JumpHeight = 400.f;
+			Jump();
+			
+		}
+	}
+	else
+	{
+		bIsJumping = false;
+	}
+	//bIsJumping = false;
+}
+
+bool APlayerCharacter::GetIsJumping() const
+{
+	return bIsJumping;
 }
 
 void APlayerCharacter::ToggleCrouch()

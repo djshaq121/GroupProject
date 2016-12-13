@@ -111,13 +111,26 @@ public:
 
 	void Crouching();
 	
-
 	void UnCrouching();
 	
+	void OnJump();
+
+	void EndJump();
+
+	void SetIsJumping(bool newJumpState);
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool GetIsJumping() const;
+
+
 
 
 private:
 	
+	float JumpHeight = 300.f;
+
+	bool bIsJumping = false;
+
 	bool bIsCrouching = false;
 
 	bool bIsSprinting;
