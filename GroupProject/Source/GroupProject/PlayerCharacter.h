@@ -170,7 +170,8 @@ private:
 		bool bEquipNewWeapon = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		FName WeaponSocketName;
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		FName SecondWeaponSocket;
 	bool bIsFiring;
 
 	//Struct Iventory

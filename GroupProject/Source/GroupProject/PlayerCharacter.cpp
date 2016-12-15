@@ -279,6 +279,8 @@ void APlayerCharacter::Reload()
 
 void APlayerCharacter::SwitchToAssaultRifle()
 {
+
+
 	if (Inventory.AssaultRifle)
 	{
 		EquipWeapon(Inventory.AssaultRifle);
@@ -429,13 +431,20 @@ void APlayerCharacter::CameraZoomOut()
 
 void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
-	UE_LOG(LogTemp, Warning, TEXT("Calling inven"));
+
 	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);//Select to new gun
+	
+	//Check if we have a weapon in our invenontry 
+	//if (Inventory.CurrentWeapon)
+	//{
+	//	//Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);//Attach the previous weapon on the back of the player
+	//	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
+	//}
+	//
 	NewWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
-	NewWeapon->SetActorHiddenInGame(true);//Hide the weapon after we pick it up 
-
+	
 	//if weapon is AssaultRifleBase
 	if (NewWeapon->IsA(AAssaultRifleBase::StaticClass())) {
 		if (Inventory.AssaultRifle) {
@@ -445,6 +454,8 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {//bEquipnew weapon allows the user to equipt the weapon upon pick up
 			EquipWeapon(Inventory.AssaultRifle);
+			
+
 		}
 	}
 	//if weapon is laser rifle
@@ -456,6 +467,8 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
 			EquipWeapon(Inventory.LaserRifle);
+		
+
 		}
 	}
 
@@ -467,21 +480,38 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 	if (WeaponToEquip == Inventory.CurrentWeapon) {
 		return;//Return if we already have the weapon equiped
 	}
+	
+	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
 
-	if (Inventory.CurrentWeapon) {
-		Inventory.CurrentWeapon->SetActorHiddenInGame(true);//Hide the weapon could move the weapon to the back instead of hiding
-	}
+	
 
 	//Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
-		Inventory.CurrentWeapon = Inventory.AssaultRifle;
+		Inventory.CurrentWeapon = Inventory.AssaultRifle;//Makes AssaultRifle the currentWeapon
+		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attaches the current weapon to the weapon socket
+
+		if (Inventory.PreviousWeapon)//Checking if previous weapon is null
+		{
+			//If not null we connect the previous weapon to the back Socket
+			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+		}
+		
 	}
 	else if (WeaponToEquip == Inventory.LaserRifle) {
-	Inventory.CurrentWeapon = Inventory.LaserRifle;
+		Inventory.CurrentWeapon = Inventory.LaserRifle;//Makes LaserRifle the currentWeapon
+		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	
+		if (Inventory.PreviousWeapon)
+		{
+			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+		}
+	
+
+	
 	}//else if...for more types of gun
 	
 
-	Inventory.CurrentWeapon->SetActorHiddenInGame(false);
+	
 }
 
 //This gets the controller of the pawn
