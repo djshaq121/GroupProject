@@ -114,7 +114,7 @@ void  AWeaponBase::StartFire()
 	{
 		if (CurrentAmmoInClip > 0 && bCanFire)
 		{
-			FireEffect();
+			SpawnMuzzleEffect();
 			bIsFiring = true;
 			DoFire();
 			//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo %d"), CurrentAmmoInClip)
@@ -136,6 +136,8 @@ void  AWeaponBase::StartFire()
 
 			}
 		}
+		//This reloads when the ammo reaches zero
+		if (CurrentAmmoInClip <= 0) { Reload(); }
 	}
 		
 	
@@ -258,11 +260,16 @@ void AWeaponBase::UseAmmo()
 	CurrentAmmoInClip--;
 }
 
-void AWeaponBase::FireEffect()
+void AWeaponBase::SpawnMuzzleEffect()
 {
 	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
 	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
+}
+
+void AWeaponBase::SpawnTrailEffect(FHitResult& Hit)
+{
+	//UGameplayStatics::SpawnEmitter
 }
 
 void AWeaponBase::ChangeOwner(AActor * NewOwner)

@@ -16,6 +16,9 @@ struct FPlayerInventory
 		class AWeaponBase* CurrentWeapon;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")
+		class AWeaponBase* PreviousWeapon;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")
 		class AAssaultRifleBase* AssaultRifle;
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")

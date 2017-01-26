@@ -8,11 +8,17 @@
 void ALaserRifleBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), newHeat);
+	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
+	
+	//CurrentHeat = FMath::FInterpTo(CurrentHeat, HeatThreshold, DeltaTime, 3.f);
 	if (bIsCoolingDown)
 	{
-		Heat -= CoolDownTime * DeltaTime;
-		if (Heat <= 0.f) { bIsCoolingDown = false; bCanFire = true; }
+		CurrentHeat -= CoolDownTime * DeltaTime;
+		if (CurrentHeat <= 0.f) {
+			bIsCoolingDown = false; 
+			bCanFire = true; 
+			CurrentHeat = 0;
+		}
 	}
 	
 }
@@ -25,10 +31,15 @@ void ALaserRifleBase::BeginPlay()
 
 void ALaserRifleBase::FiringGun()
 {
-	Heat += OverHeatTime * GetWorld()->GetDeltaSeconds();
-	float newHeat = FMath::Clamp(Heat, 0.f, HeatTheshold);
+
+	auto Time = GetWorld()->GetDeltaSeconds();
 	
-	if (newHeat >= HeatTheshold) {//Check to see if the heat of the gun is larger than the threshold
+	CurrentHeat += OverHeatTime * Time;
+	//Heat = FMath::FInterpTo(0, HeatThreshold, Time, 30.f);
+	 CurrentHeat = FMath::Clamp(CurrentHeat, 0.f, HeatThreshold);
+	
+	
+	if (CurrentHeat >= HeatThreshold) {//Check to see if the heat of the gun is larger than the threshold
 		bIsCoolingDown = true;  //If its true than, guns goes on cool down
 		bCanFire = false; //Stop the player from firing
 		UE_LOG(LogTemp, Warning, TEXT("OnCoolDown"));
