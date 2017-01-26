@@ -126,21 +126,21 @@ void APlayerCharacter::SetIsJumping(bool newJumpState)
 {
 	JumpHeight = GetCharacterMovement()->JumpZVelocity;
 	
-	UE_LOG(LogTemp, Warning, TEXT("SetIsJumping"));
+	
 	if (newJumpState!= bIsJumping)
 	{
 		bIsJumping = newJumpState;
 
 		if (GetCharacterMovement()->MaxWalkSpeed == WalkSpeed)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Walk"));
+			
 			JumpHeight = 300.f;
 			Jump();
 			
 		}
 		else if (GetCharacterMovement()->MaxWalkSpeed == SprintSpeed)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Run"));
+			
 			JumpHeight = 400.f;
 			Jump();
 			
@@ -283,6 +283,7 @@ void APlayerCharacter::SwitchToAssaultRifle()
 
 	if (Inventory.AssaultRifle)
 	{
+
 		EquipWeapon(Inventory.AssaultRifle);
 	}
 }
@@ -291,6 +292,7 @@ void APlayerCharacter::SwitchToLaserLaser()
 {
 	if (Inventory.LaserRifle)
 	{
+
 		EquipWeapon(Inventory.LaserRifle);
 	}
 
@@ -494,6 +496,7 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 		{
 			//If not null we connect the previous weapon to the back Socket
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+			Inventory.PreviousWeapon->StopFire();//Stops the weapon from firing when in the second slot, if the player is holding the fire trigger when equipping a secong weapon
 		}
 		
 	}
@@ -504,6 +507,7 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 		if (Inventory.PreviousWeapon)
 		{
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+			Inventory.PreviousWeapon->StopFire();
 		}
 	
 

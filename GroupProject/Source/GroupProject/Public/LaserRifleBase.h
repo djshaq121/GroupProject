@@ -28,9 +28,9 @@ private:
 	bool bIsCoolingDown = false;
 	
 	UPROPERTY(EditDefaultsOnly)
-	float Heat = 0.f;
+	float CurrentHeat = 0.f;
 	UPROPERTY(EditDefaultsOnly)
-	float HeatTheshold = 5.f;
+	float HeatThreshold = 5.f;
 	UPROPERTY(EditDefaultsOnly)
 	float CoolDownTime = 1.5f;
 	UPROPERTY(EditDefaultsOnly)
