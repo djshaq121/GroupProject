@@ -10,16 +10,17 @@ void ALaserRifleBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
 	
-	//CurrentHeat = FMath::FInterpTo(CurrentHeat, HeatThreshold, DeltaTime, 3.f);
-	if (bIsCoolingDown)
+	
+	if (!bIsFiring || bIsCoolingDown)//Checks to see if the player is not shooting or the gun is cooldown
 	{
-		CurrentHeat -= CoolDownTime * DeltaTime;
-		if (CurrentHeat <= 0.f) {
+		CurrentHeat -= CoolDownTime * DeltaTime; 
+		if (CurrentHeat <= 0.f) { //Sets the weapon heat to zero if it reaches 0 or below 
 			bIsCoolingDown = false; 
-			bCanFire = true; 
+			bCanFire = true; //Allow the player to shoot one the gun is not on cooldown
 			CurrentHeat = 0;
 		}
 	}
+	
 	
 }
 
