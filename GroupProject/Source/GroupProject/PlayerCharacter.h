@@ -158,7 +158,6 @@ public:
 
 	void SwitchToLaserLaser();
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 	bool bIsAiming = false;
 
@@ -180,6 +179,9 @@ private:
 
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
 	
 	void CameraZoomIn();
 

@@ -17,7 +17,7 @@ AWeaponBase::AWeaponBase()
 
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
-
+	
 
 
 }
@@ -59,6 +59,7 @@ void AWeaponBase::Reload()
 
 	if (CurrentAmmoInGun >= NeededAmmo)
 	{
+		
 		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
 		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
 	}
@@ -66,10 +67,13 @@ void AWeaponBase::Reload()
 
 		if(CurrentAmmoInGun > 0)
 		{
+			
 			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
 		}
 		else
 		{
+			//TODO -  Print to screen telling the player the Gun is empty
 			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
 		}
 	}
@@ -137,7 +141,7 @@ void  AWeaponBase::StartFire()
 			}
 		}
 		//This reloads when the ammo reaches zero
-		if (CurrentAmmoInClip <= 0) { Reload(); }
+		//if (CurrentAmmoInClip <= 0) { Reload(); }
 	}
 		
 	
