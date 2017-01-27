@@ -86,7 +86,9 @@ public:
 
 	void SpawnMuzzleEffect();
 	
-	void SpawnTrailEffect(FHitResult& Hit);
+	void SpawnTrailEffect(FVector& EndPoint);
+
+	void SpawnImpactEffect(FHitResult& Hit);
 
 private:
 
@@ -96,6 +98,10 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* TrailEffect;
 
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystem* ImpactEffect;
+
+	int32 BSCount;
 	
 protected:
 

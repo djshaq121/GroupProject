@@ -8,9 +8,7 @@
 void ALaserRifleBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
-	
-	
+	//UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
 	if (!bIsFiring || bIsCoolingDown)//Checks to see if the player is not shooting or the gun is cooldown
 	{
 		CurrentHeat -= CoolDownTime * DeltaTime; 
