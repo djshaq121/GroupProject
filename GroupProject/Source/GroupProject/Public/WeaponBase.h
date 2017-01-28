@@ -56,6 +56,10 @@ public:
 
 	void UseAmmo();
 
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	float WeaponRange = 5000;
+
 private:
 	FTimerHandle FireRateHandle;
 
@@ -70,8 +74,7 @@ private:
 	int32 CurrentAmmoInGun;
 	UPROPERTY(EditDefaultsOnly)
 		float BaseDamage;
-	UPROPERTY(EditDefaultsOnly)
-		float LineTraceRange = 5000;
+	
 	UPROPERTY(EditDefaultsOnly)
 		float FireRate = 0;
 	UPROPERTY(VisibleAnywhere)

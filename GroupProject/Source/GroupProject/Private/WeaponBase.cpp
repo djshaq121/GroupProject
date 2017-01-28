@@ -181,7 +181,7 @@ void  AWeaponBase::DoFire()
 					FVector ImpactPoint = Hit.ImpactPoint;
 					auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
 					FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
-					FVector EndTrace = muzzle + (AimDir * LineTraceRange);
+					FVector EndTrace = muzzle + (AimDir * WeaponRange);
 
 					SpawnTrailEffect(EndTrace);
 			}
@@ -231,7 +231,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 	FHitResult HitInfo;
 
 	auto StartLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();//The start location of the line trace 
-	auto EndLocation = StartLocation + (LookDirection * LineTraceRange); //The end location of the line trace
+	auto EndLocation = StartLocation + (LookDirection * WeaponRange); //The end location of the line trace
 
 	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Weapon, TraceParams))
 	{
