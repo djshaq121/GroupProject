@@ -17,7 +17,7 @@ AWeaponBase::AWeaponBase()
 
 	TraceParams = FCollisionQueryParams(FName(TEXT("Projectile Trace'")), true, this);
 
-
+	
 
 
 }
@@ -59,6 +59,7 @@ void AWeaponBase::Reload()
 
 	if (CurrentAmmoInGun >= NeededAmmo)
 	{
+		
 		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
 		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
 	}
@@ -66,10 +67,13 @@ void AWeaponBase::Reload()
 
 		if(CurrentAmmoInGun > 0)
 		{
+			
 			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
 		}
 		else
 		{
+			//TODO -  Print to screen telling the player the Gun is empty
 			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
 		}
 	}
@@ -137,7 +141,7 @@ void  AWeaponBase::StartFire()
 			}
 		}
 		//This reloads when the ammo reaches zero
-		if (CurrentAmmoInClip <= 0) { Reload(); }
+		//if (CurrentAmmoInClip <= 0) { Reload(); }
 	}
 		
 	
@@ -163,15 +167,33 @@ void  AWeaponBase::DoFire()
 	if (GetSightRayHitLocation(Hit))
 	{
 			auto HitLocation = Hit.Location;
-			//UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
+			//Checks if we hit something
+			if (Hit.bBlockingHit){	
 
+				SpawnImpactEffect(Hit);	//If we hit something spawn at effect at impact point
+				SpawnTrailEffect(Hit.ImpactPoint);
+
+			} 
+			else
+			{
+
+					//TODO - Fix the trace effect when shooting into the distance
+					FVector ImpactPoint = Hit.ImpactPoint;
+					auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
+					FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
+					FVector EndTrace = muzzle + (AimDir * WeaponRange);
+
+					SpawnTrailEffect(EndTrace);
+			}
+		
 	}
+
 	if (Hit.GetActor())
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Actor hit: %s "), *Hit.GetActor()->GetName());
 		//Calls DealDamage passing the actor we hit
 		DealDamage(Hit);
-		//SpawnImpactEffect
+		
 	}
 }
 
@@ -209,7 +231,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 	FHitResult HitInfo;
 
 	auto StartLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();//The start location of the line trace 
-	auto EndLocation = StartLocation + (LookDirection * LineTraceRange); //The end location of the line trace
+	auto EndLocation = StartLocation + (LookDirection * WeaponRange); //The end location of the line trace
 
 	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Weapon, TraceParams))
 	{
@@ -265,11 +287,36 @@ void AWeaponBase::SpawnMuzzleEffect()
 	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
 	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
+	UGameplayStatics::PlaySoundAttached(FireSound, WeaponMesh, MuzzleSocketName, Location, EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
 }
 
-void AWeaponBase::SpawnTrailEffect(FHitResult& Hit)
+void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 {
-	//UGameplayStatics::SpawnEmitter
+	
+	BSCount++;
+
+	const FVector Origin = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+	FVector ShootDir = EndPoint - Origin;
+
+
+	if (BSCount % 3 == 0)
+	{
+		if (TrailEffect)
+		{
+			ShootDir.Normalize();
+			UGameplayStatics::SpawnEmitterAtLocation(this, TrailEffect, Origin, ShootDir.Rotation());
+		}
+	}
+
+}
+
+void AWeaponBase::SpawnImpactEffect(FHitResult& Hit)
+{
+	FVector Location = Hit.ImpactPoint;
+	FRotator Rotation = Hit.ImpactPoint.Rotation();
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation,true);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Location, Rotation, 1, 1, 0);
+
 }
 
 void AWeaponBase::ChangeOwner(AActor * NewOwner)

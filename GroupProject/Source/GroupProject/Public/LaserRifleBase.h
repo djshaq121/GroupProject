@@ -24,6 +24,9 @@ public:
 
 	void FiringGun();
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	float GetCurrentHeat() const;
+
 private:
 	bool bIsCoolingDown = false;
 	

@@ -43,6 +43,8 @@ APlayerCharacter::APlayerCharacter()
 	/* Ignore this channel or it will absorb the trace impacts instead of the skeletal mesh */
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Weapon, ECR_Ignore);
 
+
+
 	
 }
 
@@ -54,10 +56,23 @@ void APlayerCharacter::BeginPlay()
 	CurrentArmor = MaximumArmor;
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+
+	if (StartingWeaponBlueprint)
+	{
+		//Spawning the weapon
+		AWeaponBase* StartingWeapon = GetWorld()->SpawnActor<AWeaponBase>(
+			StartingWeaponBlueprint,
+			GetMesh()->GetSocketLocation(WeaponSocketName),
+			GetMesh()->GetSocketRotation(WeaponSocketName)
+			);
+
+		//Adding the Weapon to the players inventory
+		AddToInventory(StartingWeapon);
+	}
+	
 	
 }
 
-// Called every frame
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
@@ -315,7 +330,7 @@ void APlayerCharacter::Heal(int Amount)
 	if (CurrentHealth < 100)
 	{
 		CurrentHealth = CurrentHealth + Amount;
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth)
+		
 	}
 }
 
@@ -479,6 +494,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if weapon is in the inventory
 {
+	
 	if (WeaponToEquip == Inventory.CurrentWeapon) {
 		return;//Return if we already have the weapon equiped
 	}
@@ -510,8 +526,7 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 			Inventory.PreviousWeapon->StopFire();
 		}
 	
-
-	
+		 
 	}//else if...for more types of gun
 	
 

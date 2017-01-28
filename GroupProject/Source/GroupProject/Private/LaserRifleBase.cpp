@@ -8,9 +8,7 @@
 void ALaserRifleBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
-	
-	
+	//UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
 	if (!bIsFiring || bIsCoolingDown)//Checks to see if the player is not shooting or the gun is cooldown
 	{
 		CurrentHeat -= CoolDownTime * DeltaTime; 
@@ -63,7 +61,24 @@ void ALaserRifleBase::DoFire()
 	if (GetSightRayHitLocation(Hit))
 	{
 		auto HitLocation = Hit.Location;
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Direction: %s "), *HitLocation.ToString());
+		//Checks if we hit something
+		if (Hit.bBlockingHit) {
+
+			SpawnImpactEffect(Hit);	//If we hit something spawn at effect at impact point
+			SpawnTrailEffect(Hit.ImpactPoint);
+
+		}
+		else
+		{
+
+			//TODO - Fix the trace effect when shooting into the distance
+			FVector ImpactPoint = Hit.ImpactPoint;
+			auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
+			FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
+			FVector EndTrace = muzzle + (AimDir * WeaponRange);
+
+			SpawnTrailEffect(EndTrace);
+		}
 
 	}
 	if (Hit.GetActor())
@@ -73,4 +88,9 @@ void ALaserRifleBase::DoFire()
 		DealDamage(Hit);
 		//SpawnImpactEffect
 	}
+}
+
+float ALaserRifleBase::GetCurrentHeat() const
+{
+	return CurrentHeat / HeatThreshold;
 }

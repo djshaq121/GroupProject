@@ -56,6 +56,10 @@ public:
 
 	void UseAmmo();
 
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	float WeaponRange = 5000;
+
 private:
 	FTimerHandle FireRateHandle;
 
@@ -70,8 +74,7 @@ private:
 	int32 CurrentAmmoInGun;
 	UPROPERTY(EditDefaultsOnly)
 		float BaseDamage;
-	UPROPERTY(EditDefaultsOnly)
-		float LineTraceRange = 5000;
+	
 	UPROPERTY(EditDefaultsOnly)
 		float FireRate = 0;
 	UPROPERTY(VisibleAnywhere)
@@ -86,7 +89,9 @@ public:
 
 	void SpawnMuzzleEffect();
 	
-	void SpawnTrailEffect(FHitResult& Hit);
+	void SpawnTrailEffect(FVector& EndPoint);
+
+	void SpawnImpactEffect(FHitResult& Hit);
 
 private:
 
@@ -96,6 +101,17 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* TrailEffect;
 
+	UPROPERTY(EditDefaultsOnly)
+		UParticleSystem* ImpactEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* FireSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* ImpactSound;
+
+
+	int32 BSCount;
 	
 protected:
 
