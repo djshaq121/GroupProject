@@ -287,6 +287,7 @@ void AWeaponBase::SpawnMuzzleEffect()
 	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
 	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
+	UGameplayStatics::PlaySoundAttached(FireSound, WeaponMesh, MuzzleSocketName, Location, EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
 }
 
 void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
@@ -314,6 +315,7 @@ void AWeaponBase::SpawnImpactEffect(FHitResult& Hit)
 	FVector Location = Hit.ImpactPoint;
 	FRotator Rotation = Hit.ImpactPoint.Rotation();
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation,true);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Location, Rotation, 1, 1, 0);
 
 }
 

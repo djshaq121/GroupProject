@@ -104,6 +104,13 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* ImpactEffect;
 
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* FireSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* ImpactSound;
+
+
 	int32 BSCount;
 	
 protected:
