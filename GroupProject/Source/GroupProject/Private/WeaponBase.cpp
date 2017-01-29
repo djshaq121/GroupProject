@@ -148,7 +148,7 @@ void  AWeaponBase::StartFire()
 			}
 		}
 		//This reloads when the ammo reaches zero
-		//if (CurrentAmmoInClip <= 0) { Reload(); }
+		if (CurrentAmmoInClip <= 0) { Reload(); }
 	}
 		
 	
@@ -394,4 +394,5 @@ void AWeaponBase::SetCanInteract(bool NewInteract)
 {
 	bCanInteract = NewInteract;
 }
+
 

@@ -115,6 +115,7 @@ public:
 	void SpawnTrailEffect(FVector& EndPoint);
 
 	void SpawnImpactEffect(FHitResult& Hit);
+	
 
 private:
 
