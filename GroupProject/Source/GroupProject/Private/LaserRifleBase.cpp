@@ -50,7 +50,7 @@ void ALaserRifleBase::DoFire()
 	FHitResult Hit = FHitResult();
 	FVector Start;
 
-
+	GetCurrentHeat();
 	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
 
 
@@ -92,5 +92,9 @@ void ALaserRifleBase::DoFire()
 
 float ALaserRifleBase::GetCurrentHeat() const
 {
-	return CurrentHeat / HeatThreshold;
+	float CHeat = CurrentHeat / HeatThreshold;
+
+	return CHeat;
+
+	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CHeat)
 }

@@ -173,6 +173,8 @@ bool APlayerCharacter::GetIsJumping() const
 	return bIsJumping;
 }
 
+
+
 void APlayerCharacter::ToggleCrouch()
 {
 	
@@ -321,6 +323,11 @@ void APlayerCharacter::SwitchToLaserLaser()
 int APlayerCharacter::GetCurrentHealth() const
 {
 	return CurrentHealth;
+}
+
+int APlayerCharacter::GetMaxHealth() const
+{
+	return MaximumHealth;
 }
 
 int APlayerCharacter::GetCurrentArmor() const

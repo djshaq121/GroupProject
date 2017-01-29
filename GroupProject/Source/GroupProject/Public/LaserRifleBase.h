@@ -29,7 +29,6 @@ public:
 
 private:
 	bool bIsCoolingDown = false;
-	
 	UPROPERTY(EditDefaultsOnly)
 	float CurrentHeat = 0.f;
 	UPROPERTY(EditDefaultsOnly)
