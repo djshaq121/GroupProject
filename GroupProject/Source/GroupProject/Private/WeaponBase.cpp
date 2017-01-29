@@ -118,10 +118,17 @@ void  AWeaponBase::StartFire()
 	{
 		if (CurrentAmmoInClip > 0 && bCanFire)
 		{
+			if (WeaponFireShake)//Checking if we have 
+			{
+				//This oscillates the camera 
+				GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(WeaponFireShake, 1.f);
+			}
+			
+			Recoil();
 			SpawnMuzzleEffect();
 			bIsFiring = true;
 			DoFire();
-			//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo %d"), CurrentAmmoInClip)
+			
 			float TimerDelay = FireRate > 0 ? 1 / (FireRate*0.01667) : FApp::GetDeltaTime();
 
 			auto World = GetWorld();
@@ -135,7 +142,7 @@ void  AWeaponBase::StartFire()
 				}
 			}
 			else {
-				//UE_LOG(LogTemp, Warning, TEXT("Out of ammo"));
+				
 				StopFire();
 
 			}
@@ -162,7 +169,7 @@ void  AWeaponBase::DoFire()
 
 
 	UseAmmo();
-	//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
+	
 
 	if (GetSightRayHitLocation(Hit))
 	{
@@ -230,8 +237,10 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 
 	FHitResult HitInfo;
 
+
+
 	auto StartLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();//The start location of the line trace 
-	auto EndLocation = StartLocation + (LookDirection * WeaponRange); //The end location of the line trace
+	auto EndLocation = (StartLocation  + CalcSpread()) +(LookDirection * WeaponRange); //The end location of the line trace
 
 	if (GetWorld()->LineTraceSingleByChannel(HitInfo, StartLocation, EndLocation, ECC_Weapon, TraceParams))
 	{
@@ -243,6 +252,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
+		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(255, 0, 0), true, 10.f);
 		
 		
 		return true;
@@ -261,11 +271,7 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 
 }
 
-//void AWeaponBase::GetAmmo(int32 & Current, int32 & Max)
-//{
-//	Current = CurrentAmmoInClip;
-//	Max = CurrentAmmoInGun;
-//}
+
 
 int32 AWeaponBase::GetCurrentAmmoInClip() const
 {
@@ -275,6 +281,35 @@ int32 AWeaponBase::GetCurrentAmmoInClip() const
 int32 AWeaponBase::GetCurrentAmmoInGun() const
 {
 	return CurrentAmmoInGun;
+}
+
+FVector AWeaponBase::CalcSpread() const
+{
+
+	//TODO - Maybe add the feature if the player is aiming less weapon spread
+	if (GetPawnOwner()->GetIsAiming())
+	{
+		
+		
+	}
+	//This gets a random number and stores it in a vector which then gets added to the Endtrace. 
+	int32 RandomX = FMath::RandRange(-100, 100);
+	int32 RandomY = FMath::RandRange(-100, 100);
+	int32 RandomZ = FMath::RandRange(-100, 100);
+
+	const FVector RandomVector = FVector(RandomX * WeaponSpread, RandomY * WeaponSpread, RandomZ * WeaponSpread);
+
+	return RandomVector;
+}
+
+void AWeaponBase::Recoil()
+{
+	//TODO - Improve recoil by using lerp
+
+	float Recoil = VerticalRecoilAmount * -1;
+	GetWorld()->GetFirstPlayerController()->AddPitchInput(Recoil);
+	GetWorld()->GetFirstPlayerController()->AddYawInput(HorizontalRecoilAmount);
+	
 }
 
 void AWeaponBase::UseAmmo()
@@ -287,7 +322,7 @@ void AWeaponBase::SpawnMuzzleEffect()
 	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
 	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
-	UGameplayStatics::PlaySoundAttached(FireSound, WeaponMesh, MuzzleSocketName, Location, EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
+	UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName, Location, EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
 }
 
 void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
