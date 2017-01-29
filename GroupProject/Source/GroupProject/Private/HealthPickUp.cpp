@@ -17,8 +17,12 @@ void AHealthPickUp::OnPlayerEnterPickupBox(UPrimitiveComponent * OverlappedComp,
 	APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
 	if (Player)
 	{
-		Player->Heal(HealthAmount);
-		Destroy();
+		if (Player->GetCurrentHealth() < Player->GetMaxHealth())
+		{
+			Player->Heal(HealthAmount);
+			Destroy();
+		}
+		
 	}
 }
 

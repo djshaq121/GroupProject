@@ -12,8 +12,8 @@ UCLASS()
 class GROUPPROJECT_API AAIPatrolController : public AAIController
 {
 	GENERATED_BODY()
-		/*Behavior Tree Component*/
-		UBehaviorTreeComponent* BehaviorComp;
+	/*Behavior Tree Component*/
+	UBehaviorTreeComponent* BehaviorComp;
 
 	/*Blackboard Component*/
 	UBlackboardComponent* BlackboardComp;
@@ -25,6 +25,8 @@ class GROUPPROJECT_API AAIPatrolController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKey;
 
+	
+
 	TArray<AActor*> PatrolPoints;
 
 	virtual void Possess(APawn* Pawn) override;
@@ -32,6 +34,9 @@ class GROUPPROJECT_API AAIPatrolController : public AAIController
 
 
 public:
+	
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName PlayerKeyID;
 
 	AAIPatrolController();
 	int32 CurrentPatrolPoint = 0;
