@@ -262,6 +262,11 @@ bool APlayerCharacter::GetIsAiming() const
 	return bIsAiming;
 }
 
+bool APlayerCharacter::GetIsFiring() const
+{
+	return bIsFiring;
+}
+
 void APlayerCharacter::StartFire()
 {
 

@@ -52,6 +52,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
 	int32 GetCurrentAmmoInGun() const;
 
+	FVector CalcSpread() const;
+	
+	void Recoil();
+
 	void Reload();
 
 	void UseAmmo();
@@ -61,26 +65,45 @@ protected:
 	float WeaponRange = 5000;
 
 private:
+	/*Firerate timer handle*/
 	FTimerHandle FireRateHandle;
 
+	/*The Maxium amount of ammo allowed in the gun*/
 	UPROPERTY(EditDefaultsOnly)
 		int32 MaxAmmoInGun = 500;
+
+	/*The Starting ammo in the clip*/
 	UPROPERTY(EditDefaultsOnly)
 	int32 MaxAmmoPerClip = 60;//This is the starting clip	
 
+	
 	int32 CurrentAmmoInClip;
 
 	/*The current amount of bullets in the gun can have*/
 	int32 CurrentAmmoInGun;
+
+	/*The Base damage of the weapon*/
 	UPROPERTY(EditDefaultsOnly)
 		float BaseDamage;
+
+	/*The accuracy of the gun. Where 0 has no weapon spread*/
+	UPROPERTY(EditDefaultsOnly)
+	float WeaponSpread = 0;
 	
 	UPROPERTY(EditDefaultsOnly)
-		float FireRate = 0;
-	UPROPERTY(VisibleAnywhere)
-		float CrossHairXLocation = 0.5;
-	UPROPERTY(VisibleAnywhere)
-		float CrossHairYLocation = 0.5;
+	float FireRate = 0;
+
+	/*The amount of recoil. Postivte number moves the gun right, negative left*/
+	UPROPERTY(EditDefaultsOnly)
+	float HorizontalRecoilAmount = 0.03f;
+
+	/*The recoil amount. Leave as a positive number*/
+	UPROPERTY(EditDefaultsOnly)
+	float VerticalRecoilAmount = 0.05f;
+
+	
+	float CrossHairXLocation = 0.5;
+	float CrossHairYLocation = 0.5;
 	FCollisionQueryParams TraceParams;
 
 
@@ -92,15 +115,17 @@ public:
 	void SpawnTrailEffect(FVector& EndPoint);
 
 	void SpawnImpactEffect(FHitResult& Hit);
+	
 
 private:
 
+	/*Muzzle Effects*/
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* ShotEffect;
-
+	/*Bullet Trail Effects*/
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* TrailEffect;
-
+	/*Impact Effects*/
 	UPROPERTY(EditDefaultsOnly)
 		UParticleSystem* ImpactEffect;
 
@@ -130,6 +155,10 @@ protected:
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 
 	bool bCanFire = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Camera")
+	TSubclassOf<UCameraShake> WeaponFireShake;
+
 private:
 
 	

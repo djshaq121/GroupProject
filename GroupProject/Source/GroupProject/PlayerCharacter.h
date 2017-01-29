@@ -163,6 +163,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Aiming")
 	bool GetIsAiming() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	bool GetIsFiring() const;
+
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
