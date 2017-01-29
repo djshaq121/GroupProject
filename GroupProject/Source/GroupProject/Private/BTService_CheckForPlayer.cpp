@@ -7,7 +7,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
-#include "AIPatrolController.h"
+#include "EnemyController.h"
 #include "PlayerCharacter.h"
 
 
@@ -18,7 +18,7 @@ UBTService_CheckForPlayer::UBTService_CheckForPlayer()
 
 void UBTService_CheckForPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	AAIPatrolController* EnemyPC = Cast<AAIPatrolController>(OwnerComp.GetAIOwner());  // gets this enemy's AI Controller class
+	AEnemyController* EnemyPC = Cast<AEnemyController>(OwnerComp.GetAIOwner());  // gets this enemy's AI Controller class
 
 	if (EnemyPC)
 	{

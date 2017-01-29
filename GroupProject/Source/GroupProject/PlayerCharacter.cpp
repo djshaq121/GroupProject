@@ -52,7 +52,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	CurrentHealth = MaximumHealth;
+	CurrentHealth = FMath::Clamp(MaximumHealth, 0, MaximumHealth);
 	CurrentArmor = MaximumArmor;
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
@@ -341,6 +341,7 @@ void APlayerCharacter::Heal(int Amount)
 	// Currently polayer can still pickup when his health is 100 and item is destroyed but no health is gained
 	if (CurrentHealth < 100)
 	{
+		//TODO - Fix health bug
 		CurrentHealth = CurrentHealth + Amount;
 		
 	}

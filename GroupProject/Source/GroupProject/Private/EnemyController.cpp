@@ -1,16 +1,19 @@
 // Copyright 
 
 #include "GroupProject.h"
-#include "AIPatrolController.h"
-#include "AIPatrol.h"
+#include "EnemyController.h"
+#include "AIMeleeCharacter.h"//Character
 #include "AIPatrolPoint.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "AIEnemyMaster.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
 
-AAIPatrolController::AAIPatrolController()
+
+
+AEnemyController::AEnemyController()
 {
-	//Initialize Blackboard and BehaviorTree
 
 	BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComp"));
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
@@ -22,7 +25,7 @@ AAIPatrolController::AAIPatrolController()
 	CurrentPatrolPoint = 0;
 }
 
-void AAIPatrolController::SetPlayerCaught(APawn * Pawn)
+void AEnemyController::SetPlayerCaught(APawn * Pawn)
 {
 	if (BlackboardComp)
 	{
@@ -30,14 +33,13 @@ void AAIPatrolController::SetPlayerCaught(APawn * Pawn)
 	}
 }
 
-
-void AAIPatrolController::Possess(APawn * Pawn)
+void AEnemyController::Possess(APawn * Pawn)
 {
 	Super::Possess(Pawn);
 
 	//Get Reference to Character
 
-	AAIPatrol* AICharacter = Cast<AAIPatrol>(Pawn);
+	AAIEnemyMaster* AICharacter = Cast<AAIEnemyMaster>(Pawn);
 
 	if (AICharacter)
 	{
@@ -51,5 +53,3 @@ void AAIPatrolController::Possess(APawn * Pawn)
 		BehaviorComp->StartTree(*AICharacter->BehaviorTree);
 	}
 }
-
-
