@@ -122,14 +122,8 @@ void AAIPatrol::SetRagdollPhysics()
 
 void AAIPatrol::PerformMeleeStrike(AActor* HitActor)
 {
+	
 
-
-	/* Set to prevent a zombie to attack multiple times in a very short time */
-	LastMeleeAttackTime = GetWorld()->GetTimeSeconds();
-	FPointDamageEvent DmgEvent;
-	DmgEvent.DamageTypeClass = PunchDamageType;
-	DmgEvent.Damage = MeleeDamage;
-	HitActor->TakeDamage(DmgEvent.Damage, DmgEvent, GetController(), this);
 }
 
 

@@ -17,6 +17,7 @@ AAIPatrolController::AAIPatrolController()
 
 	//Initialize Blackboard Keys
 	PlayerKey = "Target";
+	PlayerKeyID = "Player";
 	LocationToGoKey = "LocationToGo";
 	CurrentPatrolPoint = 0;
 }
