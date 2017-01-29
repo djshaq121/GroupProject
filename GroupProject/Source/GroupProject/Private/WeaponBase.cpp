@@ -41,7 +41,7 @@ void AWeaponBase::BeginPlay()
 void AWeaponBase::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
+		
 }
 
 class APlayerCharacter* AWeaponBase::GetPawnOwner() const

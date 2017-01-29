@@ -3,17 +3,18 @@
 #pragma once
 
 #include "AIController.h"
-#include "AIPatrolController.generated.h"
+#include "EnemyController.generated.h"
 
 /**
-*
-*/
+ * 
+ */
 UCLASS()
-class GROUPPROJECT_API AAIPatrolController : public AAIController
+class GROUPPROJECT_API AEnemyController : public AAIController
 {
 	GENERATED_BODY()
-	/*Behavior Tree Component*/
-	UBehaviorTreeComponent* BehaviorComp;
+	
+		/*Behavior Tree Component*/
+		UBehaviorTreeComponent* BehaviorComp;
 
 	/*Blackboard Component*/
 	UBlackboardComponent* BlackboardComp;
@@ -25,7 +26,7 @@ class GROUPPROJECT_API AAIPatrolController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKey;
 
-	
+
 
 	TArray<AActor*> PatrolPoints;
 
@@ -34,16 +35,21 @@ class GROUPPROJECT_API AAIPatrolController : public AAIController
 
 
 public:
-	
+
+	AEnemyController();
+
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKeyID;
 
-	AAIPatrolController();
-	int32 CurrentPatrolPoint = 0;
 	void SetPlayerCaught(APawn* Pawn);
+
+	int32 CurrentPatrolPoint = 0;
+
+	//void SetPlayerCaught(APawn* Pawn);
 	/*Getter Functions*/
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 	FORCEINLINE TArray<AActor*> GetPAtrolPoints() const { return PatrolPoints; }
-
+	
+	
 };

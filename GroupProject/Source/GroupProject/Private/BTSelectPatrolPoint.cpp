@@ -3,12 +3,12 @@
 #include "GroupProject.h"
 #include "BTSelectPatrolPoint.h"
 #include "AIPatrolPoint.h"
-#include "AIPatrolController.h"
+#include "EnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 EBTNodeResult::Type UBTSelectPatrolPoint::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
-	AAIPatrolController* AICon = Cast<AAIPatrolController>(OwnerComp.GetAIOwner());
+	AEnemyController* AICon = Cast<AEnemyController>(OwnerComp.GetAIOwner());
 
 	if (AICon)
 	{
