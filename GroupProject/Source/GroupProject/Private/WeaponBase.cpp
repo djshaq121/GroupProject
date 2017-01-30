@@ -52,34 +52,7 @@ class APlayerCharacter* AWeaponBase::GetPawnOwner() const
 	return Cast<APlayerCharacter>(playerpawn);
 }
 
-void AWeaponBase::Reload()
-{
 
-	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
-
-	if (CurrentAmmoInGun >= NeededAmmo)
-	{
-		
-		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
-		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
-	}
-	else {
-
-		if(CurrentAmmoInGun > 0)
-		{
-			
-			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
-			CurrentAmmoInGun = 0;
-		}
-		else
-		{
-			//TODO -  Print to screen telling the player the Gun is empty
-			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
-		}
-	}
-	
-
-}
 void  AWeaponBase::DealDamage(const FHitResult& Hit)
 {
 	
@@ -272,6 +245,117 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 }
 
 
+void AWeaponBase::Reload()
+{
+
+	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
+
+	if (CurrentAmmoInGun >= NeededAmmo)
+	{
+
+		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
+		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
+	}
+	else {
+
+		if (CurrentAmmoInGun > 0)
+		{
+
+			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
+		}
+		else
+		{
+			//TODO -  Print to screen telling the player the Gun is empty
+			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+		}
+	}
+
+
+}
+
+bool AWeaponBase::GetCanReload()
+{
+	return bCanReload;
+}
+
+void AWeaponBase::CheckIfPlayerCanReload()
+{
+	/*Checks to see if there is bullets in the gun to reload*/
+	/*Doesnt play animation when the clip is full and check to if we can reload*/
+	if (CurrentAmmoInGun <= 0 || CurrentAmmoInClip == MaxAmmoPerClip || !GetCanReload())
+	{
+		return;
+	}
+	
+	StartReload();
+}
+
+void AWeaponBase::StartReload()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Called"))
+
+		
+		bCanReload = false;//Stops the player from reloading again
+		bCanFire = false;//Stops the player from shooting when reloading
+
+		float AnimDuration = PlayWeaponAnimation(ReloadAnim);
+		if (AnimDuration <= 0.0f)
+		{
+			AnimDuration = NoAnimReloadDuration;
+		}
+
+		GetWorldTimerManager().SetTimer(TimerHandle_StopReload, this, &AWeaponBase::StopSimulateReload, AnimDuration, false);
+
+		UE_LOG(LogTemp, Warning, TEXT("Ok"))
+		GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AWeaponBase::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
+
+
+		if (GetPawnOwner() && GetPawnOwner()->IsLocallyControlled())
+		{
+			PlayWeaponSound(ReloadSound);
+		}
+	
+}
+
+void AWeaponBase::StopSimulateReload()
+{
+	StopWeaponAnimation(ReloadAnim);
+}
+
+void AWeaponBase::ReloadWeapon()
+{
+ 
+
+	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
+
+	if (CurrentAmmoInGun >= NeededAmmo)
+	{
+
+		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
+		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
+	}
+	else {
+
+		if (CurrentAmmoInGun > 0)
+		{
+
+			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
+		}
+		else
+		{
+			//TODO -  Print to screen telling the player the Gun is empty
+			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+		}
+	}
+
+	/*Once the reload is over allow the player to reload and fire the gun again*/
+	bCanReload = true;
+	bCanFire = true;
+}
+
+
 
 int32 AWeaponBase::GetCurrentAmmoInClip() const
 {
@@ -395,4 +479,38 @@ void AWeaponBase::SetCanInteract(bool NewInteract)
 	bCanInteract = NewInteract;
 }
 
+float AWeaponBase::PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate, FName StartSectionName)
+{
+	float Duration = 0.0f;
+	if (GetPawnOwner())
+	{
+		if (Animation)
+		{
+			Duration = GetPawnOwner()->PlayAnimMontage(Animation, InPlayRate, StartSectionName);
+		}
+	}
 
+	return Duration;
+}
+
+void AWeaponBase::StopWeaponAnimation(UAnimMontage* Animation)
+{
+	if (GetPawnOwner())
+	{
+		if (Animation)
+		{
+			GetPawnOwner()->StopAnimMontage(Animation);
+		}
+	}
+}
+
+UAudioComponent* AWeaponBase::PlayWeaponSound(USoundCue* SoundToPlay)
+{
+	UAudioComponent* AC = nullptr;
+	if (SoundToPlay && GetPawnOwner())
+	{
+		AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, GetPawnOwner()->GetRootComponent());
+	}
+
+	return AC;
+}
