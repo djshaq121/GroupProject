@@ -188,8 +188,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		float NoAnimReloadDuration;
 
-	UPROPERTY(Transient)
-		bool bPendingReload;
+	/*UPROPERTY(Transient)
+		bool bPendingReload;*/
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundCue* ReloadSound;
@@ -197,12 +197,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		UAnimMontage* ReloadAnim;
 
+	bool bCanReload = true;
+
 	UAudioComponent* PlayWeaponSound(USoundCue* SoundToPlay);
 
 	float PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 
 	void StopWeaponAnimation(UAnimMontage* Animation);
 public:
+
+		void CheckIfPlayerCanReload();
+
+		bool GetCanReload();
 
 		virtual void StartReload();
 

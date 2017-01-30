@@ -295,7 +295,7 @@ void APlayerCharacter::Reload()
 {
 	if (Inventory.CurrentWeapon)
 	{
-		Inventory.CurrentWeapon->StartReload();
+		Inventory.CurrentWeapon->CheckIfPlayerCanReload();
 	}
 }
 
@@ -341,8 +341,12 @@ void APlayerCharacter::Heal(int Amount)
 	// Currently polayer can still pickup when his health is 100 and item is destroyed but no health is gained
 	if (CurrentHealth < 100)
 	{
-		//TODO - Fix health bug
+		
 		CurrentHealth = CurrentHealth + Amount;
+		if (CurrentHealth >= MaximumHealth)
+		{
+			CurrentHealth = MaximumHealth;
+		}
 		
 	}
 }

@@ -274,13 +274,30 @@ void AWeaponBase::Reload()
 
 }
 
+bool AWeaponBase::GetCanReload()
+{
+	return bCanReload;
+}
+
+void AWeaponBase::CheckIfPlayerCanReload()
+{
+	/*Checks to see if there is bullets in the gun to reload*/
+	/*Doesnt play animation when the clip is full and check to if we can reload*/
+	if (CurrentAmmoInGun <= 0 || CurrentAmmoInClip == MaxAmmoPerClip || !GetCanReload())
+	{
+		return;
+	}
+	
+	StartReload();
+}
+
 void AWeaponBase::StartReload()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called"))
 
-	/* If local execute requested or we are running on the server */
-
-		bPendingReload = true;
+		
+		bCanReload = false;//Stops the player from reloading again
+		bCanFire = false;//Stops the player from shooting when reloading
 
 		float AnimDuration = PlayWeaponAnimation(ReloadAnim);
 		if (AnimDuration <= 0.0f)
@@ -308,7 +325,7 @@ void AWeaponBase::StopSimulateReload()
 
 void AWeaponBase::ReloadWeapon()
 {
-	UE_LOG(LogTemp, Warning, TEXT("RW"))
+ 
 
 	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
 
@@ -332,6 +349,10 @@ void AWeaponBase::ReloadWeapon()
 			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
 		}
 	}
+
+	/*Once the reload is over allow the player to reload and fire the gun again*/
+	bCanReload = true;
+	bCanFire = true;
 }
 
 
