@@ -52,34 +52,7 @@ class APlayerCharacter* AWeaponBase::GetPawnOwner() const
 	return Cast<APlayerCharacter>(playerpawn);
 }
 
-void AWeaponBase::Reload()
-{
 
-	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
-
-	if (CurrentAmmoInGun >= NeededAmmo)
-	{
-		
-		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
-		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
-	}
-	else {
-
-		if(CurrentAmmoInGun > 0)
-		{
-			
-			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
-			CurrentAmmoInGun = 0;
-		}
-		else
-		{
-			//TODO -  Print to screen telling the player the Gun is empty
-			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
-		}
-	}
-	
-
-}
 void  AWeaponBase::DealDamage(const FHitResult& Hit)
 {
 	
@@ -272,6 +245,96 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 }
 
 
+void AWeaponBase::Reload()
+{
+
+	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
+
+	if (CurrentAmmoInGun >= NeededAmmo)
+	{
+
+		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
+		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
+	}
+	else {
+
+		if (CurrentAmmoInGun > 0)
+		{
+
+			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
+		}
+		else
+		{
+			//TODO -  Print to screen telling the player the Gun is empty
+			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+		}
+	}
+
+
+}
+
+void AWeaponBase::StartReload()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Called"))
+
+	/* If local execute requested or we are running on the server */
+
+		bPendingReload = true;
+
+		float AnimDuration = PlayWeaponAnimation(ReloadAnim);
+		if (AnimDuration <= 0.0f)
+		{
+			AnimDuration = NoAnimReloadDuration;
+		}
+
+		GetWorldTimerManager().SetTimer(TimerHandle_StopReload, this, &AWeaponBase::StopSimulateReload, AnimDuration, false);
+
+		UE_LOG(LogTemp, Warning, TEXT("Ok"))
+		GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AWeaponBase::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
+
+
+		if (GetPawnOwner() && GetPawnOwner()->IsLocallyControlled())
+		{
+			PlayWeaponSound(ReloadSound);
+		}
+	
+}
+
+void AWeaponBase::StopSimulateReload()
+{
+	StopWeaponAnimation(ReloadAnim);
+}
+
+void AWeaponBase::ReloadWeapon()
+{
+	UE_LOG(LogTemp, Warning, TEXT("RW"))
+
+	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
+
+	if (CurrentAmmoInGun >= NeededAmmo)
+	{
+
+		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
+		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
+	}
+	else {
+
+		if (CurrentAmmoInGun > 0)
+		{
+
+			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
+			CurrentAmmoInGun = 0;
+		}
+		else
+		{
+			//TODO -  Print to screen telling the player the Gun is empty
+			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+		}
+	}
+}
+
+
 
 int32 AWeaponBase::GetCurrentAmmoInClip() const
 {
@@ -395,4 +458,38 @@ void AWeaponBase::SetCanInteract(bool NewInteract)
 	bCanInteract = NewInteract;
 }
 
+float AWeaponBase::PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate, FName StartSectionName)
+{
+	float Duration = 0.0f;
+	if (GetPawnOwner())
+	{
+		if (Animation)
+		{
+			Duration = GetPawnOwner()->PlayAnimMontage(Animation, InPlayRate, StartSectionName);
+		}
+	}
 
+	return Duration;
+}
+
+void AWeaponBase::StopWeaponAnimation(UAnimMontage* Animation)
+{
+	if (GetPawnOwner())
+	{
+		if (Animation)
+		{
+			GetPawnOwner()->StopAnimMontage(Animation);
+		}
+	}
+}
+
+UAudioComponent* AWeaponBase::PlayWeaponSound(USoundCue* SoundToPlay)
+{
+	UAudioComponent* AC = nullptr;
+	if (SoundToPlay && GetPawnOwner())
+	{
+		AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, GetPawnOwner()->GetRootComponent());
+	}
+
+	return AC;
+}

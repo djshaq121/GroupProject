@@ -295,7 +295,7 @@ void APlayerCharacter::Reload()
 {
 	if (Inventory.CurrentWeapon)
 	{
-		Inventory.CurrentWeapon->Reload();
+		Inventory.CurrentWeapon->StartReload();
 	}
 }
 

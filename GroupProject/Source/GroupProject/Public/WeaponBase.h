@@ -171,5 +171,42 @@ private:
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 
 
-	
+
+	/************************************************************************/
+	/* Ammo & Reloading                                                     */
+	/************************************************************************/
+
+private:
+
+	FTimerHandle TimerHandle_ReloadWeapon;
+
+	FTimerHandle TimerHandle_StopReload;
+
+protected:
+
+	/* Time to assign on reload when no animation is found */
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+		float NoAnimReloadDuration;
+
+	UPROPERTY(Transient)
+		bool bPendingReload;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundCue* ReloadSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+		UAnimMontage* ReloadAnim;
+
+	UAudioComponent* PlayWeaponSound(USoundCue* SoundToPlay);
+
+	float PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+
+	void StopWeaponAnimation(UAnimMontage* Animation);
+public:
+
+		virtual void StartReload();
+
+		virtual void StopSimulateReload();
+
+		virtual void ReloadWeapon();
 };
