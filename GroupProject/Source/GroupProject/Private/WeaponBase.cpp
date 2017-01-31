@@ -84,6 +84,11 @@ void  AWeaponBase::DealDamage(const FHitResult& Hit)
 	
 }
 
+FName AWeaponBase::GetWeaponName() const
+{
+	return WeaponName;
+}
+
 /*The method that is called in weapon class*/
 void  AWeaponBase::StartFire()
 {

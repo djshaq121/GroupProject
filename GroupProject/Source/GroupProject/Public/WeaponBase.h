@@ -14,6 +14,13 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 	GENERATED_BODY()
 	
 public:	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		FName WeaponName;
+
+	UFUNCTION(BlueprintCallable, Category = "Default")
+		FName GetWeaponName() const;
+
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
