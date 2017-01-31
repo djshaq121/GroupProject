@@ -78,8 +78,9 @@ public:
 
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Animation")
-		void SwapToNewWeaponMesh();
+	
+	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
+
 	void ToggleCrouch();
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")

@@ -25,13 +25,10 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 
 	bool bIsEquipped;
 
-	bool bPendingEquip;
 
 	FTimerHandle EquipFinishedTimerHandle;
 public:
 
-
-	virtual void OnUnEquip();
 
 	void OnEquip(bool bPlayAnimation);
 
@@ -83,7 +80,7 @@ public:
 
 	void Recoil();
 
-	void Reload();
+	
 
 	void UseAmmo();
 
@@ -99,8 +96,7 @@ protected:
 
 	bool IsEquipped() const;
 
-	bool IsAttachedToPawn() const;
-
+	
 	UPROPERTY(EditDefaultsOnly)
 		float WeaponRange = 5000;
 
@@ -202,6 +198,10 @@ protected:
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 
 	bool bCanFire = true;
+
+	bool bCanEquip = true;
+
+	bool bIsReloading = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 		TSubclassOf<UCameraShake> WeaponFireShake;

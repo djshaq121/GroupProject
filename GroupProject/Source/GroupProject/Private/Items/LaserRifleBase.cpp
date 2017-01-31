@@ -14,7 +14,7 @@ void ALaserRifleBase::Tick(float DeltaTime)
 		CurrentHeat -= CoolDownTime * DeltaTime; 
 		if (CurrentHeat <= 0.f) { //Sets the weapon heat to zero if it reaches 0 or below 
 			bIsCoolingDown = false; 
-			bCanFire = true; //Allow the player to shoot one the gun is not on cooldown
+			bLRCanFire = true; //Allow the player to shoot one the gun is not on cooldown
 			CurrentHeat = 0;
 		}
 	}
@@ -40,54 +40,59 @@ void ALaserRifleBase::FiringGun()
 	
 	if (CurrentHeat >= HeatThreshold) {//Check to see if the heat of the gun is larger than the threshold
 		bIsCoolingDown = true;  //If its true than, guns goes on cool down
-		bCanFire = false; //Stop the player from firing
+		bLRCanFire = false; //Stop the player from firing
 		UE_LOG(LogTemp, Warning, TEXT("OnCoolDown"));
 	};
 }
 
 void ALaserRifleBase::DoFire()
 {
-	FHitResult Hit = FHitResult();
-	FVector Start;
-
-	GetCurrentHeat();
-	//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
-
-
-	UseAmmo();
-	FiringGun();
-	//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
 	
-	if (GetSightRayHitLocation(Hit))
+	if (bLRCanFire)
 	{
-		auto HitLocation = Hit.Location;
-		//Checks if we hit something
-		if (Hit.bBlockingHit) {
+		FHitResult Hit = FHitResult();
+		FVector Start;
 
-			SpawnImpactEffect(Hit);	//If we hit something spawn at effect at impact point
-			SpawnTrailEffect(Hit.ImpactPoint);
+		GetCurrentHeat();
+		//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
+
+
+		UseAmmo();
+		FiringGun();
+		//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
+
+		if (GetSightRayHitLocation(Hit))
+		{
+			auto HitLocation = Hit.Location;
+			//Checks if we hit something
+			if (Hit.bBlockingHit) {
+
+				SpawnImpactEffect(Hit);	//If we hit something spawn at effect at impact point
+				SpawnTrailEffect(Hit.ImpactPoint);
+
+			}
+			else
+			{
+
+				//TODO - Fix the trace effect when shooting into the distance
+				FVector ImpactPoint = Hit.ImpactPoint;
+				auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
+				FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
+				FVector EndTrace = muzzle + (AimDir * WeaponRange);
+
+				SpawnTrailEffect(EndTrace);
+			}
 
 		}
-		else
+		if (Hit.GetActor())
 		{
 
-			//TODO - Fix the trace effect when shooting into the distance
-			FVector ImpactPoint = Hit.ImpactPoint;
-			auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
-			FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
-			FVector EndTrace = muzzle + (AimDir * WeaponRange);
-
-			SpawnTrailEffect(EndTrace);
+			//Calls DealDamage passing the actor we hit
+			DealDamage(Hit);
+			//SpawnImpactEffect
 		}
-
 	}
-	if (Hit.GetActor())
-	{
-		
-		//Calls DealDamage passing the actor we hit
-		DealDamage(Hit);
-		//SpawnImpactEffect
-	}
+	
 }
 
 float ALaserRifleBase::GetCurrentHeat() const

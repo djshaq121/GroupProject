@@ -37,5 +37,7 @@ private:
 	float CoolDownTime = 1.5f;
 	UPROPERTY(EditDefaultsOnly)
 	float OverHeatTime = 2.5f;
+
+	bool bLRCanFire = true;
 	
 };
