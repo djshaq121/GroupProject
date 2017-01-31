@@ -303,19 +303,19 @@ void APlayerCharacter::SwitchToAssaultRifle()
 {
 
 
-	if (Inventory.AssaultRifle)
+	if (Inventory.AssaultRifle && Inventory.CurrentWeapon != Inventory.AssaultRifle)
 	{
 
-		EquipWeapon(Inventory.AssaultRifle);
+		SwapToNewWeaponMesh(Inventory.AssaultRifle);
 	}
 }
 
 void APlayerCharacter::SwitchToLaserLaser()
 {
-	if (Inventory.LaserRifle)
+	if (Inventory.LaserRifle && Inventory.CurrentWeapon != Inventory.LaserRifle)
 	{
 
-		EquipWeapon(Inventory.LaserRifle);
+		SwapToNewWeaponMesh(Inventory.LaserRifle);
 	}
 
 }
@@ -522,7 +522,7 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 
 													   //Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
-		Inventory.CurrentWeapon = Inventory.AssaultRifle;//Makes AssaultRifle the currentWeapon
+		Inventory.CurrentWeapon = WeaponToEquip;//Makes AssaultRifle the currentWeapon
 		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attaches the current weapon to the weapon socket
 
 		if (Inventory.PreviousWeapon)//Checking if previous weapon is null
@@ -530,19 +530,19 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 			//If not null we connect the previous weapon to the back Socket
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
 			Inventory.PreviousWeapon->StopFire();//Stops the weapon from firing when in the second slot, if the player is holding the fire trigger when equipping a secong weapon
-			Inventory.CurrentWeapon->OnEquip(true);
+			
 		}
 
 	}
 	else if (WeaponToEquip == Inventory.LaserRifle) {
-		Inventory.CurrentWeapon = Inventory.LaserRifle;//Makes LaserRifle the currentWeapon
+		Inventory.CurrentWeapon = WeaponToEquip; //Inventory.LaserRifle;//Makes LaserRifle the currentWeapon
 		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
 
 		if (Inventory.PreviousWeapon)
 		{
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
 			Inventory.PreviousWeapon->StopFire();
-			Inventory.CurrentWeapon->OnEquip(true);
+			
 
 		}
 
@@ -553,16 +553,12 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 
 }
 
-void APlayerCharacter::SwapToNewWeaponMesh()
+void APlayerCharacter::SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip)
 {
-	if (Inventory.PreviousWeapon)
+	if (WeaponToEquip && Inventory.PreviousWeapon)
 	{
-		Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
-	}
-
-	if (Inventory.CurrentWeapon)
-	{
-		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+		WeaponToEquip->OnEquip(true);//This plays the animation
+		EquipWeapon(WeaponToEquip);
 	}
 }
 

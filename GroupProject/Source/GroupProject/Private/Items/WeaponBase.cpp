@@ -129,7 +129,10 @@ void  AWeaponBase::StartFire()
 			}
 		}
 		//This reloads when the ammo reaches zero
-		if (CurrentAmmoInClip <= 0) { Reload(); }
+		if (CurrentAmmoInClip <= 0 && CurrentAmmoInGun > 0) {
+			StopFire();
+			StartReload(); 
+		}
 	}
 
 
@@ -253,59 +256,14 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 }
 
 
-void AWeaponBase::Reload()
-{
-
-	int32 NeededAmmo = MaxAmmoPerClip - CurrentAmmoInClip;
-
-	if (CurrentAmmoInGun >= NeededAmmo)
-	{
-
-		CurrentAmmoInClip = CurrentAmmoInClip + NeededAmmo;
-		CurrentAmmoInGun = CurrentAmmoInGun - NeededAmmo;
-	}
-	else {
-
-		if (CurrentAmmoInGun > 0)
-		{
-
-			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
-			CurrentAmmoInGun = 0;
-		}
-		else
-		{
-			//TODO -  Print to screen telling the player the Gun is empty
-			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
-		}
-	}
-
-
-}
-
-bool AWeaponBase::GetCanReload()
-{
-	return bCanReload;
-}
-
-void AWeaponBase::CheckIfPlayerCanReload()
-{
-	/*Checks to see if there is bullets in the gun to reload*/
-	/*Doesnt play animation when the clip is full and check to if we can reload*/
-	if (CurrentAmmoInGun <= 0 || CurrentAmmoInClip == MaxAmmoPerClip || !GetCanReload())
-	{
-		return;
-	}
-
-	StartReload();
-}
-
 void AWeaponBase::StartReload()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Called"))
 
 
-		bCanReload = false;//Stops the player from reloading again
+	bCanReload = false;//Stops the player from reloading again
 	bCanFire = false;//Stops the player from shooting when reloading
+	
 
 	float AnimDuration = PlayWeaponAnimation(ReloadAnim);
 	if (AnimDuration <= 0.0f)
@@ -324,11 +282,6 @@ void AWeaponBase::StartReload()
 		PlayWeaponSound(ReloadSound);
 	}
 
-}
-
-void AWeaponBase::StopSimulateReload()
-{
-	StopWeaponAnimation(ReloadAnim);
 }
 
 void AWeaponBase::ReloadWeapon()
@@ -361,7 +314,33 @@ void AWeaponBase::ReloadWeapon()
 	/*Once the reload is over allow the player to reload and fire the gun again*/
 	bCanReload = true;
 	bCanFire = true;
+	GetWorldTimerManager().ClearTimer(TimerHandle_ReloadWeapon);
 }
+
+bool AWeaponBase::GetCanReload()
+{
+	return bCanReload;
+}
+
+void AWeaponBase::CheckIfPlayerCanReload()
+{
+	/*Checks to see if there is bullets in the gun to reload*/
+	/*Doesnt play animation when the clip is full and check to if we can reload*/
+	if (CurrentAmmoInGun <= 0 || CurrentAmmoInClip == MaxAmmoPerClip || !GetCanReload() || !bCanEquip)
+	{
+		return;
+	}
+
+	StartReload();
+}
+
+
+void AWeaponBase::StopSimulateReload()
+{
+	StopWeaponAnimation(ReloadAnim);
+}
+
+
 
 
 
@@ -489,7 +468,7 @@ void AWeaponBase::SetCanInteract(bool NewInteract)
 
 float AWeaponBase::PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate, FName StartSectionName)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called Eqip Animation"))
+	
 		float Duration = 0.0f;
 	if (GetPawnOwner())
 	{
@@ -515,7 +494,7 @@ void AWeaponBase::StopWeaponAnimation(UAnimMontage* Animation)
 
 UAudioComponent* AWeaponBase::PlayWeaponSound(USoundCue* SoundToPlay)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called Equip Sound"))
+	
 		UAudioComponent* AC = nullptr;
 	if (SoundToPlay && GetPawnOwner())
 	{
@@ -536,29 +515,15 @@ float AWeaponBase::GetEquipDuration() const
 	return EquipDuration;
 }
 
-void AWeaponBase::OnEquipFinished()
-{
-	//AttachMeshToPawn();
-	UE_LOG(LogTemp, Warning, TEXT("Called"))
-		bIsEquipped = true;
-	bPendingEquip = false;
-
-	if (GetPawnOwner())
-	{
-		// Try to reload empty clip
-		if (GetPawnOwner()->IsLocallyControlled() &&
-			CurrentAmmoInClip <= 0 &&
-			GetCanReload())
-		{
-			StartReload();
-		}
-	}
-}
 
 void AWeaponBase::OnEquip(bool bPlayAnimation)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called OnEquip"))
-		bPendingEquip = true;
+
+
+
+	bCanEquip = false;
+	bCanFire = false;
+	
 
 	if (bPlayAnimation)
 	{
@@ -585,26 +550,14 @@ void AWeaponBase::OnEquip(bool bPlayAnimation)
 	}
 }
 
-void AWeaponBase::OnUnEquip()
+void AWeaponBase::OnEquipFinished()
 {
-	bIsEquipped = false;
-	StopFire();
+	
+	bCanEquip = true;
+	bCanFire = true;
+	GetWorldTimerManager().ClearTimer(EquipFinishedTimerHandle);
+	
 
-	if (bPendingEquip)
-	{
-		StopWeaponAnimation(EquipAnim);
-		bPendingEquip = false;
-
-		GetWorldTimerManager().ClearTimer(EquipFinishedTimerHandle);
-	}
-	if (bCanReload)
-	{
-		StopWeaponAnimation(ReloadAnim);
-
-		GetWorldTimerManager().ClearTimer(TimerHandle_ReloadWeapon);
-	}
-
-	//DetermineWeaponState();
 }
 
 bool AWeaponBase::IsEquipped() const
@@ -613,7 +566,3 @@ bool AWeaponBase::IsEquipped() const
 }
 
 
-bool AWeaponBase::IsAttachedToPawn() const // TODO: Review name to more accurately specify meaning.
-{
-	return bIsEquipped || bPendingEquip;
-}
