@@ -19,16 +19,16 @@ class GROUPPROJECT_API APlayerCharacter : public ACharacter
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* SpringArm;
 
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 
-/*Health & Armor*/
+	/*Health & Armor*/
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
 	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
-		int32 CurrentHealth ;
+		int32 CurrentHealth;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
@@ -43,16 +43,16 @@ public:
 
 	//Make an IsDead property - So it can be caled in blueprint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-	bool bIsDead = false;
+		bool bIsDead = false;
 
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
@@ -62,10 +62,10 @@ public:
 	AHumanPlayerController* GetHumanController();
 
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
-	int GetCurrentHealth() const;
+		int GetCurrentHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
-	int GetCurrentArmor() const;
+		int GetCurrentArmor() const;
 
 	int GetMaxHealth() const;
 
@@ -74,13 +74,16 @@ public:
 	bool GetIsDead();
 
 
-/*Movement*/
+	/*Movement*/
 
 public:
+
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+		void SwapToNewWeaponMesh();
 	void ToggleCrouch();
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	bool GetIsCrouching() const;
+		bool GetIsCrouching() const;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
@@ -106,16 +109,16 @@ public:
 
 	void SetSprint(bool NewSprintState);
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	bool GetIsSprinting() const;
+		bool GetIsSprinting() const;
 
 	void SetPlayersSpeed(bool NewSprintState);
 
 	bool CheckIfCanSprint();
 
 	void Crouching();
-	
+
 	void UnCrouching();
-	
+
 	void OnJump();
 
 	void EndJump();
@@ -123,13 +126,13 @@ public:
 	void SetIsJumping(bool newJumpState);
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	bool GetIsJumping() const;
+		bool GetIsJumping() const;
 
 
 
 
 private:
-	
+
 	float JumpHeight = 300.f;
 
 	bool bIsJumping = false;
@@ -139,18 +142,18 @@ private:
 	bool bIsSprinting;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Movement")
-	float WalkSpeed = 400;
+		float WalkSpeed = 400;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = "Movement ")
-	float SprintSpeed = 700;
+		float SprintSpeed = 700;
 
-/*Weapon*/
+	/*Weapon*/
 public:
 	void AddToInventory(class AWeaponBase* NewWeapon);
 
 	void EquipWeapon(AWeaponBase * WeaponToEquip);
 
 	void StartFire();
-	
+
 	void StopFire();
 
 	void Reload();
@@ -162,13 +165,13 @@ public:
 	void SwitchToLaserLaser();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-	bool bIsAiming = false;
+		bool bIsAiming = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Aiming")
-	bool GetIsAiming() const;
+		bool GetIsAiming() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
-	bool GetIsFiring() const;
+		bool GetIsFiring() const;
 
 private:
 
@@ -182,25 +185,25 @@ private:
 
 	//Struct Iventory
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
-	FPlayerInventory Inventory;
+		FPlayerInventory Inventory;
 
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
-	
+		TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
+
 	void CameraZoomIn();
 
 	void CameraZoomOut();
 
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	float CameraZoomLength;
+		float CameraZoomLength;
 
 	float CamCrouchHeight;
 
 	FVector StartingCameraPosition;
-	
+
 
 
 };

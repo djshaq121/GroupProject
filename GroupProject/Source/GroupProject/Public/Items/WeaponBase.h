@@ -12,8 +12,28 @@ UCLASS()
 class GROUPPROJECT_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+		float GetEquipStartedTime() const;
+
+	float GetEquipDuration() const;
+
+	/** last time when this weapon was switched to */
+	float EquipStartedTime;
+
+	/** how much time weapon needs to be equipped */
+	float EquipDuration;
+
+	bool bIsEquipped;
+
+	bool bPendingEquip;
+
+	FTimerHandle EquipFinishedTimerHandle;
+public:
+
+
+	virtual void OnUnEquip();
+
+	void OnEquip(bool bPlayAnimation);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
 		FName WeaponName;
@@ -31,12 +51,12 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	APlayerCharacter * GetPawnOwner() const;
+		APlayerCharacter * GetPawnOwner() const;
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void ChangeOwner(AActor* NewOwner);
-	
+		void ChangeOwner(AActor* NewOwner);
+
 	UFUNCTION()//Actor is gonna be us - We need to type check it so only the player can pick it up
-	virtual void OnPlayerEnterPickupBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult& SweepResult);
+		virtual void OnPlayerEnterPickupBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult& SweepResult);
 
 	void DealDamage(const FHitResult& Hit);
 
@@ -46,21 +66,21 @@ public:
 
 	void StopFire();
 
-	virtual void OnInteract(AActor* Caller) ;
-	
+	virtual void OnInteract(AActor* Caller);
+
 	void SetCanInteract(bool NewInteract);
-	
+
 	/*Weapon*/
 
-	
-	UFUNCTION(BlueprintCallable, Category = "Ammo")
-	int32 GetCurrentAmmoInClip() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
-	int32 GetCurrentAmmoInGun() const;
+		int32 GetCurrentAmmoInClip() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Ammo")
+		int32 GetCurrentAmmoInGun() const;
 
 	FVector CalcSpread() const;
-	
+
 	void Recoil();
 
 	void Reload();
@@ -68,10 +88,30 @@ public:
 	void UseAmmo();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+		float NoAnimReloadDuration;
+
+	/* Time to assign on equip when no animation is found */
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+		float NoEquipAnimDuration;
+
+	virtual void OnEquipFinished();
+
+	bool IsEquipped() const;
+
+	bool IsAttachedToPawn() const;
+
 	UPROPERTY(EditDefaultsOnly)
-	float WeaponRange = 5000;
+		float WeaponRange = 5000;
 
 private:
+
+	UPROPERTY(EditDefaultsOnly)
+		UAnimMontage* EquipAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundCue* EquipSound;
+
 	/*Firerate timer handle*/
 	FTimerHandle FireRateHandle;
 
@@ -81,9 +121,9 @@ private:
 
 	/*The Starting ammo in the clip*/
 	UPROPERTY(EditDefaultsOnly)
-	int32 MaxAmmoPerClip = 60;//This is the starting clip	
+		int32 MaxAmmoPerClip = 60;//This is the starting clip	
 
-	
+
 	int32 CurrentAmmoInClip;
 
 	/*The current amount of bullets in the gun can have*/
@@ -95,34 +135,34 @@ private:
 
 	/*The accuracy of the gun. Where 0 has no weapon spread*/
 	UPROPERTY(EditDefaultsOnly)
-	float WeaponSpread = 0;
-	
+		float WeaponSpread = 0;
+
 	UPROPERTY(EditDefaultsOnly)
-	float FireRate = 0;
+		float FireRate = 0;
 
 	/*The amount of recoil. Postivte number moves the gun right, negative left*/
 	UPROPERTY(EditDefaultsOnly)
-	float HorizontalRecoilAmount = 0.03f;
+		float HorizontalRecoilAmount = 0.03f;
 
 	/*The recoil amount. Leave as a positive number*/
 	UPROPERTY(EditDefaultsOnly)
-	float VerticalRecoilAmount = 0.05f;
+		float VerticalRecoilAmount = 0.05f;
 
-	
+
 	float CrossHairXLocation = 0.5;
 	float CrossHairYLocation = 0.5;
 	FCollisionQueryParams TraceParams;
 
 
-   /*FX*/
+	/*FX*/
 public:
 
 	void SpawnMuzzleEffect();
-	
+
 	void SpawnTrailEffect(FVector& EndPoint);
 
 	void SpawnImpactEffect(FHitResult& Hit);
-	
+
 
 private:
 
@@ -137,21 +177,21 @@ private:
 		UParticleSystem* ImpactEffect;
 
 	UPROPERTY(EditDefaultsOnly)
-	USoundCue* FireSound;
+		USoundCue* FireSound;
 
 	UPROPERTY(EditDefaultsOnly)
-	USoundCue* ImpactSound;
+		USoundCue* ImpactSound;
 
 
 	int32 BSCount;
-	
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
-	USphereComponent* CollisonSphere;
+		USphereComponent* CollisonSphere;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPirvateAccess = "true"))
-	USkeletalMeshComponent* WeaponMesh;
+		USkeletalMeshComponent* WeaponMesh;
 
 	class APlayerCharacter* OwningPlayer;
 	UPROPERTY(EditDefaultsOnly)
@@ -164,14 +204,14 @@ protected:
 	bool bCanFire = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
-	TSubclassOf<UCameraShake> WeaponFireShake;
+		TSubclassOf<UCameraShake> WeaponFireShake;
 
 private:
 
-	
+
 
 	UPROPERTY(EditDefaultsOnly)
-	bool bCanInteract = true;
+		bool bCanInteract = true;
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FHitResult& HitResult) const;
 
@@ -192,11 +232,9 @@ private:
 protected:
 
 	/* Time to assign on reload when no animation is found */
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
-		float NoAnimReloadDuration;
 
 	/*UPROPERTY(Transient)
-		bool bPendingReload;*/
+	bool bPendingReload;*/
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundCue* ReloadSound;
@@ -213,13 +251,13 @@ protected:
 	void StopWeaponAnimation(UAnimMontage* Animation);
 public:
 
-		void CheckIfPlayerCanReload();
+	void CheckIfPlayerCanReload();
 
-		bool GetCanReload();
+	bool GetCanReload();
 
-		virtual void StartReload();
+	virtual void StartReload();
 
-		virtual void StopSimulateReload();
+	virtual void StopSimulateReload();
 
-		virtual void ReloadWeapon();
+	virtual void ReloadWeapon();
 };

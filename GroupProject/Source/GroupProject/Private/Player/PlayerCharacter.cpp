@@ -15,7 +15,7 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	//PrimaryActorTick.bCanEverTick = true;
 
 	// set our turn rates for input
@@ -32,9 +32,9 @@ APlayerCharacter::APlayerCharacter()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false;
 
-	
+
 	CamCrouchHeight = SpringArm->SocketOffset.Z;
-	
+
 	CameraZoomLength = SpringArm->TargetArmLength;
 
 	//Initialise the can crouch property
@@ -45,7 +45,7 @@ APlayerCharacter::APlayerCharacter()
 
 
 
-	
+
 }
 
 // Called when the game starts or when spawned
@@ -69,18 +69,18 @@ void APlayerCharacter::BeginPlay()
 		//Adding the Weapon to the players inventory
 		AddToInventory(StartingWeapon);
 	}
-	
-	
+
+
 }
 
-void APlayerCharacter::Tick( float DeltaTime )
+void APlayerCharacter::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
-	//This makes a smooth transition when the player is crouched
+																															  //This makes a smooth transition when the player is crouched
 	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
-	
+
 	if (bIsSprinting && CheckIfCanSprint())
 	{
 		SetSprint(true);
@@ -89,7 +89,7 @@ void APlayerCharacter::Tick( float DeltaTime )
 	{
 		SetSprint(false);
 	}
-	
+
 }
 
 
@@ -120,16 +120,16 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
 	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
-	
 
-	
+
+
 
 }
 
 void APlayerCharacter::OnJump()
 {
 	SetIsJumping(true);
-	
+
 }
 
 void APlayerCharacter::EndJump()
@@ -140,25 +140,25 @@ void APlayerCharacter::EndJump()
 void APlayerCharacter::SetIsJumping(bool newJumpState)
 {
 	JumpHeight = GetCharacterMovement()->JumpZVelocity;
-	
-	
-	if (newJumpState!= bIsJumping)
+
+
+	if (newJumpState != bIsJumping)
 	{
 		bIsJumping = newJumpState;
 
 		if (GetCharacterMovement()->MaxWalkSpeed == WalkSpeed)
 		{
-			
+
 			JumpHeight = 300.f;
 			Jump();
-			
+
 		}
 		else if (GetCharacterMovement()->MaxWalkSpeed == SprintSpeed)
 		{
-			
+
 			JumpHeight = 400.f;
 			Jump();
-			
+
 		}
 	}
 	else
@@ -177,16 +177,16 @@ bool APlayerCharacter::GetIsJumping() const
 
 void APlayerCharacter::ToggleCrouch()
 {
-	
+
 	if (!bIsCrouching)
 	{
 		Crouching();
-	
+
 	}
 	else
 	{
 		UnCrouching();
-		
+
 	}
 }
 
@@ -255,7 +255,7 @@ bool APlayerCharacter::CheckIfCanSprint()
 {
 	return bIsSprinting && !bIsFiring &&
 		!GetVelocity().IsZero() &&
-		!GetIsAiming() && 
+		!GetIsAiming() &&
 		(FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8);//Checks to see if the player is moving forward, and if they are set to true else false - Taken from tomlooman
 }
 
@@ -272,11 +272,11 @@ bool APlayerCharacter::GetIsFiring() const
 void APlayerCharacter::StartFire()
 {
 
-		if (Inventory.CurrentWeapon)
-		{
-			bIsFiring = true;
-			Inventory.CurrentWeapon->StartFire();
-		}
+	if (Inventory.CurrentWeapon)
+	{
+		bIsFiring = true;
+		Inventory.CurrentWeapon->StartFire();
+	}
 
 }
 
@@ -334,20 +334,20 @@ int APlayerCharacter::GetCurrentArmor() const
 {
 	return CurrentArmor;
 }
- 
+
 
 void APlayerCharacter::Heal(int Amount)
 {
 	// Currently polayer can still pickup when his health is 100 and item is destroyed but no health is gained
 	if (CurrentHealth < 100)
 	{
-		
+
 		CurrentHealth = CurrentHealth + Amount;
 		if (CurrentHealth >= MaximumHealth)
 		{
 			CurrentHealth = MaximumHealth;
 		}
-		
+
 	}
 }
 
@@ -435,17 +435,17 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 void APlayerCharacter::CameraZoomIn()
 {
 	bIsAiming = true;
-		
-		if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
+
+	if (SpringArm->TargetArmLength > 150.f)//Checks to see if the spring arm is bigger than the minimum value we set
+	{
+
+		CameraZoomLength -= 150.f; // decrease the length of the springarm 
+
+		if (CameraZoomLength < 150.f)
 		{
-			
-			CameraZoomLength -= 150.f; // decrease the length of the springarm 
-			
-			if (CameraZoomLength < 150.f)
-			{
-				CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
-			}
+			CameraZoomLength = 150.f;//making sure if we decrease it past 150, it stays at 150 
 		}
+	}
 
 }
 
@@ -469,17 +469,17 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 	NewWeapon->SetCanInteract(false);//We dont want to pick it up again
 	NewWeapon->SetActorEnableCollision(false);
 	NewWeapon->ChangeOwner(this);//Select to new gun
-	
-	//Check if we have a weapon in our invenontry 
-	//if (Inventory.CurrentWeapon)
-	//{
-	//	//Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);//Attach the previous weapon on the back of the player
-	//	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
-	//}
-	//
-	NewWeapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
-	
-	//if weapon is AssaultRifleBase
+
+								 //Check if we have a weapon in our invenontry 
+								 //if (Inventory.CurrentWeapon)
+								 //{
+								 //	//Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);//Attach the previous weapon on the back of the player
+								 //	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
+								 //}
+								 //
+	NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
+
+																													 //if weapon is AssaultRifleBase
 	if (NewWeapon->IsA(AAssaultRifleBase::StaticClass())) {
 		if (Inventory.AssaultRifle) {
 			Inventory.AssaultRifle->Destroy();
@@ -488,7 +488,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {//bEquipnew weapon allows the user to equipt the weapon upon pick up
 			EquipWeapon(Inventory.AssaultRifle);
-			
+
 
 		}
 	}
@@ -501,7 +501,7 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
 			EquipWeapon(Inventory.LaserRifle);
-		
+
 
 		}
 	}
@@ -511,16 +511,16 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if weapon is in the inventory
 {
-	
+
 	if (WeaponToEquip == Inventory.CurrentWeapon) {
 		return;//Return if we already have the weapon equiped
 	}
-	
+
 	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
 
-	
 
-	//Check what weapon we are picking up
+
+													   //Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
 		Inventory.CurrentWeapon = Inventory.AssaultRifle;//Makes AssaultRifle the currentWeapon
 		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attaches the current weapon to the weapon socket
@@ -530,25 +530,42 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 			//If not null we connect the previous weapon to the back Socket
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
 			Inventory.PreviousWeapon->StopFire();//Stops the weapon from firing when in the second slot, if the player is holding the fire trigger when equipping a secong weapon
+			Inventory.CurrentWeapon->OnEquip(true);
 		}
-		
+
 	}
 	else if (WeaponToEquip == Inventory.LaserRifle) {
 		Inventory.CurrentWeapon = Inventory.LaserRifle;//Makes LaserRifle the currentWeapon
 		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
-	
+
 		if (Inventory.PreviousWeapon)
 		{
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
 			Inventory.PreviousWeapon->StopFire();
-		}
-	
-		 
-	}//else if...for more types of gun
-	
+			Inventory.CurrentWeapon->OnEquip(true);
 
-	
+		}
+
+
+	}//else if...for more types of gun
+
+
+
 }
+
+void APlayerCharacter::SwapToNewWeaponMesh()
+{
+	if (Inventory.PreviousWeapon)
+	{
+		Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+	}
+
+	if (Inventory.CurrentWeapon)
+	{
+		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+	}
+}
+
 
 //This gets the controller of the pawn
 AHumanPlayerController* APlayerCharacter::GetHumanController()
