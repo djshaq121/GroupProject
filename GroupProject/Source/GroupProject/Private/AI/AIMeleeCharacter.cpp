@@ -3,6 +3,7 @@
 #include "GroupProject.h"
 #include "AIMeleeCharacter.h"
 #include "PlayerCharacter.h"
+#include "EnemyController.h"
 #include "BehaviorTree/BehaviorTree.h"
 
 AAIMeleeCharacter::AAIMeleeCharacter() 
@@ -19,7 +20,22 @@ AAIMeleeCharacter::AAIMeleeCharacter()
 	MeleeStrikeCooldown = 1.0f;
 }
 
+void AAIMeleeCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 
+	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
+	
+	AEnemyController* AIController = Cast<AEnemyController>(GetController());
+	
+	if (AIController)
+	{
+		/* Reset */
+			AIController->SetTargetEnemy(nullptr);
+
+	}
+	
+}
 // Called when the game starts or when spawned
 void AAIMeleeCharacter::BeginPlay()
 {
@@ -184,6 +200,7 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 {
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+
 
 	CurrentHealth -= DamageToApply;
 	if (CurrentHealth <= 0)//Check to see if AI is dead

@@ -23,20 +23,23 @@ public:
 
 	APlayerCharacter* GetControlledPlayer() const;
 
+
+	//Called every frame
+	virtual void Tick(float DeltaSeconds) override;
+
 protected:
 	UFUNCTION()//Needs the ufunction or it will run an ensure expection 
 		void OnPossesPlayerDeath();
 	
 private:
 
+	
+
 	void SetPawn(APawn * InPawn);
 
 	virtual void BeginPlay() override;
 
-	//Called every frame
-	virtual void Tick(float DeltaSeconds) override;
 
-	
 
 	
 };

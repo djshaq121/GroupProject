@@ -16,7 +16,7 @@
 APlayerCharacter::APlayerCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -394,6 +394,21 @@ void APlayerCharacter::LookUpRate(float Rate)
 {
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
+void  APlayerCharacter::onDeath()
+{
+
+	if (bIsDead)
+	{
+		GetHumanController()->UnPossess();
+		Inventory.CurrentWeapon->Destroy();
+		if (Inventory.PreviousWeapon)
+		{
+			Inventory.PreviousWeapon->Destroy();
+		}
+		Destroy();
+	}
+
+}
 
 //If the player takes damage this method is called
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
@@ -410,9 +425,13 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 		{
 			//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
 			//OnDeath() - Destroies the player and restarts the game
-			OnDeath.Broadcast();
-			bIsDead = true;//Sets it to true, so in blueprint it plays the death animation 
-			StopAnimMontage();
+			//OnDeath.Broadcast();
+			
+			bIsDead = true;
+			onDeath();
+			
+			//Sets it to true, so in blueprint it plays the death animation 
+			//StopAnimMontage();
 		}
 		else
 		{
