@@ -41,6 +41,8 @@ public:
 
 	FPlayerDelegate OnDeath;
 
+	void onDeath();
+
 	//Make an IsDead property - So it can be caled in blueprint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 		bool bIsDead = false;

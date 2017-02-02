@@ -18,9 +18,12 @@ void  AHumanPlayerController::SetPawn(APawn* InPawn)
 	}
 }
 
+
 void AHumanPlayerController::OnPossesPlayerDeath()
 {
-	StartSpectatingOnly();//When the player dies go into spectating mode 
+	//StartSpectatingOnly();//When the player dies go into spectating mode 
+	//Make 
+	Destroy();
 }
 
 void AHumanPlayerController::BeginPlay()

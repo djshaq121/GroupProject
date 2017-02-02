@@ -1,4 +1,4 @@
-// Copyright 
+   // Copyright 
 
 #include "GroupProject.h"
 #include "EnemyController.h"
@@ -52,4 +52,27 @@ void AEnemyController::Possess(APawn * Pawn)
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIPatrolPoint::StaticClass(), PatrolPoints);
 		BehaviorComp->StartTree(*AICharacter->BehaviorTree);
 	}
+}
+
+void AEnemyController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+
+	
+}
+
+void AEnemyController::SetTargetEnemy(APawn * NewTarget)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(PlayerKey, NewTarget);
+	}
+}
+
+APawn* AEnemyController::GetCurrentTarget()
+{
+	APawn* CurrentTarget = Cast<APawn>(BlackboardComp->GetValueAsObject(PlayerKey));
+	return CurrentTarget;
 }
