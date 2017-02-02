@@ -31,6 +31,8 @@ void AAIMeleeCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+
+	
 	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */	
 }
 // Called when the game starts or when spawned
@@ -59,6 +61,15 @@ void AAIMeleeCharacter::BeginPlay()
 
 void AAIMeleeCharacter::OnPlayerCaught(APawn* Pawn)
 {
+	APlayerCharacter* Player = Cast<APlayerCharacter>(Pawn);
+	
+	if (Player == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Is Dead!"));
+		return;
+	}
+
+
 	//Get Reference to the player controller 
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 

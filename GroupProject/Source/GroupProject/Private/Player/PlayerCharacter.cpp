@@ -397,17 +397,16 @@ void APlayerCharacter::LookUpRate(float Rate)
 void  APlayerCharacter::onDeath()
 {
 
-	if (bIsDead)
-	{
-		GetHumanController()->UnPossess();
+	
+	if(GetController()) GetHumanController()->UnPossess();
+		/*
 		Inventory.CurrentWeapon->Destroy();
 		if (Inventory.PreviousWeapon)
 		{
 			Inventory.PreviousWeapon->Destroy();
 		}
-		Destroy();
-	}
-
+		Destroy();*/
+	
 }
 
 //If the player takes damage this method is called
@@ -428,7 +427,11 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 			//OnDeath.Broadcast();
 			
 			bIsDead = true;
-			onDeath();
+			if (bIsDead)
+			{
+				onDeath();
+			}
+		
 			
 			//Sets it to true, so in blueprint it plays the death animation 
 			//StopAnimMontage();

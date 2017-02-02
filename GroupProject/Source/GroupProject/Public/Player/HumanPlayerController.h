@@ -4,6 +4,7 @@
 
 #include "PlayerCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "DeathWidget.h"
 #include "HumanPlayerController.generated.h"
 
 /**
