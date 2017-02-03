@@ -33,9 +33,7 @@ public:
 
 	AEnemyController();
 
-	virtual void Tick(float DeltaSeconds) override;
 
-	//
 	void SetTargetEnemy(APawn* NewTarget);
 
 	APawn * GetCurrentTarget();

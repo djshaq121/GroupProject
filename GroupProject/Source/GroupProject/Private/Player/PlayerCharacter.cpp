@@ -94,32 +94,32 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(InputComponent);
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAxis("Turn", this, &APlayerCharacter::TurnAtRate);
-	InputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUpRate);
+	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::TurnAtRate);
+	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUpRate);
 
-	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 
-	InputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
-	InputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
+	PlayerInputComponent->BindAction("Zoom", IE_Pressed, this, &APlayerCharacter::CameraZoomIn);
+	PlayerInputComponent->BindAction("Zoom", IE_Released, this, &APlayerCharacter::CameraZoomOut);
 
-	InputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::ToggleCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &APlayerCharacter::ToggleCrouch);
 
-	InputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
-	InputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::EndSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APlayerCharacter::EndSprint);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
-	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
-	InputComponent->BindAction("Reload", IE_Pressed, this, &APlayerCharacter::Reload);
-	InputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
-	InputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &APlayerCharacter::Reload);
+	PlayerInputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
+	PlayerInputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
-	InputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
 
 
 
@@ -399,22 +399,11 @@ void  APlayerCharacter::onDeath()
 
 	if (!bIsDead)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Calling"))
 		OnDeathRequest.Broadcast();
 		bIsDead = true;
 	}
 
-	//DisableInput(GetHumanController());//Calls the player controller
 	
-									   //StartSpectatingOnly();
-	//if(GetController()) GetHumanController()->UnPossess();
-		/*
-		Inventory.CurrentWeapon->Destroy();
-		if (Inventory.PreviousWeapon)
-		{
-			Inventory.PreviousWeapon->Destroy();
-		}
-		Destroy();*/
 	
 }
 
@@ -425,7 +414,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
 	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
 
-	UE_LOG(LogTemp, Warning, TEXT("Taking damage"))
+	
 	if (CurrentArmor <= 0)
 	{
 		CurrentHealth -= DamageToApply;

@@ -89,7 +89,7 @@ void AAIMeleeCharacter::OnPlayerCaught(APawn* Pawn)
 		bSensedTarget = true;
 		/* Set to prevent a zombie to attack multiple times in a very short time */
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("You've been caught!"));
+		
 		AIController->SetPlayerCaught(Pawn);
 	}
 }
@@ -189,12 +189,12 @@ void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 	/* Keep track of the time the player was last sensed in order to clear the target */
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
-	//UE_LOG(LogTemp, Warning, TEXT("called"))
+	
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(Pawn);
 	if (AIController)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("setting"))
+		
 		AIController->SetTargetEnemy(SensedPawn);
 	}
 }
@@ -247,7 +247,7 @@ void AAIMeleeCharacter::SetRagdollPhysics()
 
 void AAIMeleeCharacter::OnDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AI is dead"))
+	
 	SetRagdollPhysics();
 	DetachFromControllerPendingDestroy();
 
@@ -271,6 +271,6 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 		OnDeath();
 
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Taking damage"))
+	
 	return DamageToApply;
 }

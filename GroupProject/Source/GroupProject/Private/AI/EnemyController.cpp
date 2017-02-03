@@ -53,14 +53,6 @@ void AEnemyController::Possess(APawn * Pawn)
 	}
 }
 
-void AEnemyController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
-
-	
-}
 
 void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 {

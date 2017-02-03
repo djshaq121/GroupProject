@@ -236,7 +236,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
-		DrawDebugLine(GetWorld(), Start, HitLocation, FColor(255, 0, 0), true, 10.f);
+		//DrawDebugLine(GetWorld(), Start, HitLocation, FColor(255, 0, 0), true, 10.f);
 
 
 		return true;
@@ -250,7 +250,7 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 {
 	FVector CameraWorldLocation;//REMOVE LATER
 
-								//Convert current mouse 2D position to World Space 3D position and direction. Returns false if unable to determine value.
+	//Convert current mouse 2D position to World Space 3D position and direction. Returns false if unable to determine value.
 	return GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
 
 }
@@ -258,8 +258,7 @@ bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirec
 
 void AWeaponBase::StartReload()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Called"))
-
+	
 
 	bCanReload = false;//Stops the player from reloading again
 	bCanFire = false;//Stops the player from shooting when reloading
@@ -273,9 +272,7 @@ void AWeaponBase::StartReload()
 
 	GetWorldTimerManager().SetTimer(TimerHandle_StopReload, this, &AWeaponBase::StopSimulateReload, AnimDuration, false);
 
-	UE_LOG(LogTemp, Warning, TEXT("Ok"))
-		GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AWeaponBase::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
-
+	GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AWeaponBase::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
 
 	if (GetPawnOwner() && GetPawnOwner()->IsLocallyControlled())
 	{
@@ -307,7 +304,7 @@ void AWeaponBase::ReloadWeapon()
 		else
 		{
 			//TODO -  Print to screen telling the player the Gun is empty
-			UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
+			//UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
 		}
 	}
 
