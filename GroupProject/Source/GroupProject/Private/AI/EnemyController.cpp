@@ -20,7 +20,6 @@ AEnemyController::AEnemyController()
 
 	//Initialize Blackboard Keys
 	PlayerKey = "Target";
-	PlayerKeyID = "Player";
 	LocationToGoKey = "LocationToGo";
 	CurrentPatrolPoint = 0;
 }
@@ -54,14 +53,6 @@ void AEnemyController::Possess(APawn * Pawn)
 	}
 }
 
-void AEnemyController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
-
-	
-}
 
 void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 {

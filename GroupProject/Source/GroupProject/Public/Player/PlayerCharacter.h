@@ -7,9 +7,10 @@
 #include "PlayerCharacter.generated.h"
 
 //Death
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerDelegate);
 
-class AHumanPlayerController;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathRequest);
+
+class ACharacterController;
 
 UCLASS()
 class GROUPPROJECT_API APlayerCharacter : public ACharacter
@@ -39,7 +40,9 @@ private:
 
 public:
 
-	FPlayerDelegate OnDeath;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDeathRequest OnDeathRequest;
 
 	void onDeath();
 
@@ -59,9 +62,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	AHumanPlayerController* GetHumanController();
+	ACharacterController* GetHumanController();
 
 	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 		int GetCurrentHealth() const;

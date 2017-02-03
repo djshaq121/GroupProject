@@ -5,9 +5,16 @@
 #include "PlayerCharacter.h"
 #include "EnemyController.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Perception/PawnSensingComponent.h"
 
 AAIMeleeCharacter::AAIMeleeCharacter() 
 {
+
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
+	PawnSensingComp->SightRadius = 2000;
+	PawnSensingComp->HearingThreshold = 600;
+	PawnSensingComp->LOSHearingThreshold = 1200;
 	MeleeCollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCollision"));
 	MeleeCollisionComp->SetRelativeLocation(FVector(45, 0, 25));
 	MeleeCollisionComp->SetCapsuleHalfHeight(60);
@@ -23,18 +30,20 @@ AAIMeleeCharacter::AAIMeleeCharacter()
 void AAIMeleeCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
 	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
-	
-	AEnemyController* AIController = Cast<AEnemyController>(GetController());
-	
-	if (AIController)
+	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut)
 	{
-		/* Reset */
+		AEnemyController* AIController = Cast<AEnemyController>(GetController());
+		if (AIController)
+		{
+			bSensedTarget = false;
+			/* Reset */
 			AIController->SetTargetEnemy(nullptr);
-
+		}
 	}
+
 	
+	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */	
 }
 // Called when the game starts or when spawned
 void AAIMeleeCharacter::BeginPlay()
@@ -47,6 +56,42 @@ void AAIMeleeCharacter::BeginPlay()
 		MeleeCollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AAIMeleeCharacter::OnMeleeCompBeginOverlap);
 	}
 
+	if (PawnSensingComp)
+	{
+		//if play is caught call the OnPlayerCaught function
+		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnSeePlayer);
+	}
+
+	if (PawnSensingComp)
+	{
+		//if play is caught call the OnPlayerCaught function
+		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnPlayerCaught);
+	}
+}
+
+void AAIMeleeCharacter::OnPlayerCaught(APawn* Pawn)
+{
+	APlayerCharacter* Player = Cast<APlayerCharacter>(Pawn);
+	
+	if (Player == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Is Dead!"));
+		return;
+	}
+
+
+	//Get Reference to the player controller 
+	AEnemyController* AIController = Cast<AEnemyController>(GetController());
+
+	if (AIController)
+	{
+		LastSeenTime = GetWorld()->GetTimeSeconds();
+		bSensedTarget = true;
+		/* Set to prevent a zombie to attack multiple times in a very short time */
+
+		
+		AIController->SetPlayerCaught(Pawn);
+	}
 }
 
 void AAIMeleeCharacter::PerformMeleeStrike(AActor* HitActor)
@@ -138,6 +183,24 @@ int AAIMeleeCharacter::GetCurrentHealth() const
 	return CurrentHealth;
 }
 
+void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
+{
+	
+	/* Keep track of the time the player was last sensed in order to clear the target */
+	LastSeenTime = GetWorld()->GetTimeSeconds();
+	bSensedTarget = true;
+	
+	AEnemyController* AIController = Cast<AEnemyController>(GetController());
+	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(Pawn);
+	if (AIController)
+	{
+		
+		AIController->SetTargetEnemy(SensedPawn);
+	}
+}
+
+
+
 void AAIMeleeCharacter::SetRagdollPhysics()
 {
 	bool bInRagdoll = false;
@@ -184,7 +247,7 @@ void AAIMeleeCharacter::SetRagdollPhysics()
 
 void AAIMeleeCharacter::OnDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AI is dead"))
+	
 	SetRagdollPhysics();
 	DetachFromControllerPendingDestroy();
 
@@ -208,6 +271,6 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 		OnDeath();
 
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Taking damage"))
+	
 	return DamageToApply;
 }

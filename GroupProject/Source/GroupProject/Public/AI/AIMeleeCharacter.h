@@ -12,8 +12,24 @@ UCLASS()
 class GROUPPROJECT_API AAIMeleeCharacter : public AAIEnemyMaster
 {
 	GENERATED_BODY()
-	
+
+		UPROPERTY(VisibleAnywhere, Category = "AI")
+		class UPawnSensingComponent* PawnSensingComp;
+
+		/* Last time the player was spotted */
+		float LastSeenTime;
+
+		UPROPERTY(EditDefaultsOnly, Category = "AI")
+			float SenseTimeOut;
+
+	/* Last time the player was heard */
+		float LastHeardTime;
+
+		/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
+		bool bSensedTarget;
+
 public:
+
 	/* Last time we attacked something */
 	float LastMeleeAttackTime;
 
@@ -24,7 +40,16 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnPlayerCaught(APawn * Pawn);
+
 protected:
+
+	UFUNCTION()
+		void OnSeePlayer(APawn* Pawn);
+
+
+
 	UAudioComponent* PlayCharacterSound(USoundCue* CueToPlay);
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 		USoundCue* SoundAttackMelee;

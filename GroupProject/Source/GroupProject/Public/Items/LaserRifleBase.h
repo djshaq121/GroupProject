@@ -38,6 +38,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverHeatTime = 2.5f;
 
+	//We Created this because we cant use bCanFire, it will create run time errors
 	bool bLRCanFire = true;
 	
 };

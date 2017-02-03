@@ -5,7 +5,10 @@
 #include "GroupProjectGameMode.h"
 
 
+AGroupProjectGameMode::AGroupProjectGameMode()
+{
 
+}
 
 void AGroupProjectGameMode::Tick(float DeltaSeconds)
 {
@@ -13,17 +16,16 @@ void AGroupProjectGameMode::Tick(float DeltaSeconds)
 
 	
 	APlayerCharacter * Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	
 	if (Player)
 	{
-		
-			
-		
+		if (Player->GetIsDead())
+		{
+			SetState(EGameState::EGameOver);
+			//OnDeathRequest.Broadcast();
+		}
+
 	}
-	else if(Player == nullptr)//Maybe find another method
-	{
-		SetState(EGameState::EGameOver);
-	}
+	
 
 }
 

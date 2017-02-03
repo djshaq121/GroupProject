@@ -23,9 +23,6 @@ class GROUPPROJECT_API AEnemyController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName LocationToGoKey;
 
-	UPROPERTY(EditDefaultsOnly, Category = AI)
-		FName PlayerKey;
-
 	TArray<AActor*> PatrolPoints;
 
 	virtual void Possess(APawn* Pawn) override;
@@ -36,15 +33,13 @@ public:
 
 	AEnemyController();
 
-	virtual void Tick(float DeltaSeconds) override;
 
-	//
 	void SetTargetEnemy(APawn* NewTarget);
 
 	APawn * GetCurrentTarget();
 
 	UPROPERTY(EditDefaultsOnly, Category = AI)
-	FName PlayerKeyID;
+		FName PlayerKey;
 
 	void SetPlayerCaught(APawn* Pawn);
 
