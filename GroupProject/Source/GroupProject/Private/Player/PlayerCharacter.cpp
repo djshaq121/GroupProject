@@ -2,7 +2,7 @@
 
 #include "GroupProject.h"
 #include "PlayerCharacter.h"
-#include "HumanPlayerController.h"
+#include "CharacterController.h"
 #include "AssaultRifleBase.h"
 #include "LaserRifleBase.h"
 #include "WeaponBase.h"
@@ -397,8 +397,17 @@ void APlayerCharacter::LookUpRate(float Rate)
 void  APlayerCharacter::onDeath()
 {
 
+	if (!bIsDead)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Calling"))
+		OnDeathRequest.Broadcast();
+		bIsDead = true;
+	}
+
+	//DisableInput(GetHumanController());//Calls the player controller
 	
-	if(GetController()) GetHumanController()->UnPossess();
+									   //StartSpectatingOnly();
+	//if(GetController()) GetHumanController()->UnPossess();
 		/*
 		Inventory.CurrentWeapon->Destroy();
 		if (Inventory.PreviousWeapon)
@@ -416,25 +425,14 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
 	int32 DamageToApplyArmor = FMath::Clamp(DamagePoint, 0, CurrentArmor);//This clamps the damage point between 0 and current armor. So armor cant go below zero
 
-
+	UE_LOG(LogTemp, Warning, TEXT("Taking damage"))
 	if (CurrentArmor <= 0)
 	{
 		CurrentHealth -= DamageToApply;
 		if (CurrentHealth <= 0)
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Player is dead"))
-			//OnDeath() - Destroies the player and restarts the game
-			//OnDeath.Broadcast();
 			
-			bIsDead = true;
-			if (bIsDead)
-			{
-				onDeath();
-			}
-		
-			
-			//Sets it to true, so in blueprint it plays the death animation 
-			//StopAnimMontage();
+			onDeath();
 		}
 		else
 		{
@@ -586,8 +584,8 @@ void APlayerCharacter::SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip)
 
 
 //This gets the controller of the pawn
-AHumanPlayerController* APlayerCharacter::GetHumanController()
+ACharacterController* APlayerCharacter::GetHumanController()
 {
-	return Cast<AHumanPlayerController>(GetController());
+	return Cast<ACharacterController>(GetController());
 }
 

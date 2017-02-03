@@ -10,16 +10,15 @@
  */
 
 
+
  //Expose this to blueprint
  /*Keeps track of the state of the game*/
 UENUM(BlueprintType)
 enum class EGameState : uint8
 {
-	EMenu,
 	EPlaying,
 	EGameOver,
 	EUnknown
-
 };
 
 UCLASS()
@@ -29,6 +28,7 @@ class GROUPPROJECT_API AGroupProjectGameMode : public AGameMode
 	
 public:
 
+	AGroupProjectGameMode();
 
 	//Called every frame
 virtual void Tick(float DeltaSeconds) override;
@@ -39,6 +39,7 @@ EGameState GetCurrentState() const;
 
 UFUNCTION(BlueprintCallable, Category = "State")
 void SetState(EGameState NewState);
+
 
 private:
 
