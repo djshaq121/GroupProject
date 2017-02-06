@@ -95,7 +95,7 @@ FName AWeaponBase::GetWeaponName() const
 /*The method that is called in weapon class*/
 void  AWeaponBase::StartFire()
 {
-	if (GetPawnOwner() != nullptr)//Stops the game from crashing when the player shoots and dies at the same time  
+	if (GetPawnOwner() != nullptr && !GetPawnOwner()->GetIsDead())//Stops the game from crashing when the player shoots and dies at the same time  
 	{
 		if (CurrentAmmoInClip > 0 && bCanFire)
 		{
@@ -106,7 +106,6 @@ void  AWeaponBase::StartFire()
 			}
 
 			Recoil();
-			SpawnMuzzleEffect();
 			bIsFiring = true;
 			DoFire();
 
@@ -148,6 +147,7 @@ void  AWeaponBase::StopFire()
 
 void  AWeaponBase::DoFire()
 {
+	SpawnMuzzleEffect();
 	FHitResult Hit = FHitResult();
 	FVector Start;
 
