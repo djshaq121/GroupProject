@@ -50,6 +50,7 @@ void ALaserRifleBase::DoFire()
 	
 	if (bLRCanFire)
 	{
+		SpawnMuzzleEffect();
 		FHitResult Hit = FHitResult();
 		FVector Start;
 
