@@ -37,6 +37,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		int GetCurrentHealth() const;
 
+	void SetRagdollPhysics();
+
+	virtual void OnDeath();
+
 	
 
 private:

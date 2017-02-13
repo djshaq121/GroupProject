@@ -83,12 +83,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Attacking")
 		UCapsuleComponent* MeleeCollisionComp;
 
-	/*UFUNCTION(BlueprintCallable, Category = "AI")
-	int GetCurrentHealth() const;*/
-
-	void SetRagdollPhysics();
-
-	void OnDeath();
+	virtual void OnDeath();
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 

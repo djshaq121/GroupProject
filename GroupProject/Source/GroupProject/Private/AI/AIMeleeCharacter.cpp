@@ -149,11 +149,6 @@ void AAIMeleeCharacter::OnRetriggerMeleeStrike()
 }
 
 
-//int AAIMeleeCharacter::GetCurrentHealth() const
-//{
-//	return CurrentHealth;
-//}
-
 void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 {
 	
@@ -167,52 +162,6 @@ void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 	{
 		
 		AIController->SetTargetEnemy(SensedPawn);
-	}
-}
-
-
-
-void AAIMeleeCharacter::SetRagdollPhysics()
-{
-	bool bInRagdoll = false;
-	USkeletalMeshComponent* Mesh3P = GetMesh();
-
-	if (IsPendingKill())
-	{
-		bInRagdoll = false;
-	}
-	else if (!Mesh3P || !Mesh3P->GetPhysicsAsset())
-	{
-		bInRagdoll = false;
-	}
-	else
-	{
-		Mesh3P->SetAllBodiesSimulatePhysics(true);
-		Mesh3P->SetSimulatePhysics(true);
-		Mesh3P->WakeAllRigidBodies();
-		Mesh3P->bBlendPhysics = true;
-
-		bInRagdoll = true;
-	}
-
-	UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
-	if (CharacterComp)
-	{
-		CharacterComp->StopMovementImmediately();
-		CharacterComp->DisableMovement();
-		CharacterComp->SetComponentTickEnabled(false);
-	}
-
-	if (!bInRagdoll)
-	{
-		// Immediately hide the pawn
-		TurnOff();
-		SetActorHiddenInGame(true);
-		SetLifeSpan(1.0f);
-	}
-	else
-	{
-		SetLifeSpan(10.0f);
 	}
 }
 
