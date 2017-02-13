@@ -22,6 +22,10 @@ AEnemyController::AEnemyController()
 	//Initialize Blackboard Keys
 	PlayerKey = "Target";
 	LocationToGoKey = "LocationToGo";
+
+	Enemy = "Enemy";
+	HeardNoiseLocation = "NoiseLocation";
+	EnemyLastSeenLocation = "EnemyLastSeenLocation";
 	CurrentPatrolPoint = 0;
 }
 
@@ -53,6 +57,30 @@ void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 	if (BlackboardComp)
 	{
 		BlackboardComp->SetValueAsObject(PlayerKey, NewTarget);
+	}
+}
+
+void AEnemyController::SetSeenEnemy(APawn * NewTarget)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(Enemy, NewTarget);
+	}
+}
+
+void AEnemyController::SetNoiseLocation(FVector Location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(HeardNoiseLocation,Location);
+	}
+}
+
+void AEnemyController::SetEnemyLastSeebLocation(FVector Location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(EnemyLastSeenLocation, Location);
 	}
 }
 

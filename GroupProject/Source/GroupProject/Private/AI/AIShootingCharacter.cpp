@@ -45,14 +45,35 @@ void AAIShootingCharacter::BeginPlay()
 	}
 }
 
+/*If the AI see the enemy it will set the pawn instigator as a target and move to it */
 void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("I see you"))
+
+	/* Keep track of the time the player was last sensed in order to clear the target */
+	LastSeenTime = GetWorld()->GetTimeSeconds();
+	bSensedTarget = true;
+
+	AEnemyController* AIController = Cast<AEnemyController>(GetController());
+	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(PawnInstigator);
+	if (AIController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("I See you"))
+		AIController->SetSeenEnemy(SensedPawn);
+	}
 }
 
+/*If we the ai hears a noise this function is called*/
+/*When this is called it gets the noise location of the pawninstigator and moves to that location*/
 void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Location, float Volume)
 {
+
 	UE_LOG(LogTemp, Warning, TEXT("I hear you"))
+	AEnemyController* AIController = Cast<AEnemyController>(GetController());
+	
+	if (AIController)
+	{
+		AIController->SetNoiseLocation(Location);
+	}
 }
 
 float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)

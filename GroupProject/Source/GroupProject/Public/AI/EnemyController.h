@@ -36,12 +36,27 @@ public:
 
 	void SetTargetEnemy(APawn* NewTarget);
 
+	void SetSeenEnemy(APawn * NewTarget);
+
+	void SetNoiseLocation(FVector Location);
+
+	void SetEnemyLastSeebLocation(FVector Location);
+
 	APawn * GetCurrentTarget();
 
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKey;
 
-	//void SetPlayerCaught(APawn* Pawn);
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName Enemy;
+
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName HeardNoiseLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName EnemyLastSeenLocation;
+
+
 
 	int32 CurrentPatrolPoint = 0;
 
