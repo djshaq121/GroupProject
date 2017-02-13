@@ -47,9 +47,10 @@ void AAIShootingCharacter::BeginPlay()
 
 void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("I see you"))
 }
 
 void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Location, float Volume)
 {
+	UE_LOG(LogTemp, Warning, TEXT("I hear you"))
 }
