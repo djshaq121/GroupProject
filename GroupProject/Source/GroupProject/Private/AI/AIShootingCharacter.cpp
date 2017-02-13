@@ -54,3 +54,19 @@ void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & L
 {
 	UE_LOG(LogTemp, Warning, TEXT("I hear you"))
 }
+
+float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
+	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
+
+
+	CurrentHealth -= DamageToApply;
+	if (CurrentHealth <= 0)//Check to see if AI is dead
+	{
+		OnDeath();
+
+	}
+
+	return DamageToApply;
+}

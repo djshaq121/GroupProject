@@ -3,6 +3,7 @@
 #include "GroupProject.h"
 #include "EnemyController.h"
 #include "AIMeleeCharacter.h"//Character
+#include "AIShootingCharacter.h"
 #include "AIPatrolPoint.h"
 #include "AIEnemyMaster.h"
 #include "BehaviorTree/BehaviorTree.h"
