@@ -24,13 +24,6 @@ AEnemyController::AEnemyController()
 	CurrentPatrolPoint = 0;
 }
 
-void AEnemyController::SetPlayerCaught(APawn * Pawn)
-{
-	if (BlackboardComp)
-	{
-		BlackboardComp->SetValueAsObject(PlayerKey, Pawn);
-	}
-}
 
 void AEnemyController::Possess(APawn * Pawn)
 {

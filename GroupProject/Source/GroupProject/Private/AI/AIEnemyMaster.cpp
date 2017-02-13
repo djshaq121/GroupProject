@@ -11,14 +11,12 @@
 void AAIEnemyMaster::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AAIEnemyMaster::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
 }
 
 float AAIEnemyMaster::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
@@ -28,4 +26,9 @@ float AAIEnemyMaster::TakeDamage(float DamageAmount, FDamageEvent const & Damage
 	//
 	UE_LOG(LogTemp,Warning,TEXT("Not to be called"))
 	return DamageAmount;
+}
+
+int AAIEnemyMaster::GetCurrentHealth() const
+{
+	return CurrentHealth;
 }

@@ -34,6 +34,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 		int32 CurrentHealth;
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		int GetCurrentHealth() const;
 
 	
 

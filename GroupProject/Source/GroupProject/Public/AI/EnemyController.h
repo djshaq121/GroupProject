@@ -41,12 +41,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKey;
 
-	void SetPlayerCaught(APawn* Pawn);
+	//void SetPlayerCaught(APawn* Pawn);
 
 	int32 CurrentPatrolPoint = 0;
 
-	//void SetPlayerCaught(APawn* Pawn);
-	/*Getter Functions*/
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 	FORCEINLINE TArray<AActor*> GetPAtrolPoints() const { return PatrolPoints; }

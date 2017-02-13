@@ -62,37 +62,8 @@ void AAIMeleeCharacter::BeginPlay()
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnSeePlayer);
 	}
 
-	if (PawnSensingComp)
-	{
-		//if play is caught call the OnPlayerCaught function
-		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnPlayerCaught);
-	}
 }
 
-void AAIMeleeCharacter::OnPlayerCaught(APawn* Pawn)
-{
-	APlayerCharacter* Player = Cast<APlayerCharacter>(Pawn);
-	
-	if (Player == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Is Dead!"));
-		return;
-	}
-
-
-	//Get Reference to the player controller 
-	AEnemyController* AIController = Cast<AEnemyController>(GetController());
-
-	if (AIController)
-	{
-		LastSeenTime = GetWorld()->GetTimeSeconds();
-		bSensedTarget = true;
-		/* Set to prevent a zombie to attack multiple times in a very short time */
-
-		
-		AIController->SetPlayerCaught(Pawn);
-	}
-}
 
 void AAIMeleeCharacter::PerformMeleeStrike(AActor* HitActor)
 {
@@ -178,10 +149,10 @@ void AAIMeleeCharacter::OnRetriggerMeleeStrike()
 }
 
 
-int AAIMeleeCharacter::GetCurrentHealth() const
-{
-	return CurrentHealth;
-}
+//int AAIMeleeCharacter::GetCurrentHealth() const
+//{
+//	return CurrentHealth;
+//}
 
 void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 {

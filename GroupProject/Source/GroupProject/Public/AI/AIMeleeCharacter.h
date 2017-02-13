@@ -20,7 +20,7 @@ class GROUPPROJECT_API AAIMeleeCharacter : public AAIEnemyMaster
 		float LastSeenTime;
 
 		UPROPERTY(EditDefaultsOnly, Category = "AI")
-			float SenseTimeOut;
+		float SenseTimeOut;
 
 	/* Last time the player was heard */
 		float LastHeardTime;
@@ -40,15 +40,12 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnPlayerCaught(APawn * Pawn);
+	
 
 protected:
 
 	UFUNCTION()
 		void OnSeePlayer(APawn* Pawn);
-
-
 
 	UAudioComponent* PlayCharacterSound(USoundCue* CueToPlay);
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
@@ -86,8 +83,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Attacking")
 		UCapsuleComponent* MeleeCollisionComp;
 
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	int GetCurrentHealth() const;
+	/*UFUNCTION(BlueprintCallable, Category = "AI")
+	int GetCurrentHealth() const;*/
 
 	void SetRagdollPhysics();
 
