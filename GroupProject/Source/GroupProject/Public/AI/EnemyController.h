@@ -40,7 +40,7 @@ public:
 
 	void SetNoiseLocation(FVector Location);
 
-	void SetEnemyLastSeebLocation(FVector Location);
+	void SetEnemyLastSeenLocation(FVector Location);
 
 	APawn * GetCurrentTarget();
 

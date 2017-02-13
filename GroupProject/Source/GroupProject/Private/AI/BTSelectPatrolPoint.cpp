@@ -9,7 +9,7 @@
 EBTNodeResult::Type UBTSelectPatrolPoint::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory)
 {
 	AEnemyController* AICon = Cast<AEnemyController>(OwnerComp.GetAIOwner());
-
+	
 	if (AICon)
 	{
 		//Get BB Comp
@@ -17,24 +17,33 @@ EBTNodeResult::Type UBTSelectPatrolPoint::ExecuteTask(UBehaviorTreeComponent & O
 
 		AAIPatrolPoint* CurrentPoint = Cast<AAIPatrolPoint>(BlackboardComp->GetValueAsObject("LocationToGo"));
 
+		//Creating array
 		TArray<AActor*> AvailablePatrolPoints = AICon->GetPAtrolPoints();
+		//Fails if we dont have any patrol points
+		if (AvailablePatrolPoints.Num() == 0) {return EBTNodeResult::Failed;}
 
-		AAIPatrolPoint* NextPatrolPoint = nullptr;
+		AActor* NextPatrolPoint = nullptr;
 
-		if (AICon->CurrentPatrolPoint != AvailablePatrolPoints.Num() - 1)
+		NextPatrolPoint = AvailablePatrolPoints[FMath::RandRange(0, AvailablePatrolPoints.Num() - 1)];
+		if (NextPatrolPoint)
 		{
-			NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[++AICon->CurrentPatrolPoint]);
-
+			BlackboardComp->SetValueAsObject("WonderPointToGo", NextPatrolPoint);
+			return EBTNodeResult::Succeeded;
 		}
-		else
-		{
-			//If there are no more points
+		//if (AICon->CurrentPatrolPoint != AvailablePatrolPoints.Num() - 1)
+		//{
+		//	NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[++AICon->CurrentPatrolPoint]);
 
-			NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[0]);
-			AICon->CurrentPatrolPoint = 0;
-		}
-		BlackboardComp->SetValueAsObject("LocationToGo", NextPatrolPoint);
-		return EBTNodeResult::Succeeded;
+		//}
+		//else
+		//{
+		//	//If there are no more points
+
+		//	NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[0]);
+		//	AICon->CurrentPatrolPoint = 0;
+		//}
+		//BlackboardComp->SetValueAsObject("LocationToGo", NextPatrolPoint);
+		//return EBTNodeResult::Succeeded;
 	}
 	return EBTNodeResult::Failed;
 }

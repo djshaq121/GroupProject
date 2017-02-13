@@ -76,7 +76,7 @@ void AEnemyController::SetNoiseLocation(FVector Location)
 	}
 }
 
-void AEnemyController::SetEnemyLastSeebLocation(FVector Location)
+void AEnemyController::SetEnemyLastSeenLocation(FVector Location)
 {
 	if (BlackboardComp)
 	{
