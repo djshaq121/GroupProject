@@ -16,17 +16,7 @@ class GROUPPROJECT_API AAIMeleeCharacter : public AAIEnemyMaster
 		UPROPERTY(VisibleAnywhere, Category = "AI")
 		class UPawnSensingComponent* PawnSensingComp;
 
-		/* Last time the player was spotted */
-		float LastSeenTime;
-
-		UPROPERTY(EditDefaultsOnly, Category = "AI")
-		float SenseTimeOut;
-
-	/* Last time the player was heard */
-		float LastHeardTime;
-
-		/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
-		bool bSensedTarget;
+		
 
 public:
 
@@ -83,7 +73,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Attacking")
 		UCapsuleComponent* MeleeCollisionComp;
 
-	virtual void OnDeath();
+	virtual void OnDeath() override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 

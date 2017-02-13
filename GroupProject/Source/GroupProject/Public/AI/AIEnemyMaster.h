@@ -41,6 +41,18 @@ protected:
 
 	virtual void OnDeath();
 
+	/* Last time the player was spotted */
+	float LastSeenTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	float SenseTimeOut;
+
+	/* Last time the player was heard */
+	float LastHeardTime;
+
+	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
+	bool bSensedTarget;
+
 	
 
 private:

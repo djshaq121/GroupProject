@@ -30,7 +30,7 @@ AAIMeleeCharacter::AAIMeleeCharacter()
 void AAIMeleeCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
+	/* Check if the last time we sensed a player is beyond the time out value to prevent from endlessly following a player. */
 	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut)
 	{
 		AEnemyController* AIController = Cast<AEnemyController>(GetController());
@@ -42,8 +42,6 @@ void AAIMeleeCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	
-	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */	
 }
 // Called when the game starts or when spawned
 void AAIMeleeCharacter::BeginPlay()
