@@ -25,8 +25,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "AI")
 	class UPawnSensingComponent* PawnSensingComp;
 
-
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+
+	void SetState(EAIState NewStates);
 
 protected:
 
@@ -36,5 +37,7 @@ private:
 		void OnSeePlayer(APawn* PawnInstigator);
 	UFUNCTION()
 		void OnHearNoise(APawn* PawnInstigator, const FVector & Location, float Volume);
+
+	EAIState States;
 	
 };

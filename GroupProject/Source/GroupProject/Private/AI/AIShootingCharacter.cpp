@@ -14,6 +14,9 @@ AAIShootingCharacter::AAIShootingCharacter()
 	PawnSensingComp->SightRadius = 2000;
 	PawnSensingComp->HearingThreshold = 600;
 	PawnSensingComp->LOSHearingThreshold = 1200;
+
+	//Setting the starting AI state to passive 
+	States = EAIState::Passive;
 }
 void AAIShootingCharacter::Tick(float DeltaSeconds)
 {
@@ -27,7 +30,8 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 		{
 			bSensedTarget = false;
 			/* Reset */
-			AIController->SetTargetEnemy(nullptr);
+			AIController->SetSeenEnemy(nullptr);
+			UE_LOG(LogTemp, Warning, TEXT("Target Reset"))
 		}
 	}
 }
@@ -74,6 +78,11 @@ void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & L
 	{
 		AIController->SetNoiseLocation(Location);
 	}
+}
+
+void AAIShootingCharacter::SetState(EAIState NewStates)
+{
+	States = NewStates;
 }
 
 float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)

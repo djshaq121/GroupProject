@@ -30,13 +30,13 @@ AEnemyController::AEnemyController()
 }
 
 
-void AEnemyController::Possess(APawn * Pawn)
+void AEnemyController::Possess(APawn * PossessPawn)
 {
-	Super::Possess(Pawn);
+	Super::Possess(PossessPawn);
 
 	//Get Reference to Character
 
-	AAIEnemyMaster* AICharacter = Cast<AAIEnemyMaster>(Pawn);
+	AAIEnemyMaster* AICharacter = Cast<AAIEnemyMaster>(PossessPawn);
 
 	if (AICharacter)
 	{
