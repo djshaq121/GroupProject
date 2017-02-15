@@ -197,7 +197,7 @@ private:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
+	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
 
 	void CameraZoomIn();
 
