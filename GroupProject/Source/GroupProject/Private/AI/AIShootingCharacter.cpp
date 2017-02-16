@@ -36,7 +36,7 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	StartWeaponFire();
+	
 }
 
 void AAIShootingCharacter::BeginPlay()
@@ -51,39 +51,10 @@ void AAIShootingCharacter::BeginPlay()
 		PawnSensingComp->OnHearNoise.AddDynamic(this, &AAIShootingCharacter::OnHearNoise);
 	}
 	
-	//Spawn the weapon on begin play
-	if (StartingWeaponBlueprint)
-	{
-		//Spawning the weapon
-		AWeaponBase* StartingWeapon = GetWorld()->SpawnActor<AWeaponBase>(
-			StartingWeaponBlueprint,
-			GetMesh()->GetSocketLocation(WeaponSocketName),
-			GetMesh()->GetSocketRotation(WeaponSocketName)
-			);
-
-		//Adding the Weapon to the AI's inventory
-		AddToInventory(StartingWeapon);
-	}
-}
-
-void AAIShootingCharacter::AddToInventory(AWeaponBase * NewWeapon)
-{
-	//TODO - DestroyGun when the they are killed
-	NewWeapon->SetCanInteract(false);//We dont want the player or other enemies to pick it up again
-	NewWeapon->SetActorEnableCollision(false);
-	NewWeapon->ChangeOwner(this);//Select to new gun
-	//Attach to the AI 
-	NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);//Attching the new weapon to the weapon socket - New to update
-	//And store it in the array
-	Inventory.AddUnique(NewWeapon);
-	CurrentWeaponon = NewWeapon;//This than stores the weapon as the current weapon.
-	/*The way its down now can be improved dramtically but the AI only needs one weapon so its fine for the now*/
-}
-
-void AAIShootingCharacter::AddWeapon(AWeaponBase* Weapon)
-{
 
 }
+
+
 
 /*If the AI see the enemy it will set the pawn instigator as a target and move to it */
 void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
@@ -121,8 +92,6 @@ void AAIShootingCharacter::SetState(EAIState NewStates)
 	States = NewStates;
 }
 
-
-
 float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
@@ -139,20 +108,3 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 	return DamageToApply;
 }
 
-/*Weapon*/
-
-void AAIShootingCharacter::StartWeaponFire()
-{
-	if (CurrentWeaponon)//Check if current weapon is set in the AI
-	{
-		CurrentWeaponon->StartFire();
-	}
-}
-
-void AAIShootingCharacter::StopWeaponFire()
-{
-	if (CurrentWeaponon)//Check if current weapon is set in the AI
-	{
-		CurrentWeaponon->StopFire();
-	}
-}

@@ -39,17 +39,11 @@ public:
 
 protected:
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;//Select the weapon in blueprint
-
-	class AWeaponBase* CurrentWeaponon; //The AI current weapon
-
-	/** weapons in inventory */
-	TArray<class AWeaponBase*> Inventory;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	FName WeaponSocketName;
+
 	UFUNCTION()
 		void OnSeePlayer(APawn* PawnInstigator);
 	UFUNCTION()

@@ -5,6 +5,15 @@
 #include "GameFramework/Character.h"
 #include "AIEnemyMaster.generated.h"
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Passive UMETA(DisplayName = "Passive"),
+	Aggro UMETA(DisplayName = "Aggro"),
+	Combat UMETA(DisplayName = "Combat")
+
+};
+
 UCLASS()
 class GROUPPROJECT_API AAIEnemyMaster : public ACharacter
 {

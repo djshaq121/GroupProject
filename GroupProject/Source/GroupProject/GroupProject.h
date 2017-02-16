@@ -25,11 +25,3 @@ struct FPlayerInventory
 		class ALaserRifleBase* LaserRifle;
 };
 
-UENUM(BlueprintType)
-enum class EAIState : uint8
-{
-	Passive UMETA(DisplayName = "Passive"),
-	Aggro UMETA(DisplayName = "Aggro"),
-	Combat UMETA(DisplayName = "Combat")
-
-};
