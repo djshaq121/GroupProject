@@ -90,7 +90,12 @@ void AAIEnemyMaster::OnDeath()
 	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
-bool AAIEnemyMaster::GetIsDead()
+bool AAIEnemyMaster::GetIsDead() const
 {
 	return bIsDead;
+}
+
+void AAIEnemyMaster::SetIsDead(bool NewState)
+{
+	bIsDead = NewState;
 }

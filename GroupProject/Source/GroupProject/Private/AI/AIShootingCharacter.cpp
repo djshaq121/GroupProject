@@ -106,6 +106,8 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
+		AIOnDeathRequest.Broadcast();
+		SetIsDead(true);
 		OnDeath();
 	}
 

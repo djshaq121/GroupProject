@@ -38,10 +38,9 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
+	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
-	UPROPERTY(VisibleAnywhere, Category = "Health")
-		int32 CurrentHealth;
+	int32 CurrentHealth;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 		int GetCurrentHealth() const;
@@ -63,14 +62,13 @@ protected:
 	bool bSensedTarget;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	bool GetIsDead();
+	bool GetIsDead() const;
+
+	void SetIsDead(bool NewState);
 	
 
 private:
 
-
-	UPROPERTY(VisibleAnywhere, Category = "Setup")
-	int32 CurrentArmor = 0;
 
 
 	bool bIsDead = false;

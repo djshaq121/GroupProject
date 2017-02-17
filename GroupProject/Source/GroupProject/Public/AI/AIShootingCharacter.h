@@ -8,12 +8,18 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIOnDeathRequest);
+
 UCLASS()
 class GROUPPROJECT_API AAIShootingCharacter : public AAIEnemyMaster
 {
 	GENERATED_BODY()
 	
 public:
+
+	UPROPERTY(BlueprintAssignable)
+	FAIOnDeathRequest AIOnDeathRequest;
+
 	AAIShootingCharacter();
 
 	void Tick(float DeltaSeconds);
