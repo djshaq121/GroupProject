@@ -11,6 +11,7 @@
 void AAIEnemyMaster::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHealth = MaximumHealth;
 }
 
 // Called every frame
@@ -79,6 +80,7 @@ void AAIEnemyMaster::SetRagdollPhysics()
 
 void AAIEnemyMaster::OnDeath()
 {
+	if (Controller) GetController()->UnPossess();
 	SetRagdollPhysics();
 	DetachFromControllerPendingDestroy();
 
@@ -86,4 +88,9 @@ void AAIEnemyMaster::OnDeath()
 	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+}
+
+bool AAIEnemyMaster::GetIsDead()
+{
+	return bIsDead;
 }

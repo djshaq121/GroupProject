@@ -20,6 +20,8 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+	float CalcRandomDamage();
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit);
 
@@ -30,6 +32,12 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float BaseDamage;
+	
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
+	float MaxDamage;
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
+	float MinDamage;
 
 	UPROPERTY(VisibleAnywhere,  meta = (AllowPirvateAccess = "true"))
 	USkeletalMeshComponent* BulletMesh;

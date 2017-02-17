@@ -34,6 +34,12 @@ void AProjectileBase::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 
 }
+float AProjectileBase::CalcRandomDamage()
+{
+	float FinalDamage = FMath::RandRange(MinDamage, MaxDamage);
+
+	return FinalDamage;
+}
 
 void AProjectileBase::DealDamage(const FHitResult& Hit)
 {
@@ -41,7 +47,7 @@ void AProjectileBase::DealDamage(const FHitResult& Hit)
 
 	if (Hit.GetActor())
 	{
-		float DealtDamage = BaseDamage;//Later maybe damage multipler 
+		float DealtDamage = CalcRandomDamage();
 		FVector ShotDirection = GetActorLocation() - Hit.ImpactPoint;//Gets the location of the gun subtract from the hit point location to find the direction
 
 																	 //This fully describes the damage recieved 

@@ -62,6 +62,8 @@ protected:
 	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
 	bool bSensedTarget;
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool GetIsDead();
 	
 
 private:

@@ -51,6 +51,13 @@ void AEnemyController::Possess(APawn * PossessPawn)
 	}
 }
 
+void AEnemyController::UnPossess()
+{
+	Super::UnPossess();
+
+	BehaviorComp->StopTree();
+
+}
 
 void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 {
@@ -62,7 +69,8 @@ void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 
 void AEnemyController::SetSeenEnemy(APawn * NewTarget)
 {
-	if (BlackboardComp)
+
+	if (BlackboardComp && GetInstigator())
 	{
 		BlackboardComp->SetValueAsObject(Enemy, NewTarget);
 	}

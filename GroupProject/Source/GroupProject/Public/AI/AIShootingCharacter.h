@@ -29,18 +29,15 @@ public:
 
 	void SetState(EAIState NewStates);
 
-	void AddToInventory(AWeaponBase* NewWeapon);
-
-	void AddWeapon(AWeaponBase* NewWeapon);
-
-	void StartWeaponFire();
-
-	void StopWeaponFire();
-
 protected:
 	
 
+
 private:
+	/*Muzzle Effects*/
+	UPROPERTY(EditDefaultsOnly)
+	UParticleSystem* ShotEffect;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	FName WeaponSocketName;
 

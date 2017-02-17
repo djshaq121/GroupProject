@@ -27,9 +27,13 @@ class GROUPPROJECT_API AEnemyController : public AAIController
 
 	virtual void Possess(APawn* Pawn) override;
 
+	
+
 
 
 public:
+
+	virtual void UnPossess() override;
 
 	AEnemyController();
 

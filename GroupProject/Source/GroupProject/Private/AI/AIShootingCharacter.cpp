@@ -32,7 +32,7 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 			bSensedTarget = false;
 			/* Reset */
 			AIController->SetSeenEnemy(nullptr);
-			UE_LOG(LogTemp, Warning, TEXT("Target Reset"))
+			
 		}
 	}
 
@@ -68,7 +68,7 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(PawnInstigator);
 	if (AIController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I See you"))
+		
 		AIController->SetSeenEnemy(SensedPawn);
 	}
 }
@@ -78,7 +78,7 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Location, float Volume)
 {
 
-	UE_LOG(LogTemp, Warning, TEXT("I hear you"))
+
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 	
 	if (AIController)
@@ -92,18 +92,34 @@ void AAIShootingCharacter::SetState(EAIState NewStates)
 	States = NewStates;
 }
 
+
+
 float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+
+
 	int32 DamagePoint = FPlatformMath::RoundToInt(DamageAmount);//Convert floating point damage to int damage and then round the damage
 	int32 DamageToApply = FMath::Clamp(DamagePoint, 0, CurrentHealth);//This clamps the damage point between 0 and current health. So health cant go below zero
 
 
 	CurrentHealth -= DamageToApply;
+
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
 		OnDeath();
+	}
+
+	if (DamageCauser)
+	{
+		AEnemyController* AIController = Cast<AEnemyController>(GetController());
+		APlayerCharacter* Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		if (!GetIsDead() && AIController)//If we still have an controller and is alive than set the damage dealer to target
+		{
+			AIController->SetSeenEnemy(Player);
+		}
 
 	}
+
 
 	return DamageToApply;
 }
