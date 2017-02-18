@@ -158,8 +158,12 @@ void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(Pawn);
 	if (AIController)
 	{
+		if (SensedPawn)
+		{
+			AIController->SetTargetEnemy(SensedPawn);
+		}
 		
-		AIController->SetTargetEnemy(SensedPawn);
+		
 	}
 }
 

@@ -37,11 +37,13 @@ public:
 
 	void SetState(EAIState NewStates);
 
-	
+
+	void SetAimingFalse();
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetIsAiming() const;
 
+	FTimerHandle AimingTimeHandle;
 protected:
 	
 
@@ -62,5 +64,7 @@ private:
 	EAIState States;
 
 	bool bIsAiming = false;
+
+	bool bIsEnemyVisible = false;
 	
 };

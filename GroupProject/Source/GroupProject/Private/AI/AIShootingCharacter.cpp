@@ -32,7 +32,6 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 			bSensedTarget = false;
 			/* Reset */
 			AIController->SetSeenEnemy(nullptr);
-			
 			bIsAiming = false;
 			
 		}
@@ -66,13 +65,19 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
 
+	UE_LOG(LogTemp, Warning, TEXT("See Player"))
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(PawnInstigator);
 	if (AIController)
 	{
-		bIsAiming = true;
-		AIController->SetSeenEnemy(SensedPawn);
-		
+		if (SensedPawn)
+		{
+			bIsAiming = true;
+			FVector Location = SensedPawn->GetActorLocation();
+			AIController->SetSeenEnemy(SensedPawn);
+			AIController->SetEnemyLastSeenLocation(Location);
+		}
+	
 	}
 }
 
@@ -80,7 +85,6 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 /*When this is called it gets the noise location of the pawninstigator and moves to that location*/
 void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & Location, float Volume)
 {
-
 
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 	

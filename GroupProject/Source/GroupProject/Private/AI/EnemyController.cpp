@@ -92,6 +92,14 @@ void AEnemyController::SetEnemyLastSeenLocation(FVector Location)
 	}
 }
 
+void AEnemyController::SetEnemyVisible(bool IsVisble)
+{
+	if (BlackboardComp)
+	{
+		//BlackboardComp->SetValueAsBool();
+	}
+}
+
 APawn* AEnemyController::GetCurrentTarget()
 {
 	APawn* CurrentTarget = Cast<APawn>(BlackboardComp->GetValueAsObject(PlayerKey));

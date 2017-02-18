@@ -46,6 +46,8 @@ public:
 
 	void SetEnemyLastSeenLocation(FVector Location);
 
+	void SetEnemyVisible(bool IsVisble);
+
 	APawn * GetCurrentTarget();
 
 	UPROPERTY(EditDefaultsOnly, Category = AI)
