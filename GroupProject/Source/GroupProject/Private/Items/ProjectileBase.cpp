@@ -14,7 +14,7 @@ AProjectileBase::AProjectileBase()
 	CollisonSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisonSphere"));
 	SetRootComponent(CollisonSphere);
 
-	BulletMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BulletMesh"));
+	BulletMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
 	BulletMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Projectile Movement"));

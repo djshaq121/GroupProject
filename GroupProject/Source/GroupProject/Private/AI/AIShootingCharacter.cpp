@@ -33,6 +33,8 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 			/* Reset */
 			AIController->SetSeenEnemy(nullptr);
 			
+			bIsAiming = false;
+			
 		}
 	}
 
@@ -68,8 +70,9 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(PawnInstigator);
 	if (AIController)
 	{
-		
+		bIsAiming = true;
 		AIController->SetSeenEnemy(SensedPawn);
+		
 	}
 }
 
@@ -118,6 +121,7 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 		if (!GetIsDead() && AIController)//If we still have an controller and is alive than set the damage dealer to target
 		{
 			AIController->SetSeenEnemy(Player);
+			
 		}
 
 	}
@@ -125,4 +129,9 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 
 	return DamageToApply;
 }
+bool AAIShootingCharacter::GetIsAiming() const
+{
+	return bIsAiming;
+}
+
 

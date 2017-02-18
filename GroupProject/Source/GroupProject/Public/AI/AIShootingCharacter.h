@@ -10,6 +10,8 @@
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAIOnDeathRequest);
 
+class APlayerCharacter;
+
 UCLASS()
 class GROUPPROJECT_API AAIShootingCharacter : public AAIEnemyMaster
 {
@@ -35,6 +37,11 @@ public:
 
 	void SetState(EAIState NewStates);
 
+	
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool GetIsAiming() const;
+
 protected:
 	
 
@@ -53,5 +60,7 @@ private:
 		void OnHearNoise(APawn* PawnInstigator, const FVector & Location, float Volume);
 
 	EAIState States;
+
+	bool bIsAiming = false;
 	
 };

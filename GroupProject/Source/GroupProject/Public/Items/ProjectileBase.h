@@ -28,6 +28,9 @@ public:
 	void OnTimerExpire();
 
 	void DealDamage(const FHitResult& Hit);
+
+	UPROPERTY(VisibleAnywhere, meta = (AllowPirvateAccess = "true"))
+		UStaticMeshComponent* BulletMesh;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
@@ -39,8 +42,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float MinDamage;
 
-	UPROPERTY(VisibleAnywhere,  meta = (AllowPirvateAccess = "true"))
-	USkeletalMeshComponent* BulletMesh;
+	
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPirvateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
