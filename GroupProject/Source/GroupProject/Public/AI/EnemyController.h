@@ -32,6 +32,8 @@ class GROUPPROJECT_API AEnemyController : public AAIController
 
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Behavior")
+	void EnemyIsVisible();
 
 	virtual void UnPossess() override;
 
@@ -62,7 +64,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName EnemyLastSeenLocation;
 
-
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName IsEnemyVisible;
 
 	int32 CurrentPatrolPoint = 0;
 

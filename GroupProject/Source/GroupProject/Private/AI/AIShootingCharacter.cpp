@@ -65,7 +65,7 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 	LastSeenTime = GetWorld()->GetTimeSeconds();
 	bSensedTarget = true;
 
-	UE_LOG(LogTemp, Warning, TEXT("See Player"))
+	
 	AEnemyController* AIController = Cast<AEnemyController>(GetController());
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(PawnInstigator);
 	if (AIController)

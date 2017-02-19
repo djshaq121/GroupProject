@@ -22,7 +22,7 @@ AEnemyController::AEnemyController()
 	//Initialize Blackboard Keys
 	PlayerKey = "Target";
 	LocationToGoKey = "LocationToGo";
-
+	IsEnemyVisible = "IsEnemyVisible";
 	Enemy = "Enemy";
 	HeardNoiseLocation = "NoiseLocation";
 	EnemyLastSeenLocation = "EnemyLastSeenLocation";
@@ -69,7 +69,7 @@ void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 
 void AEnemyController::SetSeenEnemy(APawn * NewTarget)
 {
-
+	
 	if (BlackboardComp && GetInstigator())
 	{
 		BlackboardComp->SetValueAsObject(Enemy, NewTarget);
@@ -104,4 +104,26 @@ APawn* AEnemyController::GetCurrentTarget()
 {
 	APawn* CurrentTarget = Cast<APawn>(BlackboardComp->GetValueAsObject(PlayerKey));
 	return CurrentTarget;
+}
+
+void AEnemyController::EnemyIsVisible()
+{
+	
+	if (BlackboardComp)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("NotVisble"))
+		bool CanShoot = false;//Resets every tick
+		auto player = GetWorld()->GetFirstPlayerController()->GetPawn();
+		if (LineOfSightTo(player, GetPawn()->GetActorLocation()))//If the sees the player 
+		{
+			//Allow the AI to shoot
+			CanShoot = true;
+			UE_LOG(LogTemp, Warning, TEXT("Visble"))
+		}
+
+		BlackboardComp->SetValueAsBool(IsEnemyVisible, CanShoot);
+	}
+
+
+	
 }
