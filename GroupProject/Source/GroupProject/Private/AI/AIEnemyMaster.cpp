@@ -29,6 +29,10 @@ float AAIEnemyMaster::TakeDamage(float DamageAmount, FDamageEvent const & Damage
 	return DamageAmount;
 }
 
+void AAIEnemyMaster::DetermineAiState()
+{
+}
+
 int AAIEnemyMaster::GetCurrentHealth() const
 {
 	return CurrentHealth;

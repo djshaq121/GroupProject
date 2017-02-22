@@ -35,6 +35,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 		class UBehaviorTree* BehaviorTree;
 
+	virtual void DetermineAiState();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")

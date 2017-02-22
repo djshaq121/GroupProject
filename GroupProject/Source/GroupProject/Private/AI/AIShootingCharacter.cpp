@@ -32,7 +32,7 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 			bSensedTarget = false;
 			/* Reset */
 			AIController->SetSeenEnemy(nullptr);
-			bIsAiming = false;
+			//bIsAiming = false;
 			
 		}
 	}
@@ -72,7 +72,7 @@ void AAIShootingCharacter::OnSeePlayer(APawn * PawnInstigator)
 	{
 		if (SensedPawn)
 		{
-			bIsAiming = true;
+			//bIsAiming = true;
 			FVector Location = SensedPawn->GetActorLocation();
 			AIController->SetSeenEnemy(SensedPawn);
 			AIController->SetEnemyLastSeenLocation(Location);
@@ -90,7 +90,9 @@ void AAIShootingCharacter::OnHearNoise(APawn * PawnInstigator, const FVector & L
 	
 	if (AIController)
 	{
+
 		AIController->SetNoiseLocation(Location);
+		//bIsAiming = true;
 	}
 }
 
@@ -136,6 +138,23 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 bool AAIShootingCharacter::GetIsAiming() const
 {
 	return bIsAiming;
+}
+
+void AAIShootingCharacter::SetIsAiming(bool Aiming)
+{
+	 bIsAiming = Aiming;
+}
+
+void AAIShootingCharacter::DetermineAiState()
+{
+	EAIState newState = EAIState::Passive;
+	if (bSensedTarget)
+	{
+	//	newState = EAIState::Combat;
+		
+	}
+
+	SetState(newState);
 }
 
 
