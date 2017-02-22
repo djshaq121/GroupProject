@@ -128,8 +128,9 @@ void  AWeaponBase::StartFire()
 			}
 		}
 		//This reloads when the ammo reaches zero
-		if (CurrentAmmoInClip <= 0 && CurrentAmmoInGun > 0) {
+		if (CurrentAmmoInClip <= 0 && CurrentAmmoInGun > 0 && GetCanReload()) {
 			StopFire();
+			
 			StartReload(); 
 		}
 	}

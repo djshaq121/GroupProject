@@ -28,14 +28,14 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
-	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+	
 		int32 CurrentHealth;
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		int32 MaximumArmor = 100;//Its int because we dont want to compare float to zero
 
-	UPROPERTY(VisibleAnywhere, Category = "Health & Armor")
+	
 		int32 CurrentArmor;
 
 public:
@@ -59,6 +59,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Health & Armor")
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
 	// Called to bind functionality to input
@@ -197,7 +198,7 @@ private:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
+	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
 
 	void CameraZoomIn();
 

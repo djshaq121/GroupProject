@@ -24,3 +24,4 @@ struct FPlayerInventory
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")
 		class ALaserRifleBase* LaserRifle;
 };
+

@@ -27,26 +27,48 @@ class GROUPPROJECT_API AEnemyController : public AAIController
 
 	virtual void Possess(APawn* Pawn) override;
 
+	
+
 
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "Behavior")
+	void EnemyIsVisible();
+
+	virtual void UnPossess() override;
 
 	AEnemyController();
 
 
 	void SetTargetEnemy(APawn* NewTarget);
 
+	void SetSeenEnemy(APawn * NewTarget);
+
+	void SetNoiseLocation(FVector Location);
+
+	void SetEnemyLastSeenLocation(FVector Location);
+
+	void SetEnemyVisible(bool IsVisble);
+
 	APawn * GetCurrentTarget();
 
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName PlayerKey;
 
-	void SetPlayerCaught(APawn* Pawn);
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName Enemy;
+
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName HeardNoiseLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName EnemyLastSeenLocation;
+
+	UPROPERTY(EditDefaultsOnly, Category = AI)
+		FName IsEnemyVisible;
 
 	int32 CurrentPatrolPoint = 0;
 
-	//void SetPlayerCaught(APawn* Pawn);
-	/*Getter Functions*/
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 	FORCEINLINE TArray<AActor*> GetPAtrolPoints() const { return PatrolPoints; }

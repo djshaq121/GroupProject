@@ -3,6 +3,7 @@
 #include "GroupProject.h"
 #include "EnemyController.h"
 #include "AIMeleeCharacter.h"//Character
+#include "AIShootingCharacter.h"
 #include "AIPatrolPoint.h"
 #include "AIEnemyMaster.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -21,24 +22,21 @@ AEnemyController::AEnemyController()
 	//Initialize Blackboard Keys
 	PlayerKey = "Target";
 	LocationToGoKey = "LocationToGo";
+	IsEnemyVisible = "IsEnemyVisible";
+	Enemy = "Enemy";
+	HeardNoiseLocation = "NoiseLocation";
+	EnemyLastSeenLocation = "EnemyLastSeenLocation";
 	CurrentPatrolPoint = 0;
 }
 
-void AEnemyController::SetPlayerCaught(APawn * Pawn)
-{
-	if (BlackboardComp)
-	{
-		BlackboardComp->SetValueAsObject(PlayerKey, Pawn);
-	}
-}
 
-void AEnemyController::Possess(APawn * Pawn)
+void AEnemyController::Possess(APawn * PossessPawn)
 {
-	Super::Possess(Pawn);
+	Super::Possess(PossessPawn);
 
 	//Get Reference to Character
 
-	AAIEnemyMaster* AICharacter = Cast<AAIEnemyMaster>(Pawn);
+	AAIEnemyMaster* AICharacter = Cast<AAIEnemyMaster>(PossessPawn);
 
 	if (AICharacter)
 	{
@@ -53,6 +51,13 @@ void AEnemyController::Possess(APawn * Pawn)
 	}
 }
 
+void AEnemyController::UnPossess()
+{
+	Super::UnPossess();
+
+	BehaviorComp->StopTree();
+
+}
 
 void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 {
@@ -62,8 +67,63 @@ void AEnemyController::SetTargetEnemy(APawn * NewTarget)
 	}
 }
 
+void AEnemyController::SetSeenEnemy(APawn * NewTarget)
+{
+	
+	if (BlackboardComp && GetInstigator())
+	{
+		BlackboardComp->SetValueAsObject(Enemy, NewTarget);
+	}
+}
+
+void AEnemyController::SetNoiseLocation(FVector Location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(HeardNoiseLocation,Location);
+	}
+}
+
+void AEnemyController::SetEnemyLastSeenLocation(FVector Location)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(EnemyLastSeenLocation, Location);
+	}
+}
+
+void AEnemyController::SetEnemyVisible(bool IsVisble)
+{
+	if (BlackboardComp)
+	{
+		//BlackboardComp->SetValueAsBool();
+	}
+}
+
 APawn* AEnemyController::GetCurrentTarget()
 {
 	APawn* CurrentTarget = Cast<APawn>(BlackboardComp->GetValueAsObject(PlayerKey));
 	return CurrentTarget;
+}
+
+void AEnemyController::EnemyIsVisible()
+{
+	
+	if (BlackboardComp)
+	{
+		UE_LOG(LogTemp,Warning,TEXT("NotVisble"))
+		bool CanShoot = false;//Resets every tick
+		auto player = GetWorld()->GetFirstPlayerController()->GetPawn();
+		if (LineOfSightTo(player, GetPawn()->GetActorLocation()))//If the sees the player 
+		{
+			//Allow the AI to shoot
+			CanShoot = true;
+			UE_LOG(LogTemp, Warning, TEXT("Visble"))
+		}
+
+		BlackboardComp->SetValueAsBool(IsEnemyVisible, CanShoot);
+	}
+
+
+	
 }

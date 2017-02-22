@@ -5,6 +5,15 @@
 #include "GameFramework/Character.h"
 #include "AIEnemyMaster.generated.h"
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	Passive UMETA(DisplayName = "Passive"),
+	Aggro UMETA(DisplayName = "Aggro"),
+	Combat UMETA(DisplayName = "Combat")
+
+};
+
 UCLASS()
 class GROUPPROJECT_API AAIEnemyMaster : public ACharacter
 {
@@ -26,22 +35,42 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 		class UBehaviorTree* BehaviorTree;
 
+	virtual void DetermineAiState();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
+	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
-	UPROPERTY(VisibleAnywhere, Category = "Health")
-		int32 CurrentHealth;
+	int32 CurrentHealth;
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+		int GetCurrentHealth() const;
 
+	void SetRagdollPhysics();
+
+	virtual void OnDeath();
+
+	/* Last time the player was spotted */
+	float LastSeenTime;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	float SenseTimeOut;
+
+	/* Last time the player was heard */
+	float LastHeardTime;
+
+	/* Resets after sense time-out to avoid unnecessary clearing of target each tick */
+	bool bSensedTarget;
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	bool GetIsDead() const;
+
+	void SetIsDead(bool NewState);
 	
 
 private:
 
-
-	UPROPERTY(VisibleAnywhere, Category = "Setup")
-	int32 CurrentArmor = 0;
 
 
 	bool bIsDead = false;

@@ -30,7 +30,7 @@ AAIMeleeCharacter::AAIMeleeCharacter()
 void AAIMeleeCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */
+	/* Check if the last time we sensed a player is beyond the time out value to prevent from endlessly following a player. */
 	if (bSensedTarget && (GetWorld()->TimeSeconds - LastSeenTime) > SenseTimeOut)
 	{
 		AEnemyController* AIController = Cast<AEnemyController>(GetController());
@@ -42,8 +42,6 @@ void AAIMeleeCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
-	
-	/* Check if the last time we sensed a player is beyond the time out value to prevent bot from endlessly following a player. */	
 }
 // Called when the game starts or when spawned
 void AAIMeleeCharacter::BeginPlay()
@@ -62,37 +60,8 @@ void AAIMeleeCharacter::BeginPlay()
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnSeePlayer);
 	}
 
-	if (PawnSensingComp)
-	{
-		//if play is caught call the OnPlayerCaught function
-		PawnSensingComp->OnSeePawn.AddDynamic(this, &AAIMeleeCharacter::OnPlayerCaught);
-	}
 }
 
-void AAIMeleeCharacter::OnPlayerCaught(APawn* Pawn)
-{
-	APlayerCharacter* Player = Cast<APlayerCharacter>(Pawn);
-	
-	if (Player == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Player Is Dead!"));
-		return;
-	}
-
-
-	//Get Reference to the player controller 
-	AEnemyController* AIController = Cast<AEnemyController>(GetController());
-
-	if (AIController)
-	{
-		LastSeenTime = GetWorld()->GetTimeSeconds();
-		bSensedTarget = true;
-		/* Set to prevent a zombie to attack multiple times in a very short time */
-
-		
-		AIController->SetPlayerCaught(Pawn);
-	}
-}
 
 void AAIMeleeCharacter::PerformMeleeStrike(AActor* HitActor)
 {
@@ -178,11 +147,6 @@ void AAIMeleeCharacter::OnRetriggerMeleeStrike()
 }
 
 
-int AAIMeleeCharacter::GetCurrentHealth() const
-{
-	return CurrentHealth;
-}
-
 void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 {
 	
@@ -194,54 +158,12 @@ void AAIMeleeCharacter::OnSeePlayer(APawn* Pawn)
 	APlayerCharacter* SensedPawn = Cast<APlayerCharacter>(Pawn);
 	if (AIController)
 	{
+		if (SensedPawn)
+		{
+			AIController->SetTargetEnemy(SensedPawn);
+		}
 		
-		AIController->SetTargetEnemy(SensedPawn);
-	}
-}
-
-
-
-void AAIMeleeCharacter::SetRagdollPhysics()
-{
-	bool bInRagdoll = false;
-	USkeletalMeshComponent* Mesh3P = GetMesh();
-
-	if (IsPendingKill())
-	{
-		bInRagdoll = false;
-	}
-	else if (!Mesh3P || !Mesh3P->GetPhysicsAsset())
-	{
-		bInRagdoll = false;
-	}
-	else
-	{
-		Mesh3P->SetAllBodiesSimulatePhysics(true);
-		Mesh3P->SetSimulatePhysics(true);
-		Mesh3P->WakeAllRigidBodies();
-		Mesh3P->bBlendPhysics = true;
-
-		bInRagdoll = true;
-	}
-
-	UCharacterMovementComponent* CharacterComp = Cast<UCharacterMovementComponent>(GetMovementComponent());
-	if (CharacterComp)
-	{
-		CharacterComp->StopMovementImmediately();
-		CharacterComp->DisableMovement();
-		CharacterComp->SetComponentTickEnabled(false);
-	}
-
-	if (!bInRagdoll)
-	{
-		// Immediately hide the pawn
-		TurnOff();
-		SetActorHiddenInGame(true);
-		SetLifeSpan(1.0f);
-	}
-	else
-	{
-		SetLifeSpan(10.0f);
+		
 	}
 }
 
