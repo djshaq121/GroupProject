@@ -330,6 +330,11 @@ int APlayerCharacter::GetMaxHealth() const
 	return MaximumHealth;
 }
 
+int APlayerCharacter::GetMaxArmor() const
+{
+	return MaximumArmor;
+}
+
 int APlayerCharacter::GetCurrentArmor() const
 {
 	return CurrentArmor;
@@ -346,6 +351,21 @@ void APlayerCharacter::Heal(int Amount)
 		if (CurrentHealth >= MaximumHealth)
 		{
 			CurrentHealth = MaximumHealth;
+		}
+
+	}
+}
+
+void APlayerCharacter::HealArmor(int Amount)
+{
+	// Currently polayer can still pickup when his health is 100 and item is destroyed but no health is gained
+	if (CurrentArmor < 100)
+	{
+
+		CurrentArmor = CurrentArmor + Amount;
+		if (CurrentArmor >= MaximumArmor)
+		{
+			CurrentArmor = MaximumArmor;
 		}
 
 	}

@@ -74,8 +74,12 @@ public:
 		int GetCurrentArmor() const;
 
 	int GetMaxHealth() const;
+	
+	int GetMaxArmor() const;
 
 	void Heal(int Amount);
+
+	void HealArmor(int Amount);
 
 	bool GetIsDead();
 
