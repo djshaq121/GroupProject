@@ -84,6 +84,7 @@ public:
 
 	void UseAmmo();
 
+	void Noise(float Loudness);
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		float NoAnimReloadDuration;
