@@ -376,6 +376,11 @@ bool APlayerCharacter::GetIsDead()
 	return bIsDead;
 }
 
+void APlayerCharacter::MakePawnNoise(float Loudness)
+{
+	MakeNoise(Loudness, this, GetActorLocation());
+}
+
 void APlayerCharacter::MoveForward(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))

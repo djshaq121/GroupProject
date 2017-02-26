@@ -104,7 +104,7 @@ void  AWeaponBase::StartFire()
 				//This oscillates the camera 
 				GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(WeaponFireShake, 1.f);
 			}
-
+			Noise(1.f);
 			Recoil();
 			bIsFiring = true;
 			DoFire();
@@ -186,6 +186,16 @@ void  AWeaponBase::DoFire()
 		//Calls DealDamage passing the actor we hit
 		DealDamage(Hit);
 
+	}
+}
+
+void AWeaponBase::Noise(float Loudness)
+{
+	auto pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	auto player = Cast<APlayerCharacter>(pawn);
+	if (player)
+	{
+		player->MakePawnNoise(Loudness);
 	}
 }
 

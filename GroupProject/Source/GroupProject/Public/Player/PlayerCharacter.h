@@ -46,6 +46,8 @@ public:
 
 	void onDeath();
 
+	void MakePawnNoise(float LoudNess);
+
 	//Make an IsDead property - So it can be caled in blueprint
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 		bool bIsDead = false;
