@@ -25,3 +25,13 @@ struct FPlayerInventory
 		class ALaserRifleBase* LaserRifle;
 };
 
+UENUM(BlueprintType)
+enum class EAmmoType : uint8
+{
+	//GENERATED_USTRUCT_BODY()
+
+	AT_Bullets UMETA(DisplayName="Assault"),
+	AT_Pistol UMETA(DisplayName = "Pistol"),
+	AT_Lasers UMETA(DisplayName = "LaserRifle")
+};
+

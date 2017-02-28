@@ -161,8 +161,10 @@ private:
 
 	/*Weapon*/
 public:
-	void AddToInventory(class AWeaponBase* NewWeapon);
+	
 
+	void AddToInventory(class AWeaponBase* NewWeapon);
+	void AddAmmo(int32 AmmoAmount, EAmmoType AmmoType);
 	void EquipWeapon(AWeaponBase * WeaponToEquip);
 
 	void StartFire();

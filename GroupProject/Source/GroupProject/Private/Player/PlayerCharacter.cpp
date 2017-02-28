@@ -543,6 +543,33 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 }
 
+void APlayerCharacter::AddAmmo(int32 AmmoAmount, EAmmoType AmmoType)
+{
+	switch (AmmoType) {
+		case EAmmoType::AT_Bullets:
+			if (Inventory.AssaultRifle)//check if we have one
+			{
+				Inventory.AssaultRifle->AddAmmo(AmmoAmount);
+			}
+			break;
+		case EAmmoType::AT_Pistol:
+			if (Inventory.AssaultRifle)//check if we have one
+			{
+				//Inventory.AssaultRifle->AddAmmo(AmmoAmount);
+			}
+			break;
+		case EAmmoType::AT_Lasers:
+			if (Inventory.AssaultRifle)//check if we have one
+			{
+				Inventory.LaserRifle->AddAmmo(AmmoAmount);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
+
 void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if weapon is in the inventory
 {
 

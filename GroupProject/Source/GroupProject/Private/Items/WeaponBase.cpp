@@ -391,6 +391,11 @@ void AWeaponBase::Recoil()
 
 }
 
+void AWeaponBase::AddAmmo(int32 Amount)
+{
+	CurrentAmmoInGun = FMath::Clamp(CurrentAmmoInGun + Amount, CurrentAmmoInGun, MaxAmmoInGun);
+}
+
 void AWeaponBase::UseAmmo()
 {
 	CurrentAmmoInClip--;

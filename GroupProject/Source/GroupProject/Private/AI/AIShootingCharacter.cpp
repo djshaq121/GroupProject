@@ -37,6 +37,8 @@ void AAIShootingCharacter::Tick(float DeltaSeconds)
 		}
 	}
 
+
+
 	
 }
 

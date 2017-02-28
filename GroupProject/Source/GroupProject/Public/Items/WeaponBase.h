@@ -68,10 +68,11 @@ public:
 	void SetCanInteract(bool NewInteract);
 
 	/*Weapon*/
-
+	UPROPERTY(EditDefaultsOnly)
+	EAmmoType AmmoType;
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
-		int32 GetCurrentAmmoInClip() const;
+	int32 GetCurrentAmmoInClip() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
 		int32 GetCurrentAmmoInGun() const;
@@ -80,12 +81,14 @@ public:
 
 	void Recoil();
 
-	
+	void AddAmmo(int32 Amount);
 
 	void UseAmmo();
 
 	void Noise(float Loudness);
 protected:
+
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		float NoAnimReloadDuration;
 
@@ -102,6 +105,11 @@ protected:
 		float WeaponRange = 5000;
 
 private:
+	UPROPERTY(EditDefaultsOnly)
+		bool bUseProjectile = true;
+
+	UPROPERTY(EditDefaultsOnly, meta=(EditCondition="bUseProjectile"))//If bUseProjectile is true we can edit it 
+	TSubclassOf<class AProjectileBase> Projectile;
 
 	UPROPERTY(EditDefaultsOnly)
 		UAnimMontage* EquipAnim;
