@@ -117,6 +117,7 @@ void  AWeaponBase::StartFire()
 
 				if (!FireRateHandle.IsValid())
 				{
+					
 					World->GetTimerManager().SetTimer(FireRateHandle, this, &AWeaponBase::StartFire, TimerDelay, true);//This will loop the startfire because we set it to true
 
 				}

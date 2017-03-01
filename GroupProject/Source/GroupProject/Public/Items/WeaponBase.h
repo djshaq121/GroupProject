@@ -59,7 +59,7 @@ public:
 
 	virtual void DoFire();
 
-	void StartFire();
+	virtual void StartFire();
 
 	void StopFire();
 
@@ -86,8 +86,12 @@ public:
 	void UseAmmo();
 
 	void Noise(float Loudness);
+
+	
 protected:
 
+	/*Firerate timer handle*/
+	FTimerHandle FireRateHandle;//If its crashing ot glitching move this to private
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		float NoAnimReloadDuration;
@@ -104,6 +108,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		float WeaponRange = 5000;
 
+	
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 		bool bUseProjectile = true;
@@ -117,8 +123,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundCue* EquipSound;
 
-	/*Firerate timer handle*/
-	FTimerHandle FireRateHandle;
+
+
 
 	/*The Maxium amount of ammo allowed in the gun*/
 	UPROPERTY(EditDefaultsOnly)
@@ -161,6 +167,7 @@ private:
 
 	/*FX*/
 public:
+	
 
 	void SpawnMuzzleEffect();
 
