@@ -179,6 +179,8 @@ public:
 
 	void SwitchToLaserLaser();
 
+	void SwitchToPistol();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 		bool bIsAiming = false;
 

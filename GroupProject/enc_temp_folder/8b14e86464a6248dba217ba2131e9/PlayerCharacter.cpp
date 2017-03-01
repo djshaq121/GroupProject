@@ -305,7 +305,7 @@ void APlayerCharacter::SwitchToAssaultRifle()
 {
 
 
-	if (Inventory.AssaultRifle && Inventory.CurrentWeapon != Inventory.AssaultRifle &&  Inventory.AssaultRifle == Inventory.PreviousWeapon)
+	if (Inventory.AssaultRifle && Inventory.CurrentWeapon != Inventory.AssaultRifle)
 	{
 
 		SwapToNewWeaponMesh(Inventory.AssaultRifle);
@@ -314,7 +314,7 @@ void APlayerCharacter::SwitchToAssaultRifle()
 
 void APlayerCharacter::SwitchToLaserLaser()
 {
-	if (Inventory.LaserRifle && Inventory.CurrentWeapon != Inventory.LaserRifle &&  Inventory.LaserRifle == Inventory.PreviousWeapon)
+	if (Inventory.LaserRifle && Inventory.CurrentWeapon != Inventory.LaserRifle)
 	{
 
 		SwapToNewWeaponMesh(Inventory.LaserRifle);
@@ -324,7 +324,7 @@ void APlayerCharacter::SwitchToLaserLaser()
 
 void APlayerCharacter::SwitchToPistol()
 {
-	if (Inventory.Pistol && Inventory.CurrentWeapon != Inventory.Pistol && Inventory.Pistol == Inventory.PreviousWeapon)
+	if (Inventory.Pistol && Inventory.CurrentWeapon != Inventory.Pistol)
 	{
 		SwapToNewWeaponMesh(Inventory.Pistol);
 	}
@@ -611,6 +611,9 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 		Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
 	}
 	
+
+
+
 													   //Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
 		Inventory.CurrentWeapon = WeaponToEquip;//Makes AssaultRifle the currentWeapon

@@ -23,6 +23,9 @@ struct FPlayerInventory
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")
 		class ALaserRifleBase* LaserRifle;
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plyaer")
+		class APistolBase* Pistol;
 };
 
 UENUM(BlueprintType)
