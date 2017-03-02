@@ -8,6 +8,7 @@
 
 
 
+
 UCLASS()
 class GROUPPROJECT_API AWeaponBase : public AActor
 {

@@ -46,6 +46,10 @@ void ALaserRifleBase::FiringGun()
 	if (CurrentHeat >= HeatThreshold) {//Check to see if the heat of the gun is larger than the threshold
 		bIsCoolingDown = true;  //If its true than, guns goes on cool down
 		SetCanFire(false);//Stop the player from firing again
+		if (OverHeatSound)
+		{
+			UGameplayStatics::PlaySoundAttached(OverHeatSound, WeaponMesh, MuzzleSocketName, WeaponMesh->GetSocketLocation(MuzzleSocketName), EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
+		}
 		
 		UE_LOG(LogTemp, Warning, TEXT("OnCoolDown"));
 	};

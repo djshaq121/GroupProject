@@ -8,6 +8,8 @@
 /**
  * 
  */
+
+
 UCLASS()
 class GROUPPROJECT_API ALaserRifleBase : public AWeaponBase
 {
@@ -15,7 +17,8 @@ class GROUPPROJECT_API ALaserRifleBase : public AWeaponBase
 	
 public:
 
-// Called every frame
+
+
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
@@ -31,6 +34,10 @@ public:
 	bool GetIsOverHeated() const;
 
 private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+	USoundCue* OverHeatSound;
+
 	bool bIsCoolingDown = false;
 	UPROPERTY(EditDefaultsOnly)
 	float CurrentHeat = 0.f;
