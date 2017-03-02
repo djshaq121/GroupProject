@@ -92,6 +92,16 @@ FName AWeaponBase::GetWeaponName() const
 	return WeaponName;
 }
 
+bool AWeaponBase::GetIsFiring() const
+{
+	return bIsFiring;
+}
+
+void AWeaponBase::SetCanFire(bool Newstate) 
+{
+	bCanFire = Newstate;
+}
+
 /*The method that is called in weapon class*/
 void  AWeaponBase::StartFire()
 {

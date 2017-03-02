@@ -14,12 +14,17 @@ void ALaserRifleBase::Tick(float DeltaTime)
 		CurrentHeat -= CoolDownTime * DeltaTime; 
 		if (CurrentHeat <= 0.f) { //Sets the weapon heat to zero if it reaches 0 or below 
 			bIsCoolingDown = false; 
-			bLRCanFire = true; //Allow the player to shoot one the gun is not on cooldown
+			SetCanFire(true);//Once the gun is cooled down allow the player to fire again
 			CurrentHeat = 0;
 		}
 	}
 	
 	
+}
+
+bool ALaserRifleBase::GetIsOverHeated() const
+{
+	return bIsCoolingDown;
 }
 
 void ALaserRifleBase::BeginPlay()
@@ -40,7 +45,8 @@ void ALaserRifleBase::FiringGun()
 	
 	if (CurrentHeat >= HeatThreshold) {//Check to see if the heat of the gun is larger than the threshold
 		bIsCoolingDown = true;  //If its true than, guns goes on cool down
-		bLRCanFire = false; //Stop the player from firing
+		SetCanFire(false);//Stop the player from firing again
+		
 		UE_LOG(LogTemp, Warning, TEXT("OnCoolDown"));
 	};
 }
@@ -48,8 +54,7 @@ void ALaserRifleBase::FiringGun()
 void ALaserRifleBase::DoFire()
 {
 	
-	if (bLRCanFire)
-	{
+
 		SpawnMuzzleEffect();
 		FHitResult Hit = FHitResult();
 		FVector Start;
@@ -92,7 +97,6 @@ void ALaserRifleBase::DoFire()
 			DealDamage(Hit);
 			//SpawnImpactEffect
 		}
-	}
 	
 }
 

@@ -35,8 +35,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
 		FName WeaponName;
 
-	UFUNCTION(BlueprintCallable, Category = "Default")
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FName GetWeaponName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		bool GetIsFiring() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		void SetCanFire(bool Newstate);
+
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -209,7 +216,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		FName MuzzleSocketName;
 
-	bool bIsFiring = true; //Check if the player is firing
+	bool bIsFiring = false; //Check if the player is firing
 
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 
