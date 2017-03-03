@@ -92,6 +92,16 @@ FName AWeaponBase::GetWeaponName() const
 	return WeaponName;
 }
 
+bool AWeaponBase::GetIsFiring() const
+{
+	return bIsFiring;
+}
+
+void AWeaponBase::SetCanFire(bool Newstate) 
+{
+	bCanFire = Newstate;
+}
+
 /*The method that is called in weapon class*/
 void  AWeaponBase::StartFire()
 {
@@ -117,6 +127,7 @@ void  AWeaponBase::StartFire()
 
 				if (!FireRateHandle.IsValid())
 				{
+					
 					World->GetTimerManager().SetTimer(FireRateHandle, this, &AWeaponBase::StartFire, TimerDelay, true);//This will loop the startfire because we set it to true
 
 				}
@@ -389,6 +400,11 @@ void AWeaponBase::Recoil()
 	GetWorld()->GetFirstPlayerController()->AddPitchInput(Recoil);
 	GetWorld()->GetFirstPlayerController()->AddYawInput(HorizontalRecoilAmount);
 
+}
+
+void AWeaponBase::AddAmmo(int32 Amount)
+{
+	CurrentAmmoInGun = FMath::Clamp(CurrentAmmoInGun + Amount, CurrentAmmoInGun, MaxAmmoInGun);
 }
 
 void AWeaponBase::UseAmmo()

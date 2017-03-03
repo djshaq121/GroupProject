@@ -8,6 +8,7 @@
 
 
 
+
 UCLASS()
 class GROUPPROJECT_API AWeaponBase : public AActor
 {
@@ -35,8 +36,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
 		FName WeaponName;
 
-	UFUNCTION(BlueprintCallable, Category = "Default")
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FName GetWeaponName() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		bool GetIsFiring() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		void SetCanFire(bool Newstate);
+
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -59,7 +67,7 @@ public:
 
 	virtual void DoFire();
 
-	void StartFire();
+	virtual void StartFire();
 
 	void StopFire();
 
@@ -68,10 +76,11 @@ public:
 	void SetCanInteract(bool NewInteract);
 
 	/*Weapon*/
-
+	UPROPERTY(EditDefaultsOnly)
+	EAmmoType AmmoType;
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
-		int32 GetCurrentAmmoInClip() const;
+	int32 GetCurrentAmmoInClip() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Ammo")
 		int32 GetCurrentAmmoInGun() const;
@@ -80,12 +89,18 @@ public:
 
 	void Recoil();
 
-	
+	void AddAmmo(int32 Amount);
 
 	void UseAmmo();
 
 	void Noise(float Loudness);
+
+	
 protected:
+
+	/*Firerate timer handle*/
+	FTimerHandle FireRateHandle;//If its crashing ot glitching move this to private
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		float NoAnimReloadDuration;
 
@@ -101,7 +116,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		float WeaponRange = 5000;
 
+	
+
 private:
+	UPROPERTY(EditDefaultsOnly)
+		bool bUseProjectile = true;
+
+	UPROPERTY(EditDefaultsOnly, meta=(EditCondition="bUseProjectile"))//If bUseProjectile is true we can edit it 
+	TSubclassOf<class AProjectileBase> Projectile;
 
 	UPROPERTY(EditDefaultsOnly)
 		UAnimMontage* EquipAnim;
@@ -109,8 +131,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundCue* EquipSound;
 
-	/*Firerate timer handle*/
-	FTimerHandle FireRateHandle;
+
+
 
 	/*The Maxium amount of ammo allowed in the gun*/
 	UPROPERTY(EditDefaultsOnly)
@@ -153,6 +175,7 @@ private:
 
 	/*FX*/
 public:
+	
 
 	void SpawnMuzzleEffect();
 
@@ -194,7 +217,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		FName MuzzleSocketName;
 
-	bool bIsFiring = true; //Check if the player is firing
+	bool bIsFiring = false; //Check if the player is firing
 
 	bool GetSightRayHitLocation(FHitResult& HitResult) const;
 

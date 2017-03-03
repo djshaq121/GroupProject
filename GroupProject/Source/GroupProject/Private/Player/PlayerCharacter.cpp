@@ -5,6 +5,7 @@
 #include "CharacterController.h"
 #include "AssaultRifleBase.h"
 #include "LaserRifleBase.h"
+#include "PistolBase.h"
 #include "WeaponBase.h"
 
 
@@ -117,6 +118,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &APlayerCharacter::Reload);
 	PlayerInputComponent->BindAction("SwitchAssault", IE_Released, this, &APlayerCharacter::SwitchToAssaultRifle);
 	PlayerInputComponent->BindAction("SwitchLaser", IE_Released, this, &APlayerCharacter::SwitchToLaserLaser);
+	PlayerInputComponent->BindAction("SwitchPistol", IE_Released, this, &APlayerCharacter::SwitchToPistol);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
@@ -303,7 +305,7 @@ void APlayerCharacter::SwitchToAssaultRifle()
 {
 
 
-	if (Inventory.AssaultRifle && Inventory.CurrentWeapon != Inventory.AssaultRifle)
+	if (Inventory.AssaultRifle && Inventory.CurrentWeapon != Inventory.AssaultRifle &&  Inventory.AssaultRifle == Inventory.PreviousWeapon)
 	{
 
 		SwapToNewWeaponMesh(Inventory.AssaultRifle);
@@ -312,12 +314,20 @@ void APlayerCharacter::SwitchToAssaultRifle()
 
 void APlayerCharacter::SwitchToLaserLaser()
 {
-	if (Inventory.LaserRifle && Inventory.CurrentWeapon != Inventory.LaserRifle)
+	if (Inventory.LaserRifle && Inventory.CurrentWeapon != Inventory.LaserRifle &&  Inventory.LaserRifle == Inventory.PreviousWeapon)
 	{
 
 		SwapToNewWeaponMesh(Inventory.LaserRifle);
 	}
 
+}
+
+void APlayerCharacter::SwitchToPistol()
+{
+	if (Inventory.Pistol && Inventory.CurrentWeapon != Inventory.Pistol && Inventory.Pistol == Inventory.PreviousWeapon)
+	{
+		SwapToNewWeaponMesh(Inventory.Pistol);
+	}
 }
 
 int APlayerCharacter::GetCurrentHealth() const
@@ -539,9 +549,48 @@ void APlayerCharacter::AddToInventory(class AWeaponBase* NewWeapon) {
 
 		}
 	}
+	else if (NewWeapon->IsA(APistolBase::StaticClass())) {
+		if (Inventory.Pistol) {
+			Inventory.Pistol->Destroy();
+		}
+		Inventory.Pistol = Cast<APistolBase>(NewWeapon);
+
+		if (!Inventory.CurrentWeapon || bEquipNewWeapon) {
+			EquipWeapon(Inventory.Pistol);
+
+
+		}
+	}
 
 
 }
+
+void APlayerCharacter::AddAmmo(int32 AmmoAmount, EAmmoType AmmoType)
+{
+	switch (AmmoType) {
+		case EAmmoType::AT_Bullets:
+			if (Inventory.AssaultRifle)//check if we have one
+			{
+				Inventory.AssaultRifle->AddAmmo(AmmoAmount);
+			}
+			break;
+		case EAmmoType::AT_Pistol:
+			if (Inventory.Pistol)//check if we have one
+			{
+				Inventory.Pistol->AddAmmo(AmmoAmount);
+			}
+			break;
+		case EAmmoType::AT_Lasers:
+			if (Inventory.AssaultRifle)//check if we have one
+			{
+				Inventory.LaserRifle->AddAmmo(AmmoAmount);
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 
 void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if weapon is in the inventory
 {
@@ -550,10 +599,18 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 		return;//Return if we already have the weapon equiped
 	}
 
-	Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
-
-
-
+	if (Inventory.CurrentWeapon && Inventory.PreviousWeapon)//If we have already have two weapons replace the previous weapon
+	{
+		UE_LOG(LogTemp,Warning,TEXT("Being called 1"))
+		Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Set the current weapon
+		Inventory.CurrentWeapon = nullptr;
+	}
+	else if(Inventory.CurrentWeapon)//Store the current weapon only if we have a weaponm
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Picking up two weapons"))
+		Inventory.PreviousWeapon = Inventory.CurrentWeapon;//Storing the current weapon to previous weapon
+	}
+	
 													   //Check what weapon we are picking up
 	if (WeaponToEquip == Inventory.AssaultRifle) {
 		Inventory.CurrentWeapon = WeaponToEquip;//Makes AssaultRifle the currentWeapon
@@ -577,6 +634,20 @@ void APlayerCharacter::EquipWeapon(AWeaponBase * WeaponToEquip)//Check to see if
 			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
 			Inventory.PreviousWeapon->StopFire();
 			
+
+		}
+
+
+	}
+	else if (WeaponToEquip == Inventory.Pistol) {
+		Inventory.CurrentWeapon = WeaponToEquip; 
+		Inventory.CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponSocketName);
+
+		if (Inventory.PreviousWeapon)
+		{
+			Inventory.PreviousWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SecondWeaponSocket);
+			Inventory.PreviousWeapon->StopFire();
+
 
 		}
 

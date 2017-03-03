@@ -8,6 +8,8 @@
 /**
  * 
  */
+
+
 UCLASS()
 class GROUPPROJECT_API ALaserRifleBase : public AWeaponBase
 {
@@ -15,7 +17,8 @@ class GROUPPROJECT_API ALaserRifleBase : public AWeaponBase
 	
 public:
 
-// Called every frame
+
+
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
@@ -27,7 +30,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	float GetCurrentHeat() const;
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	bool GetIsOverHeated() const;
+
 private:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+	USoundCue* OverHeatSound;
+
 	bool bIsCoolingDown = false;
 	UPROPERTY(EditDefaultsOnly)
 	float CurrentHeat = 0.f;
@@ -38,7 +48,5 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float OverHeatTime = 2.5f;
 
-	//We Created this because we cant use bCanFire, it will create run time errors
-	bool bLRCanFire = true;
 	
 };

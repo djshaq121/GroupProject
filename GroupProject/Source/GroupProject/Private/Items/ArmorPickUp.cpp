@@ -14,7 +14,7 @@ void AArmorPickUp::OnPlayerEnterPickupBox(UPrimitiveComponent * OverlappedComp, 
 	APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
 	if (Player)
 	{
-		if (Player->GetCurrentArmor() < Player->GetMaxArmor())
+		if (Player->GetCurrentArmor() < Player->GetMaxArmor())//Stops the Armor from being picked up when armor is full
 		{
 			Player->HealArmor(ArmorAmount);
 			Destroy();
