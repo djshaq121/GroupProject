@@ -119,17 +119,20 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
 		AIOnDeathRequest.Broadcast();
-		SetIsDead(true);
 		
-
-		AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
-		if (WaveGM)
+		
+		if (!GetIsDead())
 		{
-			//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
-			WaveGM->Killed(EventInstigator, GetController());
-
+			SetIsDead(true);
+			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
+			if (WaveGM)
+			{
+				//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+				WaveGM->Killed(EventInstigator, GetController());
+			}
+			OnDeath();
 		}
-		OnDeath();
+		SetIsDead(true);
 	}
 
 	if (DamageCauser)

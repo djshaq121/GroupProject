@@ -61,6 +61,7 @@ void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 		if (KilledPawn)
 		{
 			WavePS->AddGold(KilledPawn->GetGoldReward());
+			KilledPawn->DetachFromControllerPendingDestroy();
 		}
 		
 	}

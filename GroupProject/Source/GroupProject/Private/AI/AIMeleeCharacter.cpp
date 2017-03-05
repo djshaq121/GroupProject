@@ -191,14 +191,19 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 	CurrentHealth -= DamageToApply;
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
-		
-		AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
-		if (WaveGM)
+
+		if (!GetIsDead())
 		{
-			//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
-			WaveGM->Killed(EventInstigator, GetController());
-			OnDeath();
+			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
+			if (WaveGM)
+			{
+				//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+				WaveGM->Killed(EventInstigator, GetController());
+				OnDeath();
+			}
 		}
+		
+		SetIsDead(true);
 		
 	}
 	
