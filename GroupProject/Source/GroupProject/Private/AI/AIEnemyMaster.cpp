@@ -2,6 +2,8 @@
 
 #include "GroupProject.h"
 #include "AIEnemyMaster.h"
+#include "WaveGameMode.h"
+#include "PlayerCharacter.h"
 
 
 // Sets default values
@@ -31,6 +33,21 @@ float AAIEnemyMaster::TakeDamage(float DamageAmount, FDamageEvent const & Damage
 
 void AAIEnemyMaster::DetermineAiState()
 {
+}
+
+int32 AAIEnemyMaster::GetGoldReward() const
+{
+	return GoldReward;
+}
+
+void AAIEnemyMaster::OnInteract_Implementation(AActor * Caller)
+{
+	AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
+	if (WaveGM)
+	{
+		APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+		WaveGM->Killed(Killer->GetController(), GetController());
+	}
 }
 
 int AAIEnemyMaster::GetCurrentHealth() const
@@ -86,7 +103,7 @@ void AAIEnemyMaster::OnDeath()
 {
 	if (Controller) GetController()->UnPossess();
 	SetRagdollPhysics();
-	DetachFromControllerPendingDestroy();
+	//DetachFromControllerPendingDestroy();
 
 	/* Disable all collision on capsule */
 	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();

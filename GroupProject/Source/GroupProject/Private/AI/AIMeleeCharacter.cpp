@@ -6,6 +6,7 @@
 #include "EnemyController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
+#include "WaveGameMode.h"
 
 AAIMeleeCharacter::AAIMeleeCharacter() 
 {
@@ -171,7 +172,7 @@ void AAIMeleeCharacter::OnDeath()
 {
 	
 	SetRagdollPhysics();
-	DetachFromControllerPendingDestroy();
+	//DetachFromControllerPendingDestroy();
 
 	/* Disable all collision on capsule */
 	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
@@ -190,8 +191,15 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 	CurrentHealth -= DamageToApply;
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
-		OnDeath();
-
+		
+		AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
+		if (WaveGM)
+		{
+			//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+			WaveGM->Killed(EventInstigator, GetController());
+			OnDeath();
+		}
+		
 	}
 	
 	return DamageToApply;

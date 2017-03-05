@@ -38,3 +38,26 @@ enum class EAmmoType : uint8
 	AT_Lasers UMETA(DisplayName = "LaserRifle")
 };
 
+USTRUCT(BlueprintType)
+struct FSpawnInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		TSubclassOf<class AAIEnemyMaster> EnemyClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		int32 MaxAmountOfEnemies;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		float Probability;
+};
+
+USTRUCT(BlueprintType)
+struct FWaveInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		int32 TotalNumberOfEnemies; //The Max number of enemies 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+		TArray<FSpawnInfo> EnemySpawnInfo;
+};
