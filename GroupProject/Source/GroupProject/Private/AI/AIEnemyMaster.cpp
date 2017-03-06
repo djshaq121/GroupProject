@@ -40,6 +40,11 @@ int32 AAIEnemyMaster::GetGoldReward() const
 	return GoldReward;
 }
 
+int32 AAIEnemyMaster::GetScoreReward() const
+{
+	return Score;
+}
+
 void AAIEnemyMaster::OnInteract_Implementation(AActor * Caller)
 {
 	AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();

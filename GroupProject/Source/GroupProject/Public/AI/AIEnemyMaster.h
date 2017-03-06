@@ -39,8 +39,11 @@ public:
 
 	int32 GetGoldReward() const;
 
+	int32 GetScoreReward() const;
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void OnInteract(AActor* Caller);
+
 	virtual void OnInteract_Implementation(AActor* Caller);
 
 protected:
@@ -76,6 +79,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 GoldReward;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 Score;
+
 	
 
 private:

@@ -21,6 +21,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Wave")
 		void SetWaveInfo(const TArray<FWaveInfo>& newWaveInfo);
 
+	void UpdateHUD();
+
 	virtual void BeginPlay() override;
 	virtual void Killed(AController* Killer, AController* Victim);
 

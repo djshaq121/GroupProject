@@ -17,12 +17,20 @@ class GROUPPROJECT_API AWavePlayerState : public APlayerState
 public:
 	void AddGold(int32 Amount);
 
+	void AddScore(int32 Amount);
+
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int32 GetGold() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Score")
+	int32 GetScore() const;
 
 private:
 	UPROPERTY()
 	int32 Gold;
+
+	UPROPERTY()
+	int32 PlayerScore;
 
 	
 };

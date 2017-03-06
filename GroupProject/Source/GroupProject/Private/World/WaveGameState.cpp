@@ -10,7 +10,7 @@ void AWaveGameState::SetIsWaveActive(bool newActive)
 }
 void AWaveGameState::AddEnemiesRemaining(int32 Amount)
 {
-	EnemiesRemaining = +Amount;
+	EnemiesRemaining += Amount;
 }
 void AWaveGameState::SetWaveDelay(float delay)
 {

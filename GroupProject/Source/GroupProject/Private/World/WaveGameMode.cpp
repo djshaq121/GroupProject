@@ -5,6 +5,7 @@
 #include "AIEnemyMaster.h"
 #include "WaveGameState.h"
 #include "WavePlayerState.h"
+#include "PlayerCharacter.h"
 
 
 void AWaveGameMode::InitGameState()
@@ -34,6 +35,14 @@ void AWaveGameMode::BeginPlay()
 	}
 }
 
+void AWaveGameMode::UpdateHUD()
+{
+	APlayerCharacter* Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (Player && Player->IsPlayerControlled())
+	{
+		Player->UpdateHUD();
+	}
+}
 void AWaveGameMode::setWaveDelay(float delay)
 {
 	WaveDelay = delay;
@@ -52,7 +61,13 @@ void AWaveGameMode::SetWaveInfo(const TArray<FWaveInfo>& newWaveInfo)
 void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 {
 	UE_LOG(LogTemp, Error, TEXT("Enemy killed"))
-	WaveGS->AddEnemiesRemaining(-1);
+		AAIEnemyMaster* VictimPawn = Cast<AAIEnemyMaster>(Victim->GetPawn());
+	if (VictimPawn && !VictimPawn->IsPlayerControlled())
+	{
+		WaveGS->AddEnemiesRemaining(-1);
+		UpdateHUD();
+	}
+
 
 	AAIEnemyMaster* KilledPawn = Cast<AAIEnemyMaster>(Victim->GetPawn());
 	AWavePlayerState* WavePS = Cast<AWavePlayerState>(Killer->PlayerState);
@@ -60,8 +75,10 @@ void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 	{
 		if (KilledPawn)
 		{
-			WavePS->AddGold(KilledPawn->GetGoldReward());
+			WavePS->AddGold(KilledPawn->GetGoldReward());//Adds the gold 
+			WavePS->AddScore(KilledPawn->GetScoreReward());//Adds the score
 			KilledPawn->DetachFromControllerPendingDestroy();
+			UpdateHUD();
 		}
 		
 	}
@@ -79,8 +96,9 @@ void AWaveGameMode::BeginWave()
 
 	WaveGS->SetIsWaveActive(true);
 	WaveGS->SetCurrentWave(WaveGS->GetCurrentWave() + 1);//Increases the wave
+	UpdateHUD();
 	BeginSpawning();
-
+	
 
 }
 
@@ -88,9 +106,10 @@ void AWaveGameMode::EndWave()
 {
 	
 	WaveGS->SetIsWaveActive(false);
+	UpdateHUD();
 	if (WaveGS->GetCurrentWave() >= MaxWaves)
 	{
-		EndMatch();
+		EndMatch();//So if wave is equal to the number of rounds end the match
 	}
 	else
 	{
@@ -107,6 +126,7 @@ void AWaveGameMode::BeginSpawning()
 	{
 		SpawnedOfType.Add(0);
 	}
+
 	EnemyToSpawn = 0;//Reset the values
 	EnemiesSpawned = 0;
 
@@ -140,6 +160,7 @@ void AWaveGameMode::SpawnEnemies()
 				EnemiesSpawned++;
 				SpawnedOfType[EnemyToSpawn]++;
 				WaveGS->AddEnemiesRemaining(1);//This updates thevalue
+				UpdateHUD();
 			}
 		}
 
@@ -167,11 +188,14 @@ void AWaveGameMode::StartMatch()
 	}
 
 	Super::StartMatch();
+	UpdateHUD();
+
 }
 
 void AWaveGameMode::EndMatch()
 {
 	Super::EndMatch();
+	UpdateHUD();
 	UE_LOG(LogTemp, Warning , TEXT("You've won the match"))
 }
 
