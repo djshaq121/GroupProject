@@ -54,6 +54,7 @@ private:
 	FTimerHandle SpawnTimerHandle;
 	TArray<int32> SpawnedOfType;//Keeps track of how many of each type spawned
 	TArray<AActor*> AISpawnPoints;
+	int32 EnemiesLeftToKill;//This is used to determine if there are enemies still left to spawn 
 
 	class AWaveGameState* WaveGS;
 

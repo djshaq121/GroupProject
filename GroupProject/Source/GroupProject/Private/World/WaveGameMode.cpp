@@ -60,8 +60,8 @@ void AWaveGameMode::SetWaveInfo(const TArray<FWaveInfo>& newWaveInfo)
 
 void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 {
-	UE_LOG(LogTemp, Error, TEXT("Enemy killed"))
-		AAIEnemyMaster* VictimPawn = Cast<AAIEnemyMaster>(Victim->GetPawn());
+	
+	AAIEnemyMaster* VictimPawn = Cast<AAIEnemyMaster>(Victim->GetPawn());
 	if (VictimPawn && !VictimPawn->IsPlayerControlled())
 	{
 		WaveGS->AddEnemiesRemaining(-1);
@@ -78,12 +78,14 @@ void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 			WavePS->AddGold(KilledPawn->GetGoldReward());//Adds the gold 
 			WavePS->AddScore(KilledPawn->GetScoreReward());//Adds the score
 			KilledPawn->DetachFromControllerPendingDestroy();
+			EnemiesLeftToKill--;//Once we kill an enemy reduce the amount of EnemiesLeftToKill
 			UpdateHUD();
 		}
 		
 	}
 
-	if (WaveGS->GetEnemiesRemaining() <= 0)
+	//Checking to see if enemies left is zero & if there are still enemies left to spawn
+	if (WaveGS->GetEnemiesRemaining() <= 0 && EnemiesLeftToKill <= 0)
 	{
 		EndWave();
 	}
@@ -97,6 +99,9 @@ void AWaveGameMode::BeginWave()
 	WaveGS->SetIsWaveActive(true);
 	WaveGS->SetCurrentWave(WaveGS->GetCurrentWave() + 1);//Increases the wave
 	UpdateHUD();
+
+	int32 CurrentWave = WaveGS->GetCurrentWave();
+	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemies;//At the begining of the wave set the amount of total enemies that need to spawn 
 	BeginSpawning();
 	
 
@@ -158,6 +163,7 @@ void AWaveGameMode::SpawnEnemies()
 
 				GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
 				EnemiesSpawned++;
+				UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned)
 				SpawnedOfType[EnemyToSpawn]++;
 				WaveGS->AddEnemiesRemaining(1);//This updates thevalue
 				UpdateHUD();
