@@ -38,6 +38,13 @@ protected:
 	virtual void EndMatch() override;
 	virtual void InitGameState() override;
 
+	void StartSpawningWave();//
+	void StartSpawningEnemies();//
+	void SpawnEnemy();
+
+
+
+
 private:
 	UPROPERTY(EditDefaultsOnly)
 		FName SpawnTag;//Where the AI will being spawning
@@ -51,7 +58,7 @@ private:
 		TArray<struct FWaveInfo> WaveInfo;
 	
 	int32 EnemyToSpawn;
-	int32 EnemiesSpawned; //To see how much enemies spawned
+	int32 EnemiesSpawned; //To see how much enemies already spawned
 	FTimerHandle WaveTimerHandle;
 	FTimerHandle SpawnTimerHandle;
 	TArray<int32> SpawnedOfType;//Keeps track of how many of each type spawned

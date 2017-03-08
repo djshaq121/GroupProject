@@ -96,21 +96,6 @@ void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 	}
 }
 
-void AWaveGameMode::BeginWave()
-{
-	GetWorld()->GetTimerManager().ClearTimer(WaveTimerHandle);
-	WaveTimerHandle.Invalidate();
-
-	WaveGS->SetIsWaveActive(true);
-	WaveGS->SetCurrentWave(WaveGS->GetCurrentWave() + 1);//Increases the wave
-	UpdateHUD();
-
-	int32 CurrentWave = WaveGS->GetCurrentWave();
-	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemies;//At the begining of the wave set the amount of total enemies that need to spawn 
-	BeginSpawning();
-	
-
-}
 
 void AWaveGameMode::EndWave()
 {
@@ -125,6 +110,79 @@ void AWaveGameMode::EndWave()
 	{
 		GetWorld()->GetTimerManager().SetTimer(WaveTimerHandle, this, &AWaveGameMode::BeginWave, WaveDelay, false);//This starts the next wave after the wave delay
 	}
+
+}
+
+void AWaveGameMode::BeginWave()
+{
+	GetWorld()->GetTimerManager().ClearTimer(WaveTimerHandle);
+	WaveTimerHandle.Invalidate();
+
+	WaveGS->SetIsWaveActive(true);
+	WaveGS->SetCurrentWave(WaveGS->GetCurrentWave() + 1);//Increases the wave
+	UpdateHUD();
+
+	int32 CurrentWave = WaveGS->GetCurrentWave();
+	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemies;//At the begining of the wave set the amount of total enemies that need to spawn 
+	//BeginSpawning();
+
+	StartSpawningWave();
+
+
+}
+
+void AWaveGameMode::StartSpawningWave()
+{
+	int32 CurrentWave = WaveGS->GetCurrentWave();
+	UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"),WaveInfo[CurrentWave - 1].TotalNumberOfEnemies);
+	StartSpawningEnemies();
+}
+
+void AWaveGameMode::StartSpawningEnemies()
+{
+
+	//Check if we can spawn enemies 
+	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
+
+	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AWaveGameMode::SpawnEnemy,SpawnDelay,true);//We dont want it to loop because its already in a for loop
+	
+	EnemiesSpawned = 0;
+}
+
+void AWaveGameMode::SpawnEnemy()
+{
+	if (AISpawnPoints.Num() < 1 || WaveInfo.Num() < 1)//Check to see if we have spawns point or wave info
+	{
+		UE_LOG(LogTemp, Error, TEXT(" No spawnpoint or WaveInfo"))
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+		SpawnTimerHandle.Invalidate();
+	}
+
+	
+
+	//Spawning the enemy
+	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
+	if (EnemiesSpawned != WaveInfo[CurrentWave - 1].TotalNumberOfEnemies)//WaveInfo[CurrentWave - 1].TotalNumberOfEnemies For some reason '<=' always spawned an extra enemy  
+	{
+		
+		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];//Gets the class to spawn
+
+		int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
+		FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
+		FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
+
+		GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
+
+		EnemiesSpawned++;//Increase the amount of enemeis spawned
+		UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned);
+		
+	}
+	else
+	{//Once we are done spawning the enemies clear the timer 
+		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+		SpawnTimerHandle.Invalidate();
+	}
+	
 
 }
 
