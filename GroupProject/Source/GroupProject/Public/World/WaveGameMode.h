@@ -20,6 +20,8 @@ public:
 		void SetMaxWaves(int32 Max);
 	UFUNCTION(BlueprintCallable, Category = "Wave")
 		void SetWaveInfo(const TArray<FWaveInfo>& newWaveInfo);
+	UFUNCTION(BlueprintCallable, Category = "Wave")
+	int32 GetEnemiesRemaining() const;//Get the enemies remaining to be displayed on the HUD
 
 	void UpdateHUD();
 

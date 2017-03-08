@@ -58,6 +58,11 @@ void AWaveGameMode::SetWaveInfo(const TArray<FWaveInfo>& newWaveInfo)
 	WaveInfo = newWaveInfo;
 }
 
+int32 AWaveGameMode::GetEnemiesRemaining() const
+{
+	return EnemiesLeftToKill;
+}
+
 void AWaveGameMode::Killed(AController * Killer, AController * Victim)
 {
 	
