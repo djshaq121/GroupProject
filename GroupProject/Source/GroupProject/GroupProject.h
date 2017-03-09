@@ -57,7 +57,7 @@ struct FWaveInfo
 	GENERATED_USTRUCT_BODY()
 
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-		int32 TotalNumberOfEnemies; //The Max number of enemies 
+		int32 TotalNumberOfEnemiesThisWave; //The Max number of enemies 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TArray<FSpawnInfo> EnemySpawnInfo;
 };

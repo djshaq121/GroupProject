@@ -123,18 +123,42 @@ void AWaveGameMode::BeginWave()
 	UpdateHUD();
 
 	int32 CurrentWave = WaveGS->GetCurrentWave();
-	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemies;//At the begining of the wave set the amount of total enemies that need to spawn 
-	//BeginSpawning();
+	if (WaveInfo.Num() == 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Please add wave info "))
+		return;
+	}
 
-	StartSpawningWave();
+	//TODO - Crashes if Max wave is greater than the fwaveInfo
+	
+	UE_LOG(LogTemp, Error, TEXT("Max Wave must be equal or the smaller than the Wave info "))
+	
+		EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave;//At the begining of the wave set the amount of total enemies that need to spawn 
+		//BeginSpawning();
+
+		
+		StartSpawningWave();
+	
+	//	UE_LOG(LogTemp, Error, TEXT("Please add wave info "))
+	
+	
 
 
 }
 
 void AWaveGameMode::StartSpawningWave()
 {
+	SpawnedOfType.Empty();//Clear the amount of enemies 
 	int32 CurrentWave = WaveGS->GetCurrentWave();
-	UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"),WaveInfo[CurrentWave - 1].TotalNumberOfEnemies);
+	for (int i = 0; i < WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num(); i++)//This gets the different type of enemy
+	{
+		int num = WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num();
+		SpawnedOfType.Add(0);
+		UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), num);
+	}
+
+	
+	UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"),WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave);
 	StartSpawningEnemies();
 }
 
@@ -162,19 +186,42 @@ void AWaveGameMode::SpawnEnemy()
 
 	//Spawning the enemy
 	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
-	if (EnemiesSpawned != WaveInfo[CurrentWave - 1].TotalNumberOfEnemies)//WaveInfo[CurrentWave - 1].TotalNumberOfEnemies For some reason '<=' always spawned an extra enemy  
+	if (EnemiesSpawned != WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)// For some reason '<=' always spawned an extra enemy  
 	{
+		//Gets the class to spawn information in the struct
+		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
+
+
+
+		//Probability that the AI will be spanwed 
 		
-		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];//Gets the class to spawn
+		float Prob = FMath::RandRange(0.f,1.f);
+		if (Prob <= SpawnInfo.Probability)//So if prob is smaller than the AI probaility spawn it 
+		{
+			//Spawns at an random point
+			int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
+			FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
+			FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
 
-		int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
-		FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
-		FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
+			GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
 
-		GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
+			EnemiesSpawned++;//Increase the amount of enemeis spawned
+			UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned);
+		}
 
-		EnemiesSpawned++;//Increase the amount of enemeis spawned
-		UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned);
+		/*We increase the EnemyToSpawn so next time it spawns it spawn a different type of enemy in the Spawninfo*/
+		if (EnemyToSpawn >= WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num() - 1)
+		{
+			EnemyToSpawn = 0;
+		}
+		else
+		{
+		
+			EnemyToSpawn++;
+		}
+		
+
+		
 		
 	}
 	else
@@ -212,7 +259,7 @@ void AWaveGameMode::SpawnEnemies()
 	}
 
 	int32 CurrentWave = WaveGS->GetCurrentWave();
-	if (EnemiesSpawned < WaveInfo[CurrentWave - 1].TotalNumberOfEnemies)//Check if we can spawn enemies
+	if (EnemiesSpawned < WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)//Check if we can spawn enemies
 	{
 		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
 		if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemies)//if the amount of enemies we spawn of this type is less than the max enemies it spawns more
