@@ -207,6 +207,7 @@ void AWaveGameMode::SpawnEnemy()
 
 			EnemiesSpawned++;//Increase the amount of enemeis spawned
 			UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned);
+			UpdateHUD();
 		}
 
 		/*We increase the EnemyToSpawn so next time it spawns it spawn a different type of enemy in the Spawninfo*/
@@ -233,6 +234,7 @@ void AWaveGameMode::SpawnEnemy()
 
 }
 
+//Dont Use
 void AWaveGameMode::BeginSpawning()
 {
 	SpawnedOfType.Empty();//Clear the amount of enemies 
@@ -249,6 +251,7 @@ void AWaveGameMode::BeginSpawning()
 
 }
 
+//Dont Use
 void AWaveGameMode::SpawnEnemies()
 {
 	if (AISpawnPoints.Num() < 1 || WaveInfo.Num() < 1)//Check to see if we have spawns point or wave info
