@@ -37,6 +37,15 @@ public:
 
 	virtual void DetermineAiState();
 
+	int32 GetGoldReward() const;
+
+	int32 GetScoreReward() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void OnInteract(AActor* Caller);
+
+	virtual void OnInteract_Implementation(AActor* Caller);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
@@ -67,6 +76,13 @@ protected:
 	bool GetIsDead() const;
 
 	void SetIsDead(bool NewState);
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 GoldReward;
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 Score;
+
 	
 
 private:

@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/PawnSensingComponent.h"
 #include "WeaponBase.h"
+#include "WaveGameMode.h"
 
 AAIShootingCharacter::AAIShootingCharacter()
 {
@@ -118,8 +119,20 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 	if (CurrentHealth <= 0)//Check to see if AI is dead
 	{
 		AIOnDeathRequest.Broadcast();
+		
+		
+		if (!GetIsDead())
+		{
+			SetIsDead(true);
+			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
+			if (WaveGM)
+			{
+				//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+				WaveGM->Killed(EventInstigator, GetController());
+			}
+			OnDeath();
+		}
 		SetIsDead(true);
-		OnDeath();
 	}
 
 	if (DamageCauser)

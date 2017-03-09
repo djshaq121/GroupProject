@@ -39,6 +39,11 @@ private:
 		int32 CurrentArmor;
 
 public:
+	UFUNCTION(Client, Reliable)
+		void UpdateHUD();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "HUD")
+	void BP_Update();
 
 
 	UPROPERTY(BlueprintAssignable)

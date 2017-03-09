@@ -74,6 +74,11 @@ void APlayerCharacter::BeginPlay()
 
 }
 
+void APlayerCharacter::UpdateHUD_Implementation()
+{
+	BP_Update();//This is implemented in blueprint
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
