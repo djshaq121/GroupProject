@@ -234,71 +234,6 @@ void AWaveGameMode::SpawnEnemy()
 
 }
 
-//Dont Use
-void AWaveGameMode::BeginSpawning()
-{
-	SpawnedOfType.Empty();//Clear the amount of enemies 
-	int32 CurrentWave = WaveGS->GetCurrentWave();
-	for (int i=0;i < WaveInfo[CurrentWave-1].EnemySpawnInfo.Num();i++)
-	{
-		SpawnedOfType.Add(0);
-	}
-
-	EnemyToSpawn = 0;//Reset the values
-	EnemiesSpawned = 0;
-
-	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWaveGameMode::SpawnEnemies, SpawnDelay, true);
-
-}
-
-//Dont Use
-void AWaveGameMode::SpawnEnemies()
-{
-	if (AISpawnPoints.Num() < 1 || WaveInfo.Num() < 1)//Check to see if we have spawns point or wave info
-	{
-		UE_LOG(LogTemp, Error, TEXT(" No spawnpoint or WaveInfo"))
-		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
-		SpawnTimerHandle.Invalidate();
-	}
-
-	int32 CurrentWave = WaveGS->GetCurrentWave();
-	if (EnemiesSpawned < WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)//Check if we can spawn enemies
-	{
-		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
-		if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemies)//if the amount of enemies we spawn of this type is less than the max enemies it spawns more
-		{
-			float prob = FMath::RandRange(0.f,1.f);
-			if (prob <= SpawnInfo.Probability)
-			{
-				int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
-				FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
-				FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
-
-				GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
-				EnemiesSpawned++;
-				UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned)
-				SpawnedOfType[EnemyToSpawn]++;
-				WaveGS->AddEnemiesRemaining(1);//This updates thevalue
-				UpdateHUD();
-			}
-		}
-
-		if (EnemyToSpawn >= WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num()-1)
-		{
-			EnemyToSpawn = 0;
-		}
-		else
-		{
-			EnemyToSpawn++;
-		}
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
-		SpawnTimerHandle.Invalidate();
-	}
-
-}
 
 void AWaveGameMode::StartMatch()
 {
@@ -319,3 +254,70 @@ void AWaveGameMode::EndMatch()
 }
 
 
+/*
+//Dont Use
+void AWaveGameMode::BeginSpawning()
+{
+SpawnedOfType.Empty();//Clear the amount of enemies
+int32 CurrentWave = WaveGS->GetCurrentWave();
+for (int i=0;i < WaveInfo[CurrentWave-1].EnemySpawnInfo.Num();i++)
+{
+SpawnedOfType.Add(0);
+}
+
+EnemyToSpawn = 0;//Reset the values
+EnemiesSpawned = 0;
+
+GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWaveGameMode::SpawnEnemies, SpawnDelay, true);
+
+}
+
+//Dont Use
+void AWaveGameMode::SpawnEnemies()
+{
+if (AISpawnPoints.Num() < 1 || WaveInfo.Num() < 1)//Check to see if we have spawns point or wave info
+{
+UE_LOG(LogTemp, Error, TEXT(" No spawnpoint or WaveInfo"))
+GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+SpawnTimerHandle.Invalidate();
+}
+
+int32 CurrentWave = WaveGS->GetCurrentWave();
+if (EnemiesSpawned < WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)//Check if we can spawn enemies
+{
+FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
+if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemies)//if the amount of enemies we spawn of this type is less than the max enemies it spawns more
+{
+float prob = FMath::RandRange(0.f,1.f);
+if (prob <= SpawnInfo.Probability)
+{
+int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
+FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
+FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
+
+GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
+EnemiesSpawned++;
+UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned)
+SpawnedOfType[EnemyToSpawn]++;
+WaveGS->AddEnemiesRemaining(1);//This updates thevalue
+UpdateHUD();
+}
+}
+
+if (EnemyToSpawn >= WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num()-1)
+{
+EnemyToSpawn = 0;
+}
+else
+{
+EnemyToSpawn++;
+}
+}
+else
+{
+GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
+SpawnTimerHandle.Invalidate();
+}
+
+}
+*/

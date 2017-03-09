@@ -32,8 +32,6 @@ public:
 protected:
 	void BeginWave();
 	void EndWave();
-	void BeginSpawning();
-	void SpawnEnemies();
 	virtual void StartMatch() override;
 	virtual void EndMatch() override;
 	virtual void InitGameState() override;
@@ -42,7 +40,10 @@ protected:
 	void StartSpawningEnemies();//
 	void SpawnEnemy();
 
-
+	/*
+	*void BeginSpawning();
+	void SpawnEnemies();
+	*/
 
 
 private:
