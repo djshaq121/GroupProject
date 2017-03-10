@@ -12,5 +12,6 @@ void AShop::OnInteract_Implementation(AActor* Caller) {
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Welcome to the shop!"));
+		ShopToggle.Broadcast();
 	}
 }
