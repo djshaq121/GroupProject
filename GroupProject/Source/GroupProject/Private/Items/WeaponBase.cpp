@@ -539,6 +539,45 @@ float AWeaponBase::GetEquipDuration() const
 	return EquipDuration;
 }
 
+FText AWeaponBase::GetWeaponDescription() const
+{
+	return WeaponDescription;
+}
+
+float AWeaponBase::GetWeaponDamage() const
+{
+	return BaseDamage;
+}
+
+float AWeaponBase::GetFireRate() const
+{
+	return FireRate;
+}
+
+int32 AWeaponBase::GetPrice() const
+{
+	return WeaponPrice;
+}
+
+int32 AWeaponBase::GetMaxAmmoPerClip() const
+{
+	return MaxAmmoPerClip;
+}
+
+int32 AWeaponBase::GetMaxAmmoInGun() const
+{
+	return MaxAmmoInGun;
+}
+
+float AWeaponBase::GetWeaponRange() const
+{
+	return WeaponRange;
+}
+
+EAmmoType AWeaponBase::GetAmmoType() const
+{
+	return AmmoType;
+}
 
 void AWeaponBase::OnEquip(bool bPlayAnimation)
 {

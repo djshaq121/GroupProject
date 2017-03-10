@@ -32,7 +32,23 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 	FTimerHandle EquipFinishedTimerHandle;
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		FText GetWeaponDescription() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetWeaponDamage() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetFireRate() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetPrice() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetMaxAmmoPerClip() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetMaxAmmoInGun() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetWeaponRange() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		EAmmoType GetAmmoType() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FName GetWeaponName() const;
@@ -43,7 +59,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void SetCanFire(bool Newstate);
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
 		FName WeaponName;
 
@@ -51,7 +66,7 @@ public:
 		int32 WeaponPrice;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
-		FName WeaponDescription;
+		FText WeaponDescription;
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
