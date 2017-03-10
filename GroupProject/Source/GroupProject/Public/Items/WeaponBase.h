@@ -14,12 +14,8 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
 
-		float GetEquipStartedTime() const;
-
-	float GetEquipDuration() const;
-
-	/** last time when this weapon was switched to */
-	float EquipStartedTime;
+		/** last time when this weapon was switched to */
+		float EquipStartedTime;
 
 	/** how much time weapon needs to be equipped */
 	float EquipDuration;
@@ -27,14 +23,16 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 	bool bIsEquipped;
 
 
+		float GetEquipStartedTime() const;
+
+	float GetEquipDuration() const;
+
+
+
 	FTimerHandle EquipFinishedTimerHandle;
 public:
 
 
-	
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
-		FName WeaponName;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FName GetWeaponName() const;
@@ -45,6 +43,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void SetCanFire(bool Newstate);
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		FName WeaponName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		int32 WeaponPrice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		FName WeaponDescription;
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -99,6 +106,9 @@ public:
 	void UseAmmo();
 
 	void Noise(float Loudness);
+
+
+
 protected:
 
 	/*Firerate timer handle*/
