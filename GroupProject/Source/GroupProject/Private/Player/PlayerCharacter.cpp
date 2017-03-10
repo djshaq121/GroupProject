@@ -7,6 +7,7 @@
 #include "LaserRifleBase.h"
 #include "PistolBase.h"
 #include "WeaponBase.h"
+#include "InteractableActor.h"
 
 
 /*Created a custom preset in the Player_BP so that ECC_weapons ignores the Player_BP*/
@@ -43,7 +44,7 @@ APlayerCharacter::APlayerCharacter()
 
 	/* Ignore this channel or it will absorb the trace impacts instead of the skeletal mesh */
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Weapon, ECR_Ignore);
-
+	bCanInteract = false;
 
 
 
@@ -128,7 +129,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::OnJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::EndJump);
 
-
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::Interact);
 
 
 }
@@ -679,3 +680,51 @@ ACharacterController* APlayerCharacter::GetHumanController()
 	return Cast<ACharacterController>(GetController());
 }
 
+void APlayerCharacter::HandleFocus() {
+	AInteractableActor* Interactable = Cast<AInteractableActor>(GetFocusedActor());
+
+	if (Interactable) {
+		if (Interactable != FocusedActor) {
+			if (FocusedActor) FocusedActor->OnEndFocus();
+			Interactable->OnBeginFocus();
+			FocusedActor = Interactable;
+		}
+	}
+	else {
+		if (FocusedActor) FocusedActor->OnEndFocus();
+		FocusedActor = nullptr;
+	}
+}
+
+AActor* APlayerCharacter::GetFocusedActor() {
+	if (!Controller) {
+		return nullptr;
+	}
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	FHitResult Hit(ForceInit);
+	Controller->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	float DistanceCameraHead = FMath::Abs((CameraLocation - GetMesh()->GetSocketLocation(HeadSocketName)).Size());
+
+	const FVector Start = CameraLocation;
+	const FVector End = Start + (CameraRotation.Vector() * (InteractionDistance + DistanceCameraHead));
+
+	GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Camera, TraceParams);
+
+	if (Hit.GetActor())
+		return Hit.GetActor();
+	else
+		return nullptr;
+}
+
+void APlayerCharacter::Interact() {
+		AActor* Focused = GetFocusedActor();
+		if (Focused) {
+			if (Focused->IsA(AInteractableActor::StaticClass())) {
+				AInteractableActor* Interactable = Cast<AInteractableActor>(Focused);
+				Interactable->OnInteract(this);
+			}
+		}
+	}

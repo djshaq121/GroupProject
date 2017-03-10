@@ -57,6 +57,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
 		bool bIsDead = false;
 
+	bool bCanInteract = false;
+
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
@@ -90,6 +92,10 @@ public:
 
 	bool GetIsDead();
 
+	//Interaction
+	AActor* GetFocusedActor();
+	void HandleFocus();
+	void Interact();
 
 	/*Movement*/
 
@@ -197,6 +203,9 @@ public:
 
 private:
 
+	class AInteractableActor* FocusedActor;
+	UPROPERTY(EditDefaultsOnly)
+		float InteractionDistance;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		bool bEquipNewWeapon = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
@@ -209,6 +218,11 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
 		FPlayerInventory Inventory;
 
+
+	UPROPERTY(EditDefaultsOnly)
+	FName HeadSocketName;
+	
+	FCollisionQueryParams TraceParams;
 
 protected:
 
