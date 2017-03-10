@@ -31,7 +31,7 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 public:
 
 
-	void OnEquip(bool bPlayAnimation);
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
 		FName WeaponName;
@@ -45,6 +45,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void SetCanFire(bool Newstate);
 
+	void OnEquip(bool bPlayAnimation);
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
