@@ -45,7 +45,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void SetCanFire(bool Newstate);
 
-	void OnEquip(bool bPlayAnimation);
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -88,6 +87,11 @@ public:
 
 	FVector CalcSpread() const;
 
+
+
+
+	void OnEquip(bool bPlayAnimation);
+	
 	void Recoil();
 
 	void AddAmmo(int32 Amount);
@@ -95,8 +99,6 @@ public:
 	void UseAmmo();
 
 	void Noise(float Loudness);
-
-	
 protected:
 
 	/*Firerate timer handle*/
