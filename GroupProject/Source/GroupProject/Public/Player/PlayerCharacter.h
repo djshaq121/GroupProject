@@ -104,6 +104,8 @@ public:
 	
 	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
 
+	void SwapWeapons(AWeaponBase * WeaponToEquip);
+
 	void ToggleCrouch();
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
@@ -173,7 +175,7 @@ private:
 	/*Weapon*/
 public:
 	
-
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void AddToInventory(class AWeaponBase* NewWeapon);
 	void AddAmmo(int32 AmmoAmount, EAmmoType AmmoType);
 	void EquipWeapon(AWeaponBase * WeaponToEquip);
