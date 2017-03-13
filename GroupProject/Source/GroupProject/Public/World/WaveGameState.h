@@ -33,13 +33,14 @@ public:
 		int32 GetMaxWaves() const;
 		int32 GetCurrentWave() const;
 
+		UPROPERTY(Replicated)
+			bool bIsWaveActive = true;
 private:
 
 UPROPERTY(Replicated)
 int32 EnemiesRemaining;
 
-UPROPERTY(Replicated)
-bool bIsWaveActive = true;
+
 
 UPROPERTY(Replicated)
 float TimeBetweenWaves;

@@ -15,6 +15,7 @@ class GROUPPROJECT_API AWavePlayerState : public APlayerState
 	
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = "Score")
 	void AddGold(int32 Amount);
 
 	void AddScore(int32 Amount);

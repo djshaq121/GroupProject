@@ -14,12 +14,8 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
 
-		float GetEquipStartedTime() const;
-
-	float GetEquipDuration() const;
-
-	/** last time when this weapon was switched to */
-	float EquipStartedTime;
+		/** last time when this weapon was switched to */
+		float EquipStartedTime;
 
 	/** how much time weapon needs to be equipped */
 	float EquipDuration;
@@ -27,14 +23,32 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 	bool bIsEquipped;
 
 
+		float GetEquipStartedTime() const;
+
+	float GetEquipDuration() const;
+
+
+
 	FTimerHandle EquipFinishedTimerHandle;
 public:
 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		FText GetWeaponDescription() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetWeaponDamage() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetFireRate() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetPrice() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetMaxAmmoPerClip() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		int32 GetMaxAmmoInGun() const;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetWeaponRange() const;
 
-	void OnEquip(bool bPlayAnimation);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
-		FName WeaponName;
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		EAmmoType GetAmmoType() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FName GetWeaponName() const;
@@ -45,6 +59,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void SetCanFire(bool Newstate);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		FName WeaponName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		int32 WeaponPrice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Default)
+		FText WeaponDescription;
 
 	// Sets default values for this actor's properties
 	AWeaponBase();
@@ -87,6 +109,11 @@ public:
 
 	FVector CalcSpread() const;
 
+
+
+
+	void OnEquip(bool bPlayAnimation);
+	
 	void Recoil();
 
 	void AddAmmo(int32 Amount);
@@ -95,7 +122,8 @@ public:
 
 	void Noise(float Loudness);
 
-	
+
+
 protected:
 
 	/*Firerate timer handle*/
