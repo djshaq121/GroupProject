@@ -131,17 +131,10 @@ void AWaveGameMode::BeginWave()
 
 	//TODO - Crashes if Max wave is greater than the fwaveInfo
 	
-	UE_LOG(LogTemp, Error, TEXT("Max Wave must be equal or the smaller than the Wave info "))
 	
-		EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave;//At the begining of the wave set the amount of total enemies that need to spawn 
-		//BeginSpawning();
+	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave;//At the begining of the wave set the amount of total enemies that need to spawn 
 
-		
-		StartSpawningWave();
-	
-	//	UE_LOG(LogTemp, Error, TEXT("Please add wave info "))
-	
-	
+	StartSpawningWave();
 
 
 }
@@ -154,11 +147,10 @@ void AWaveGameMode::StartSpawningWave()
 	{
 		int num = WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num();
 		SpawnedOfType.Add(0);
-		UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), num);
+		
 	}
 
 	
-	UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"),WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave);
 	StartSpawningEnemies();
 }
 
@@ -192,23 +184,26 @@ void AWaveGameMode::SpawnEnemy()
 		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
 
 
-
-		//Probability that the AI will be spanwed 
-		
-		float Prob = FMath::RandRange(0.f,1.f);
-		if (Prob <= SpawnInfo.Probability)//So if prob is smaller than the AI probaility spawn it 
+		//This checks how much enemy types spawned.
+		if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemyType)
 		{
-			//Spawns at an random point
-			int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
-			FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
-			FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
 
-			GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
+			//Probability that the AI will be spanwed 
+			float Prob = FMath::RandRange(0.f, 1.f);
+			if (Prob <= SpawnInfo.Probability)//So if prob is smaller than the AI probaility spawn it 
+			{
+				//Spawns at an random point
+				int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
+				FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
+				FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
 
-			EnemiesSpawned++;//Increase the amount of enemeis spawned
-			UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned);
-			UpdateHUD();
+				GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
+
+				EnemiesSpawned++;//Increase the amount of enemeis spawned
+				UpdateHUD();
+			}
 		}
+		
 
 		/*We increase the EnemyToSpawn so next time it spawns it spawn a different type of enemy in the Spawninfo*/
 		if (EnemyToSpawn >= WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num() - 1)
