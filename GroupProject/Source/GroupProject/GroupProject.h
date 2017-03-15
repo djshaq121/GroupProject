@@ -46,7 +46,7 @@ struct FSpawnInfo
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TSubclassOf<class AAIEnemyMaster> EnemyClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-		int32 MaxAmountOfEnemies;
+		int32 MaxAmountOfEnemyType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		float Probability;
 };
