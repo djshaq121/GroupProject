@@ -184,7 +184,7 @@ void AWaveGameMode::SpawnEnemy()
 		FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
 
 
-		//This checks how much enemy types spawned.
+		//This checks how much enemy types spawned. 
 		if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemyType)
 		{
 
