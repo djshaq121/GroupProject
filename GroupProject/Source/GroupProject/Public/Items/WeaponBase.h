@@ -31,7 +31,8 @@ class GROUPPROJECT_API AWeaponBase : public AActor
 
 	FTimerHandle EquipFinishedTimerHandle;
 public:
-
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		UTexture2D* GetIcon() const;
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		FText GetWeaponDescription() const;
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
@@ -147,6 +148,8 @@ protected:
 	
 
 private:
+	UPROPERTY(EditDefaultsOnly)
+		UTexture2D* WeaponIcon;
 	UPROPERTY(EditDefaultsOnly)
 		bool bUseProjectile = true;
 

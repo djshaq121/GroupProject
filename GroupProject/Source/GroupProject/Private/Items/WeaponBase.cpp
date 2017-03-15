@@ -564,6 +564,11 @@ int32 AWeaponBase::GetMaxAmmoPerClip() const
 	return MaxAmmoPerClip;
 }
 
+UTexture2D* AWeaponBase::GetIcon() const
+{
+	return WeaponIcon;
+}
+
 int32 AWeaponBase::GetMaxAmmoInGun() const
 {
 	return MaxAmmoInGun;
