@@ -46,7 +46,13 @@ public:
 
 	virtual void OnInteract_Implementation(AActor* Caller);
 
+	
+ void SpawnItemDrop(FVector Location, FRotator Rotation);
+	
+
 protected:
+
+	
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
@@ -83,8 +89,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int32 Score;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Items")
+	TArray<TSubclassOf<class APickUpBase> > ItemDrops;
 	
-
+	UPROPERTY(EditDefaultsOnly, Category = "Items")
+		float ItemProbability = 0.f;
 private:
 
 

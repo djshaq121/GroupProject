@@ -198,11 +198,22 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 
 		if (!GetIsDead())
 		{
+			auto Location = GetActorLocation();
+			auto Rotation = GetActorRotation();
+			//SpawnItemDrop
+			SpawnItemDrop(Location, Rotation);
+
+			
 			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
 			if (WaveGM)
 			{
-				//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+				
 				WaveGM->Killed(EventInstigator, GetController());
+				OnDeath();
+			}
+			else
+			{
+				//We have this here so if we dont have a gamemode. 
 				OnDeath();
 			}
 		}
@@ -213,3 +224,4 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 	
 	return DamageToApply;
 }
+
