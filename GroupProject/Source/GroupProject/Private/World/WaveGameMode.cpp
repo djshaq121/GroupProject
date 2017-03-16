@@ -22,7 +22,7 @@ void AWaveGameMode::InitGameState()
 void AWaveGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	WaveStart.Broadcast();
 	TArray<AActor*> Spawns;//Gets all the spawn location in the world and filter the ones for AI
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),APlayerStart::StaticClass(),Spawns); //this gets the informations and puts it into the spawn array
@@ -115,6 +115,7 @@ void AWaveGameMode::EndWave()
 
 void AWaveGameMode::BeginWave()
 {
+	WaveStart.Broadcast();
 	GetWorld()->GetTimerManager().ClearTimer(WaveTimerHandle);
 	WaveTimerHandle.Invalidate();
 
@@ -141,6 +142,7 @@ void AWaveGameMode::BeginWave()
 
 void AWaveGameMode::StartSpawningWave()
 {
+	WaveStart.Broadcast();
 	SpawnedOfType.Empty();//Clear the amount of enemies 
 	int32 CurrentWave = WaveGS->GetCurrentWave();
 	for (int i = 0; i < WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num(); i++)//This gets the different type of enemy
@@ -156,7 +158,7 @@ void AWaveGameMode::StartSpawningWave()
 
 void AWaveGameMode::StartSpawningEnemies()
 {
-
+	WaveStart.Broadcast();
 	//Check if we can spawn enemies 
 	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
 
