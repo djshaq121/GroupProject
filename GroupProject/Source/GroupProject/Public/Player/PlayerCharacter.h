@@ -103,6 +103,8 @@ public:
 
 	
 	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
+	UFUNCTION(BlueprintCallable, Category = "Animation")
+	void SwapWeaponMesh();
 
 	void SwapWeapons(AWeaponBase * WeaponToEquip);
 
