@@ -8,12 +8,14 @@
 /**
  * This class holds all the information about the state the game is in. e.g. how many enemies are left
  */
+
 UCLASS()
 class GROUPPROJECT_API AWaveGameState : public AGameState
 {
 	GENERATED_BODY()
 
 public:		
+	
 	void SetIsWaveActive(bool newActive);
 	void AddEnemiesRemaining(int32 Amount);
 	void SetWaveDelay(float delay);

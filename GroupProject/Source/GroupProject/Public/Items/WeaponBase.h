@@ -111,8 +111,6 @@ public:
 	FVector CalcSpread() const;
 
 
-
-
 	void OnEquip(bool bPlayAnimation);
 	
 	void Recoil();
