@@ -111,7 +111,11 @@ void AAIMeleeCharacter::OnMeleeCompBeginOverlap(class UPrimitiveComponent* Overl
 
 void AAIMeleeCharacter::SimulateMeleeStrike_Implementation()
 {
+	
+
+	//Plays the montage 
 	PlayAnimMontage(MeleeAnimMontage);
+
 	PlayCharacterSound(SoundAttackMelee);
 }
 
