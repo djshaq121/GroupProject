@@ -4,6 +4,7 @@
 #include "AIEnemyMaster.h"
 #include "WaveGameMode.h"
 #include "PlayerCharacter.h"
+#include "PickUpBase.h"
 
 
 // Sets default values
@@ -53,6 +54,24 @@ void AAIEnemyMaster::OnInteract_Implementation(AActor * Caller)
 		APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
 		WaveGM->Killed(Killer->GetController(), GetController());
 	}
+}
+
+void AAIEnemyMaster::SpawnItemDrop(FVector Location, FRotator Rotation)
+{
+	int length = ItemDrops.Num() - 1;//Get the length of the array
+	int RandomNum = FMath::RandRange(0, length);//Get a random number between
+	if (ItemDrops.Num() != 0)//Checks to make sure the list is not empty
+	{
+		//Checks the probability of an item spawning
+		float Prob = FMath::RandRange(0.f, 1.f);
+		if (Prob <= ItemProbability)
+		{
+			GetWorld()->SpawnActor<APickUpBase>(ItemDrops[RandomNum], Location, Rotation);
+		}
+		
+	}
+	
+	
 }
 
 int AAIEnemyMaster::GetCurrentHealth() const
