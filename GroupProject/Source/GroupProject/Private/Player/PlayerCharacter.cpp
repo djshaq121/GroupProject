@@ -83,6 +83,7 @@ void APlayerCharacter::UpdateHUD_Implementation()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
 																															  //This makes a smooth transition when the player is crouched
@@ -96,7 +97,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	{
 		SetSprint(false);
 	}
-
+	HandleFocus();
 }
 
 
@@ -732,9 +733,10 @@ ACharacterController* APlayerCharacter::GetHumanController()
 
 void APlayerCharacter::HandleFocus() {
 	AInteractableActor* Interactable = Cast<AInteractableActor>(GetFocusedActor());
-
+	
 	if (Interactable) {
 		if (Interactable != FocusedActor) {
+			UE_LOG(LogTemp, Warning, TEXT("PKLooking"));
 			if (FocusedActor) FocusedActor->OnEndFocus();
 			Interactable->OnBeginFocus();
 			FocusedActor = Interactable;

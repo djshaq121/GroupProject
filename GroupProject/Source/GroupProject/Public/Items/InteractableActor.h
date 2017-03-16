@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "GroupProject.h"
 #include "InteractableActor.generated.h"
 
 UCLASS()
@@ -34,8 +35,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		uint32 bTouchInteracts : 1;
 
-	//UPROPERTY(EditDefaultsOnly)
-		//EStencilColor StencilColor;
+	UPROPERTY(EditDefaultsOnly)
+	EStencilColor StencilColor;
 
 private:
 	UStaticMeshComponent* StaticMesh;

@@ -123,6 +123,12 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 		
 		if (!GetIsDead())
 		{
+
+			auto Location = GetActorLocation();
+			auto Rotation = GetActorRotation();
+			//SpawnItemDrop
+			SpawnItemDrop(Location, Rotation);
+
 			SetIsDead(true);
 			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
 			if (WaveGM)

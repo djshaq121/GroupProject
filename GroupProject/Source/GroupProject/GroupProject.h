@@ -2,6 +2,11 @@
 
 #pragma once
 
+/* Stencil index mapping to PP_OutlineColored */
+#define STENCIL_FRIENDLY_OUTLINE 252;
+#define STENCIL_NEUTRAL_OUTLINE 253;
+#define STENCIL_ENEMY_OUTLINE 254;
+#define STENCIL_ITEMHIGHLIGHT 255;
 #define ECC_Weapon ECC_GameTraceChannel1
 
 #include "Engine.h"
@@ -61,3 +66,15 @@ struct FWaveInfo
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 		TArray<FSpawnInfo> EnemySpawnInfo;
 };
+
+UENUM(BlueprintType)
+enum class EStencilColor : uint8
+{
+	SC_None = 0		UMETA(DisplayName = "Disabled"),
+	SC_Green = 250 	UMETA(DisplayName = "Green"),
+	SC_Blue = 251		UMETA(DisplayName = "Blue"),
+	SC_Red = 252		UMETA(DisplayName = "Red"),
+	SC_White = 253	UMETA(DisplayName = "White")
+};
+
+
