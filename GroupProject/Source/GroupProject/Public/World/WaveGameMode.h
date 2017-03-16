@@ -8,12 +8,16 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWaveStart);
+
 UCLASS()
 class GROUPPROJECT_API AWaveGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(BlueprintAssignable)
+	FOnWaveStart WaveStart;
 	UFUNCTION(BlueprintCallable, Category = "Wave")
 		void setWaveDelay(float delay);
 	UFUNCTION(BlueprintCallable, Category = "Wave")
