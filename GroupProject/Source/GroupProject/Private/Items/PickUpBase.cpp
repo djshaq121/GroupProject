@@ -33,6 +33,8 @@ void APickUpBase::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	auto speed = DeltaTime * 90;
+	PickupMesh->AddRelativeRotation(FRotator(0, speed, 0));
 }
 
 void APickUpBase::OnPlayerEnterPickupBox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult& SweepResult)
