@@ -10,6 +10,7 @@ AInteractableActor::AInteractableActor() {
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	RootComponent = StaticMesh;
 	bCanInteract = true;
+	UE_LOG(LogTemp, Warning, TEXT("looking"));
 }
 
 void AInteractableActor::BeginPlay() {
@@ -48,7 +49,8 @@ void AInteractableActor::OnBeginFocus() {
 	if (bCanInteract) {
 		for (UMeshComponent* Mesh : Meshes) {
 			Mesh->SetRenderCustomDepth(true);
-			//Mesh->SetCustomDepthStencilValue((uint8)StencilColor);
+			UE_LOG(LogTemp, Warning, TEXT("looking"));
+			Mesh->SetCustomDepthStencilValue((uint8)StencilColor);
 		}
 	}
 }
