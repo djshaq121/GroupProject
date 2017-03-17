@@ -416,7 +416,8 @@ void AWeaponBase::SpawnMuzzleEffect()
 {
 	FVector Location = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 	FRotator Rotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
-	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
+	//UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName, Location, Rotation, EAttachLocation::KeepWorldPosition, true);
+	UGameplayStatics::SpawnEmitterAttached(ShotEffect, WeaponMesh, MuzzleSocketName);
 	UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName, Location, EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
 }
 
