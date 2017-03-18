@@ -230,9 +230,11 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 		USoundCue* ImpactSound;
-
-
+	/*This is determine if a weapon is laser rifle to not spawn to much effects */
+	UPROPERTY(EditDefaultsOnly)
+		bool bIsLaserRifle;
 	int32 BSCount;
+	int32 SpawnEffectCounter;
 
 protected:
 

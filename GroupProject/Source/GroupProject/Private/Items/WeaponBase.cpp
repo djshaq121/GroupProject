@@ -445,6 +445,22 @@ void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 
 void AWeaponBase::SpawnImpactEffect(FHitResult& Hit)
 {
+	if (bIsLaserRifle)
+	{
+		SpawnEffectCounter++;
+
+		if (SpawnEffectCounter % 10 == 0)
+		{
+			FVector Location = Hit.ImpactPoint;
+			FRotator Rotation = Hit.ImpactPoint.Rotation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation, true);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Location, Rotation, 1, 1, 0);
+		}
+	
+		return;
+	}
+
+
 	FVector Location = Hit.ImpactPoint;
 	FRotator Rotation = Hit.ImpactPoint.Rotation();
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation, true);
