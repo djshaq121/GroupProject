@@ -388,7 +388,7 @@ void APlayerCharacter::HealArmor(int Amount)
 	}
 }
 
-bool APlayerCharacter::GetIsDead()
+bool APlayerCharacter::GetIsDead() const
 {
 	return bIsDead;
 }
@@ -750,20 +750,36 @@ ACharacterController* APlayerCharacter::GetHumanController()
 void APlayerCharacter::HandleFocus() {
 	AInteractableActor* Interactable = Cast<AInteractableActor>(GetFocusedActor());
 	
+	//Getting the controller of the player
+	ACharacterController *Controller = Cast<ACharacterController>(GetController());
+
 	if (Interactable) {
 		if (Interactable != FocusedActor) {
 			UE_LOG(LogTemp, Warning, TEXT("PKLooking"));
 			if (FocusedActor) FocusedActor->OnEndFocus();
 			Interactable->OnBeginFocus();
 			FocusedActor = Interactable;
+			if (Controller)
+			{
+				//Assigning a Interactable we are looking at
+				Controller->CurrentInteractable = Interactable;
+			}
+			
+
+
+			//Interactable->GetUseText();
 		}
 	}
 	else {
 		if (FocusedActor) FocusedActor->OnEndFocus();
 		FocusedActor = nullptr;
+		//If we are not looking at no Interactable then set it to nullptr
+		Controller->CurrentInteractable = nullptr;
 	}
 }
 
+
+/*This creates a line trace from the players camera to a set distance. If it hits an interatacble actor it returns what it HIT */
 AActor* APlayerCharacter::GetFocusedActor() {
 	if (!Controller) {
 		return nullptr;

@@ -10,7 +10,9 @@ AInteractableActor::AInteractableActor() {
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
 	RootComponent = StaticMesh;
 	bCanInteract = true;
-	UE_LOG(LogTemp, Warning, TEXT("looking"));
+	
+	Name = "Name not set";
+	Action = "Action not set"; 
 }
 
 void AInteractableActor::BeginPlay() {
