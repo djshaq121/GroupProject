@@ -813,7 +813,7 @@ void APlayerCharacter::AddAmmo(int32 AmmoAmount, EAmmoType AmmoType)
 		}
 		break;
 	case EAmmoType::AT_Lasers:
-		if (Inventory.AssaultRifle)//check if we have one
+		if (Inventory.LaserRifle)//check if we have it in our inventory
 		{
 			Inventory.LaserRifle->AddAmmo(AmmoAmount);
 		}
