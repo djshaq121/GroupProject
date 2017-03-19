@@ -1,4 +1,4 @@
-// Copyright LostGods
+ // Copyright LostGods
 
 #include "GroupProject.h"
 #include "ProjectileBase.h"
@@ -18,6 +18,8 @@ AProjectileBase::AProjectileBase()
 	BulletMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Projectile Movement"));
+	ProjectileMovement->InitialSpeed = 4000;
+
 
 }
 
@@ -34,6 +36,7 @@ void AProjectileBase::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 
 }
+/*Used for the AI*/
 float AProjectileBase::CalcRandomDamage()
 {
 	float FinalDamage = FMath::RandRange(MinDamage, MaxDamage);
@@ -44,7 +47,10 @@ float AProjectileBase::CalcRandomDamage()
 void AProjectileBase::DealDamage(const FHitResult& Hit)
 {
 
+	if (GetInstigator())
+	{
 
+	}
 	if (Hit.GetActor())
 	{
 		float DealtDamage = CalcRandomDamage();
