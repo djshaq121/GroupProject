@@ -170,30 +170,30 @@ void  AWeaponBase::DoFire()
 	if (GetSightRayHitLocation(Hit))
 	{
 		auto HitLocation = Hit.Location;
+		
 		//Checks if we hit something
-		if (Hit.bBlockingHit) {
-
+		if (Hit.bBlockingHit || Hit.bStartPenetrating) {
+		
 			SpawnImpactEffect(Hit);	//If we hit something spawn at effect at impact point
 			SpawnTrailEffect(Hit.ImpactPoint);
 
 		}
 		else
 		{
-
+			
 			//TODO - Fix the trace effect when shooting into the distance
 			FVector ImpactPoint = Hit.ImpactPoint;
 			auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
-			FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
+			FVector AimDir = (  muzzle - Hit.TraceEnd).GetSafeNormal();
 			FVector EndTrace = muzzle + (AimDir * WeaponRange);
-
-			SpawnTrailEffect(EndTrace);
+			SpawnTrailEffect(Hit.TraceEnd);
 		}
 
 	}
 
 	if (Hit.GetActor())
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Actor hit: %s "), *Hit.GetActor()->GetName());
+		
 		//Calls DealDamage passing the actor we hit
 		DealDamage(Hit);
 
@@ -257,7 +257,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 		//The Second line trace starts from the character and the the endlocation is the impact point of the first line trace 
 		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
-		GetWorld()->LineTraceSingleByChannel(HitResult, Start, HitLocation, ECC_Weapon, TraceParams);
+		GetWorld()->LineTraceSingleByChannel(HitInfo, Start, HitLocation, ECC_Weapon, TraceParams);//Fixed the issue where sometimes it wont register an hit -  this was due to having hitresults instead of HitInfo
 		//DrawDebugLine(GetWorld(), Start, HitLocation, FColor(255, 0, 0), true, 10.f);
 
 
@@ -434,8 +434,10 @@ void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 	{
 		if (TrailEffect)
 		{
+
 			ShootDir.Normalize();
 			UGameplayStatics::SpawnEmitterAtLocation(this, TrailEffect, Origin, ShootDir.Rotation());
+
 		}
 	}
 
@@ -443,6 +445,22 @@ void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 
 void AWeaponBase::SpawnImpactEffect(FHitResult& Hit)
 {
+	if (bIsLaserRifle)
+	{
+		SpawnEffectCounter++;
+
+		if (SpawnEffectCounter % 10 == 0)
+		{
+			FVector Location = Hit.ImpactPoint;
+			FRotator Rotation = Hit.ImpactPoint.Rotation();
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation, true);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Location, Rotation, 1, 1, 0);
+		}
+	
+		return;
+	}
+
+
 	FVector Location = Hit.ImpactPoint;
 	FRotator Rotation = Hit.ImpactPoint.Rotation();
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation, true);

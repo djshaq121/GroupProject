@@ -147,12 +147,12 @@ void AWaveGameMode::StartSpawningWave()
 	int32 CurrentWave = WaveGS->GetCurrentWave();
 	for (int i = 0; i < WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num(); i++)//This gets the different type of enemy
 	{
-		int num = WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num();
 		SpawnedOfType.Add(0);
-		
 	}
 
-	
+	//resets the values - 
+	EnemyToSpawn = 0;
+	EnemiesSpawned = 0;
 	StartSpawningEnemies();
 }
 
@@ -164,7 +164,7 @@ void AWaveGameMode::StartSpawningEnemies()
 
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AWaveGameMode::SpawnEnemy,SpawnDelay,true);//We dont want it to loop because its already in a for loop
 	
-	EnemiesSpawned = 0;
+	//EnemiesSpawned = 0;
 }
 
 void AWaveGameMode::SpawnEnemy()
@@ -180,6 +180,7 @@ void AWaveGameMode::SpawnEnemy()
 
 	//Spawning the enemy
 	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
+	UE_LOG(LogTemp, Error, TEXT("Curret wave %d"),CurrentWave)
 	if (EnemiesSpawned != WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)// For some reason '<=' always spawned an extra enemy  
 	{
 		//Gets the class to spawn information in the struct
@@ -250,71 +251,3 @@ void AWaveGameMode::EndMatch()
 	UE_LOG(LogTemp, Warning , TEXT("You've won the match"))
 }
 
-
-/*
-//Dont Use
-void AWaveGameMode::BeginSpawning()
-{
-SpawnedOfType.Empty();//Clear the amount of enemies
-int32 CurrentWave = WaveGS->GetCurrentWave();
-for (int i=0;i < WaveInfo[CurrentWave-1].EnemySpawnInfo.Num();i++)
-{
-SpawnedOfType.Add(0);
-}
-
-EnemyToSpawn = 0;//Reset the values
-EnemiesSpawned = 0;
-
-GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AWaveGameMode::SpawnEnemies, SpawnDelay, true);
-
-}
-
-//Dont Use
-void AWaveGameMode::SpawnEnemies()
-{
-if (AISpawnPoints.Num() < 1 || WaveInfo.Num() < 1)//Check to see if we have spawns point or wave info
-{
-UE_LOG(LogTemp, Error, TEXT(" No spawnpoint or WaveInfo"))
-GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
-SpawnTimerHandle.Invalidate();
-}
-
-int32 CurrentWave = WaveGS->GetCurrentWave();
-if (EnemiesSpawned < WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)//Check if we can spawn enemies
-{
-FSpawnInfo SpawnInfo = WaveInfo[CurrentWave - 1].EnemySpawnInfo[EnemyToSpawn];
-if (SpawnedOfType[EnemyToSpawn] < SpawnInfo.MaxAmountOfEnemies)//if the amount of enemies we spawn of this type is less than the max enemies it spawns more
-{
-float prob = FMath::RandRange(0.f,1.f);
-if (prob <= SpawnInfo.Probability)
-{
-int32 SpawnIndex = FMath::RandRange(0, AISpawnPoints.Num() - 1);
-FVector SpawnLoc = AISpawnPoints[SpawnIndex]->GetActorLocation();
-FRotator SpawnRot = AISpawnPoints[SpawnIndex]->GetActorRotation();
-
-GetWorld()->SpawnActor<AActor>(SpawnInfo.EnemyClass, SpawnLoc, SpawnRot);
-EnemiesSpawned++;
-UE_LOG(LogTemp, Error, TEXT("Enemies Spawned: %d"), EnemiesSpawned)
-SpawnedOfType[EnemyToSpawn]++;
-WaveGS->AddEnemiesRemaining(1);//This updates thevalue
-UpdateHUD();
-}
-}
-
-if (EnemyToSpawn >= WaveInfo[CurrentWave - 1].EnemySpawnInfo.Num()-1)
-{
-EnemyToSpawn = 0;
-}
-else
-{
-EnemyToSpawn++;
-}
-}
-else
-{
-GetWorld()->GetTimerManager().ClearTimer(SpawnTimerHandle);
-SpawnTimerHandle.Invalidate();
-}
-
-}
-*/

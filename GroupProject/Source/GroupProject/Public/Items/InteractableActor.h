@@ -28,6 +28,16 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
+	//This is the name of the Interactable actor to be displayed on screen - e.g. Shop
+	UPROPERTY(EditDefaultsOnly)
+	FString Name;
+	//This is the action that we describe when the player interacts with this actor -e.g. Open Shop
+	UPROPERTY(EditDefaultsOnly)
+	FString Action;
+	//This returns a string which id displayed to the screen when the user looks at an Interactable actor
+	UFUNCTION(BlueprintCallable,Category = "Interaction")
+	FString GetUseText() const { return FString::Printf(TEXT("%s : Press E to %s"), *Name, *Action); }
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 		uint32 bCanInteract : 1;

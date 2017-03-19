@@ -53,9 +53,6 @@ public:
 
 	void MakePawnNoise(float LoudNess);
 
-	//Make an IsDead property - So it can be caled in blueprint
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-		bool bIsDead = false;
 
 	bool bCanInteract = false;
 
@@ -90,11 +87,14 @@ public:
 
 	void HealArmor(int Amount);
 
-	bool GetIsDead();
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	bool GetIsDead() const;
 
 	//Interaction
 	AActor* GetFocusedActor();
+
 	void HandleFocus();
+
 	void Interact();
 
 	/*Movement*/
@@ -103,6 +103,7 @@ public:
 
 	
 	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
+
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 	void SwapWeaponMesh();
 
@@ -136,8 +137,7 @@ public:
 	void EndSprint();
 
 	void SetSprint(bool NewSprintState);
-	UFUNCTION(BlueprintCallable, Category = "Movement")
-		bool GetIsSprinting() const;
+
 
 	void SetPlayersSpeed(bool NewSprintState);
 
@@ -154,18 +154,23 @@ public:
 	void SetIsJumping(bool newJumpState);
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-		bool GetIsJumping() const;
+	bool GetIsJumping() const;
 
-
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool GetIsSprinting() const;
 
 
 private:
+
+
 
 	float JumpHeight = 300.f;
 
 	bool bIsJumping = false;
 
 	bool bIsCrouching = false;
+
+	bool bIsDead = false;
 
 	bool bIsSprinting;
 
@@ -196,8 +201,8 @@ public:
 
 	void SwitchToPistol();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
-		bool bIsAiming = false;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Setup")
+	
 
 	UFUNCTION(BlueprintCallable, Category = "Aiming")
 		bool GetIsAiming() const;
@@ -207,8 +212,10 @@ public:
 
 private:
 
+	bool bIsAiming = false;
+
 	class AInteractableActor* FocusedActor;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		float InteractionDistance;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		bool bEquipNewWeapon = true;
@@ -221,7 +228,6 @@ private:
 	//Struct Iventory
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
 		FPlayerInventory Inventory;
-
 
 	UPROPERTY(EditDefaultsOnly)
 	FName HeadSocketName;
