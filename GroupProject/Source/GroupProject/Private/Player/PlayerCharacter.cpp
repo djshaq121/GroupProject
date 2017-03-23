@@ -664,13 +664,14 @@ void APlayerCharacter::SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip)
 	if (WeaponToEquip && Inventory.PreviousWeapon)
 	{
 		WeaponToEquip->OnEquip(true);//This plays the animation
-		//EquipWeapon(WeaponToEquip); - Instead of equping weapon create a new method 
+		
+		//Once the animation is finish playing we swap the weapons
 		SwapWeapons(WeaponToEquip);
 	}
 }
 
-//TODO Rename
-void APlayerCharacter::SwapWeaponMesh()
+
+void APlayerCharacter::AttachMeshToSocket()
 {
 	if (Inventory.CurrentWeapon)
 	{

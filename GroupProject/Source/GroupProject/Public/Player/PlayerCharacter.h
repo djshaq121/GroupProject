@@ -105,7 +105,7 @@ public:
 	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
-	void SwapWeaponMesh();
+	void AttachMeshToSocket();
 
 	void SwapWeapons(AWeaponBase * WeaponToEquip);
 
