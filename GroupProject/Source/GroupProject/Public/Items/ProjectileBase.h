@@ -31,7 +31,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPirvateAccess = "true"))
 		UStaticMeshComponent* BulletMesh;
+
+protected:
 	
+
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float BaseDamage;
@@ -41,8 +44,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float MinDamage;
-
-	
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPirvateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
