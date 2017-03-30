@@ -15,7 +15,4 @@ void UBTUpdateEnemyLastSeenLocation::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 }
 
-//void UBTUpdateEnemyLastSeenLocation::ReceiveTick(AActor * OwnerActor, float DeltaSeconds)
-//{
-//
-//}
+

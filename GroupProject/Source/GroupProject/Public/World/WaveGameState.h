@@ -32,17 +32,17 @@ public:
 	void GetWaves(int32& Max, int32& Current) const;
 
 
-		int32 GetMaxWaves() const;
-		int32 GetCurrentWave() const;
+	int32 GetMaxWaves() const;
+	int32 GetCurrentWave() const;
 
-		UPROPERTY(Replicated)
-			bool bIsWaveActive = true;
+		//Check when the wave is active 
+	UPROPERTY(Replicated)
+	bool bIsWaveActive = true;
+
 private:
 
 UPROPERTY(Replicated)
 int32 EnemiesRemaining;
-
-
 
 UPROPERTY(Replicated)
 float TimeBetweenWaves;

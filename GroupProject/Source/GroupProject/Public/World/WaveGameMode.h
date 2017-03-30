@@ -30,6 +30,8 @@ public:
 	void UpdateHUD();
 
 	virtual void BeginPlay() override;
+
+	//Called when the enemy is killed 
 	virtual void Killed(AController* Killer, AController* Victim);
 
 
@@ -38,11 +40,13 @@ protected:
 	void EndWave();
 	virtual void StartMatch() override;
 	virtual void EndMatch() override;
+
+	/**/
 	virtual void InitGameState() override;
 
 	void StartSpawningWave();//
 	void StartSpawningEnemies();//
-	void SpawnEnemy();
+	void SpawnEnemy();//Spawns the enemies 
 
 	/*
 	*void BeginSpawning();
@@ -54,7 +58,7 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 		FName SpawnTag;//Where the AI will being spawning
 	UPROPERTY(EditDefaultsOnly)
-		float WaveDelay;
+		float WaveDelay;//how long between waves
 	UPROPERTY(EditDefaultsOnly)
 	float SpawnDelay;//Spawns enemies after a fix time
 	UPROPERTY(EditDefaultsOnly)
@@ -69,6 +73,7 @@ private:
 	TArray<int32> SpawnedOfType;//Keeps track of how many of each type spawned
 	TArray<AActor*> AISpawnPoints;
 	int32 EnemiesLeftToKill;//This is used to determine if there are enemies still left to spawn 
+
 
 	class AWaveGameState* WaveGS;
 

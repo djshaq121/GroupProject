@@ -86,8 +86,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 	
 	//This is what makes the zoomIN/OUT smooth 
 	this->SpringArm->TargetArmLength = FMath::FInterpTo(this->SpringArm->TargetArmLength, CameraZoomLength, DeltaTime, 15.0f);//Change the interpSpeed to make smooth longer or more faster
-																															  //This makes a smooth transition when the player is crouched
+	 //This makes a smooth transition when the player is crouched
 	SpringArm->SocketOffset.Z = FMath::FInterpTo(this->SpringArm->SocketOffset.Z, CamCrouchHeight, DeltaTime, 15.0f);
+
 
 	if (bIsSprinting && CheckIfCanSprint())
 	{
@@ -265,7 +266,7 @@ bool APlayerCharacter::CheckIfCanSprint()
 	return bIsSprinting && !bIsFiring &&
 		!GetVelocity().IsZero() &&
 		!GetIsAiming() &&
-		(FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8);//Checks to see if the player is moving forward, and if they are set to true else false - Taken from tomlooman
+		(FVector::DotProduct(GetVelocity().GetSafeNormal2D(), GetActorRotation().Vector()) > 0.8);//Checks to see if the player is moving forward, and if they are set to true else false - Taken from Tom looman
 }
 
 bool APlayerCharacter::GetIsAiming() const
@@ -473,10 +474,6 @@ float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dama
 	else
 	{
 		CurrentArmor -= DamageToApplyArmor;
-		if (CurrentArmor <= 0)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("Armor Depleted"))
-		}
 	}
 
 

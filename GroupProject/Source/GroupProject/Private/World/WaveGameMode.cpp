@@ -35,11 +35,13 @@ void AWaveGameMode::BeginPlay()
 	}
 }
 
+//Updates the player HUD with the wave information changes 
 void AWaveGameMode::UpdateHUD()
 {
 	APlayerCharacter* Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	if (Player && Player->IsPlayerControlled())
 	{
+		
 		Player->UpdateHUD();
 	}
 }
@@ -130,9 +132,6 @@ void AWaveGameMode::BeginWave()
 		return;
 	}
 
-	//TODO - Crashes if Max wave is greater than the fwaveInfo
-	
-	
 	EnemiesLeftToKill = WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave;//At the begining of the wave set the amount of total enemies that need to spawn 
 
 	StartSpawningWave();
@@ -164,7 +163,7 @@ void AWaveGameMode::StartSpawningEnemies()
 
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle,this,&AWaveGameMode::SpawnEnemy,SpawnDelay,true);//We dont want it to loop because its already in a for loop
 	
-	//EnemiesSpawned = 0;
+	
 }
 
 void AWaveGameMode::SpawnEnemy()
@@ -180,7 +179,7 @@ void AWaveGameMode::SpawnEnemy()
 
 	//Spawning the enemy
 	int32 CurrentWave = WaveGS->GetCurrentWave();//Gets the current wave
-	UE_LOG(LogTemp, Error, TEXT("Curret wave %d"),CurrentWave)
+
 	if (EnemiesSpawned != WaveInfo[CurrentWave - 1].TotalNumberOfEnemiesThisWave)// For some reason '<=' always spawned an extra enemy  
 	{
 		//Gets the class to spawn information in the struct

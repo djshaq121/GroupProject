@@ -40,6 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	bool GetIsAiming() const;
 
+	
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void SetIsAiming(bool Aiming);
 
@@ -59,9 +60,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	FName WeaponSocketName;
 
-	UFUNCTION()
+	UFUNCTION()//If the enemy sees the player
 		void OnSeePlayer(APawn* PawnInstigator);
-	UFUNCTION()
+	UFUNCTION()//if the enemy hears a noise
 		void OnHearNoise(APawn* PawnInstigator, const FVector & Location, float Volume);
 
 	EAIState States;

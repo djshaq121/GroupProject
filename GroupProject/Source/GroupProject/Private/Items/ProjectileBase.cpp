@@ -47,10 +47,7 @@ float AProjectileBase::CalcRandomDamage()
 void AProjectileBase::DealDamage(const FHitResult& Hit)
 {
 
-	if (GetInstigator())
-	{
-
-	}
+	
 	if (Hit.GetActor())
 	{
 		float DealtDamage = CalcRandomDamage();
@@ -76,12 +73,7 @@ void AProjectileBase::DealDamage(const FHitResult& Hit)
 
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	/*LaunchBlast->Deactivate();
-	ImpactBlast->Activate();
-	ExplosionForce->FireImpulse();
 
-	SetRootComponent(ImpactBlast);
-	CollisionMesh->DestroyComponent();*/
 	
 	if (Hit.GetActor())
 	{
@@ -89,18 +81,18 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 		if (PlayerCharacter)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hitting"))
+			//If it hits the player deal damage
 			DealDamage(Hit);
-			//GetWorld()->GetFirstPlayerController()->GetPawn()
+			
 		}
 	}
 
+	//Destory object when we hit something
 	Destroy();
 
-	/*FTimerHandle Timer;
-	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectileBase::OnTimerExpire, DestroyDelay, false);*/
 }
 
+//Destory object after an amount of time 
 void AProjectileBase::OnTimerExpire()
 {
 	Destroy();

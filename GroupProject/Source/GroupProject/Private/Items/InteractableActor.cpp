@@ -51,12 +51,12 @@ void AInteractableActor::OnBeginFocus() {
 	if (bCanInteract) {
 		for (UMeshComponent* Mesh : Meshes) {
 			Mesh->SetRenderCustomDepth(true);
-			UE_LOG(LogTemp, Warning, TEXT("looking"));
-			Mesh->SetCustomDepthStencilValue((uint8)StencilColor);
+			Mesh->SetCustomDepthStencilValue((uint8)StencilColor);//Draws outlin around mesh
 		}
 	}
 }
 
+//Stop drawing outline when player is not looking at object
 void AInteractableActor::OnEndFocus() {
 	for (UMeshComponent* Mesh : Meshes) {
 		Mesh->SetRenderCustomDepth(false);

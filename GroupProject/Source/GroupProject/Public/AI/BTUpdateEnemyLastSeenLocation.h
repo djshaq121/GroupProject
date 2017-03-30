@@ -17,6 +17,6 @@ class GROUPPROJECT_API UBTUpdateEnemyLastSeenLocation : public UBTService
 public:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-//	virtual void ReceiveTick(AActor* OwnerActor, float DeltaSeconds) override;
+
 	
 };

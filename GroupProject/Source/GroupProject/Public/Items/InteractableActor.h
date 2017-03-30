@@ -45,6 +45,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 		uint32 bTouchInteracts : 1;
 
+	//Colour of outline
 	UPROPERTY(EditDefaultsOnly)
 	EStencilColor StencilColor;
 

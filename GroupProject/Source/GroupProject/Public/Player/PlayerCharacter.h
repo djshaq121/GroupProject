@@ -29,6 +29,7 @@ private:
 		int32 MaximumHealth = 100;//Its int because we dont want to compare float to zero
 
 	
+
 		int32 CurrentHealth;
 
 
@@ -46,11 +47,13 @@ public:
 	void BP_Update();
 
 
+	/*BroadCast an event that the player has died*/
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathRequest OnDeathRequest;
 
 	void onDeath();
 
+	/*Produces noise that the AI hears*/
 	void MakePawnNoise(float LoudNess);
 
 
@@ -83,8 +86,10 @@ public:
 	
 	int GetMaxArmor() const;
 
+	//Method that heals the player from item pick ups 
 	void Heal(int Amount);
 
+	
 	void HealArmor(int Amount);
 
 	UFUNCTION(BlueprintCallable, Category = "Setup")
@@ -93,6 +98,7 @@ public:
 	//Interaction
 	AActor* GetFocusedActor();
 
+	//Check to see if the player is looking at an interactable actor e.g. shop
 	void HandleFocus();
 
 	void Interact();
@@ -101,12 +107,14 @@ public:
 
 public:
 
-	
+	//Check to see if we have weapon to swap and calls the animation to play
 	void SwapToNewWeaponMesh(AWeaponBase * WeaponToEquip);
 
+	//This swap the weapon from the weaponsocket to the secondary socket which is called from an event in the animation 
 	UFUNCTION(BlueprintCallable, Category = "Animation")
 	void AttachMeshToSocket();
 
+	//The logic that swaps the weapon
 	void SwapWeapons(AWeaponBase * WeaponToEquip);
 
 	void ToggleCrouch();
@@ -138,10 +146,9 @@ public:
 
 	void SetSprint(bool NewSprintState);
 
-
 	void SetPlayersSpeed(bool NewSprintState);
 
-	bool CheckIfCanSprint();
+	bool CheckIfCanSprint();//See if they are allowed to sprint 
 
 	void Crouching();
 
@@ -182,10 +189,16 @@ private:
 	/*Weapon*/
 public:
 	
+	//Add the weapon to inventory if the player buys or walks over an weapon
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void AddToInventory(class AWeaponBase* NewWeapon);
+
+	//Called when player walks over an ammo pick up which refils the ammo in the the players gun 
 	void AddAmmo(int32 AmmoAmount, EAmmoType AmmoType);
+
+	//Logic how to handle when the player gets a new gun
 	void EquipWeapon(AWeaponBase * WeaponToEquip);
+
 
 	void StartFire();
 
@@ -216,26 +229,30 @@ private:
 
 	class AInteractableActor* FocusedActor;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-		float InteractionDistance;
+		float InteractionDistance; //The distance the player cam interact with an interactable 
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		bool bEquipNewWeapon = true;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		FName WeaponSocketName;
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 		FName SecondWeaponSocket;
+
 	bool bIsFiring;
 
-	//Struct Iventory
+	//Struct Inventory - That holds the weapons the player are carrying
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), Category = Hack)
 		FPlayerInventory Inventory;
 
 	UPROPERTY(EditDefaultsOnly)
 	FName HeadSocketName;
 	
+	//To do with the HitResult 
 	FCollisionQueryParams TraceParams;
 
 protected:
 
+	//The weapon that the player starts with
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<AWeaponBase> StartingWeaponBlueprint;
 

@@ -83,20 +83,22 @@ protected:
 
 	void SetIsDead(bool NewState);
 
+	//How much gold the enemy is worth
 	UPROPERTY(EditDefaultsOnly)
 	int32 GoldReward;
 
+	//How much score the enemy is worth
 	UPROPERTY(EditDefaultsOnly)
 	int32 Score;
 
+	//A list of items that need to be spawned 
 	UPROPERTY(EditDefaultsOnly, Category = "Items")
 	TArray<TSubclassOf<class APickUpBase> > ItemDrops;
 	
+	// The probability of an item spawning when the enemy is killed 
 	UPROPERTY(EditDefaultsOnly, Category = "Items")
 		float ItemProbability = 0.f;
 private:
-
-
 
 	bool bIsDead = false;
 	

@@ -8,7 +8,7 @@
 void ALaserRifleBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CurrentHeat)
+	
 	if (!bIsFiring || bIsCoolingDown)//Checks to see if the player is not shooting or the gun is cooldown
 	{
 		CurrentHeat -= CoolDownTime * DeltaTime; 
@@ -38,8 +38,8 @@ void ALaserRifleBase::FiringGun()
 
 	auto Time = GetWorld()->GetDeltaSeconds();
 	
+	//Increase heat when gun is fired
 	CurrentHeat += OverHeatTime * Time;
-	//Heat = FMath::FInterpTo(0, HeatThreshold, Time, 30.f);
 	 CurrentHeat = FMath::Clamp(CurrentHeat, 0.f, HeatThreshold);
 	
 	
@@ -51,7 +51,6 @@ void ALaserRifleBase::FiringGun()
 			UGameplayStatics::PlaySoundAttached(OverHeatSound, WeaponMesh, MuzzleSocketName, WeaponMesh->GetSocketLocation(MuzzleSocketName), EAttachLocation::KeepWorldPosition, true, 1, 1, 0);
 		}
 		
-		UE_LOG(LogTemp, Warning, TEXT("OnCoolDown"));
 	};
 }
 
@@ -64,12 +63,12 @@ void ALaserRifleBase::DoFire()
 		FVector Start;
 
 		GetCurrentHeat();
-		//GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Weapon, TraceParams);
+		
 
 
 		UseAmmo();
 		FiringGun();
-		//UE_LOG(LogTemp, Warning, TEXT("CurrentAmmo in clip %d"), CurrentAmmoInClip)
+		
 
 		if (GetSightRayHitLocation(Hit))
 		{
@@ -84,7 +83,7 @@ void ALaserRifleBase::DoFire()
 			else
 			{
 
-				//TODO - Fix the trace effect when shooting into the distance
+				
 				FVector ImpactPoint = Hit.ImpactPoint;
 				auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
 				FVector AimDir = (Hit.TraceEnd - muzzle).GetSafeNormal();
@@ -99,7 +98,7 @@ void ALaserRifleBase::DoFire()
 
 			//Calls DealDamage passing the actor we hit
 			DealDamage(Hit);
-			//SpawnImpactEffect
+			
 		}
 	
 }
@@ -110,5 +109,4 @@ float ALaserRifleBase::GetCurrentHeat() const
 
 	return CHeat;
 
-	UE_LOG(LogTemp, Warning, TEXT("Heat Level: %f"), CHeat)
 }

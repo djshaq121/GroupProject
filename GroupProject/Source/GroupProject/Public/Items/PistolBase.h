@@ -16,5 +16,5 @@ class GROUPPROJECT_API APistolBase : public AWeaponBase
 	
 	
 public:
-	//virtual void StartFire();
+	
 };

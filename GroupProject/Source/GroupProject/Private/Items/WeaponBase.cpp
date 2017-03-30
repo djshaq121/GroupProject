@@ -47,11 +47,13 @@ void AWeaponBase::Tick(float DeltaTime)
 
 }
 
+//Check to see who owns the gun
 class APlayerCharacter* AWeaponBase::GetPawnOwner() const
 {
 	auto playerpawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	if (!playerpawn) { return nullptr; }
 
+	
 	return Cast<APlayerCharacter>(playerpawn);
 }
 
@@ -102,7 +104,7 @@ void AWeaponBase::SetCanFire(bool Newstate)
 	bCanFire = Newstate;
 }
 
-/*The method that is called in weapon class*/
+/*Firing logic*/
 void  AWeaponBase::StartFire()
 {
 	if (GetPawnOwner() != nullptr && !GetPawnOwner()->GetIsDead())//Stops the game from crashing when the player shoots and dies at the same time  
@@ -153,7 +155,7 @@ void  AWeaponBase::StartFire()
 void  AWeaponBase::StopFire()
 {
 	bIsFiring = false;
-	GetWorld()->GetTimerManager().ClearTimer(FireRateHandle);
+	GetWorld()->GetTimerManager().ClearTimer(FireRateHandle);//Clears the firing timer once the player has stop firing
 	FireRateHandle.Invalidate();
 }
 
@@ -166,7 +168,7 @@ void  AWeaponBase::DoFire()
 
 	UseAmmo();
 
-
+	//Check to see what we hit
 	if (GetSightRayHitLocation(Hit))
 	{
 		auto HitLocation = Hit.Location;
@@ -181,7 +183,7 @@ void  AWeaponBase::DoFire()
 		else
 		{
 			
-			//TODO - Fix the trace effect when shooting into the distance
+			
 			FVector ImpactPoint = Hit.ImpactPoint;
 			auto muzzle = WeaponMesh->GetSocketLocation("MuzzleSocketName");
 			FVector AimDir = (  muzzle - Hit.TraceEnd).GetSafeNormal();
@@ -191,6 +193,7 @@ void  AWeaponBase::DoFire()
 
 	}
 
+	//If we hit a actor we deal damage to it 
 	if (Hit.GetActor())
 	{
 		
@@ -200,6 +203,7 @@ void  AWeaponBase::DoFire()
 	}
 }
 
+/*This is the noise that the enemy pawn hears*/
 void AWeaponBase::Noise(float Loudness)
 {
 	auto pawn = GetWorld()->GetFirstPlayerController()->GetPawn();
@@ -214,7 +218,6 @@ bool AWeaponBase::GetSightRayHitLocation(FHitResult &HitResult) const
 
 {
 	//Find the crosshair position in pixel coordinate
-
 	int32 ViewportSizeX, ViewportSizeY;
 
 	//Gets the size of the view port
@@ -224,7 +227,7 @@ bool AWeaponBase::GetSightRayHitLocation(FHitResult &HitResult) const
 
 
 	FVector LookDirection;// Out Parameter
-						  //De-Project the screen position of the crosshair to a world direction
+	 //De-Project the screen position of the crosshair to a world direction
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		//Line trace along the look direction 
@@ -255,7 +258,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 
 		// Once we done the first line trace we return the impact point
 		//The Second line trace starts from the character and the the endlocation is the impact point of the first line trace 
-		//auto Start = GetWorld()->GetFirstPlayerController()->GetControlledPawn()->GetGetMesh()->GetSocketLocation("WeaponSocket");
+		
 		auto Start = WeaponMesh->GetSocketLocation(MuzzleSocketName);
 		GetWorld()->LineTraceSingleByChannel(HitInfo, Start, HitLocation, ECC_Weapon, TraceParams);//Fixed the issue where sometimes it wont register an hit -  this was due to having hitresults instead of HitInfo
 		//DrawDebugLine(GetWorld(), Start, HitLocation, FColor(255, 0, 0), true, 10.f);
@@ -270,7 +273,7 @@ bool AWeaponBase::GetLookVectorHitLocation(FVector LookDirection, FHitResult & H
 
 bool AWeaponBase::GetLookDirection(FVector2D ScreenLocation, FVector & LookDirection) const
 {
-	FVector CameraWorldLocation;//REMOVE LATER
+	FVector CameraWorldLocation;
 
 	//Convert current mouse 2D position to World Space 3D position and direction. Returns false if unable to determine value.
 	return GetWorld()->GetFirstPlayerController()->DeprojectScreenPositionToWorld(ScreenLocation.X, ScreenLocation.Y, CameraWorldLocation, LookDirection);
@@ -323,11 +326,7 @@ void AWeaponBase::ReloadWeapon()
 			CurrentAmmoInClip = CurrentAmmoInClip + CurrentAmmoInGun;
 			CurrentAmmoInGun = 0;
 		}
-		else
-		{
-			//TODO -  Print to screen telling the player the Gun is empty
-			//UE_LOG(LogTemp, Warning, TEXT("Ammo gone"))
-		}
+	
 	}
 
 	/*Once the reload is over allow the player to reload and fire the gun again*/
@@ -361,8 +360,6 @@ void AWeaponBase::StopSimulateReload()
 
 
 
-
-
 int32 AWeaponBase::GetCurrentAmmoInClip() const
 {
 	return CurrentAmmoInClip;
@@ -377,11 +374,7 @@ FVector AWeaponBase::CalcSpread() const
 {
 
 	//TODO - Maybe add the feature if the player is aiming less weapon spread
-	if (GetPawnOwner()->GetIsAiming())
-	{
-
-
-	}
+	
 	//This gets a random number and stores it in a vector which then gets added to the Endtrace. 
 	int32 RandomX = FMath::RandRange(-100, 100);
 	int32 RandomY = FMath::RandRange(-100, 100);
@@ -423,7 +416,7 @@ void AWeaponBase::SpawnMuzzleEffect()
 
 void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 {
-
+	//Variable used to see how much an effect has been called
 	BSCount++;
 
 	const FVector Origin = WeaponMesh->GetSocketLocation(MuzzleSocketName);
@@ -445,21 +438,7 @@ void AWeaponBase::SpawnTrailEffect(FVector& EndPoint)
 
 void AWeaponBase::SpawnImpactEffect(FHitResult& Hit)
 {
-	if (bIsLaserRifle)
-	{
-		SpawnEffectCounter++;
-
-		if (SpawnEffectCounter % 10 == 0)
-		{
-			FVector Location = Hit.ImpactPoint;
-			FRotator Rotation = Hit.ImpactPoint.Rotation();
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, Location, Rotation, true);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, Location, Rotation, 1, 1, 0);
-		}
 	
-		return;
-	}
-
 
 	FVector Location = Hit.ImpactPoint;
 	FRotator Rotation = Hit.ImpactPoint.Rotation();
@@ -488,15 +467,7 @@ void AWeaponBase::OnInteract(AActor* Caller) {
 
 void AWeaponBase::OnPlayerEnterPickupBox(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFomSweep, const FHitResult & SweepResult)
 {
-	/*class APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
-	if (Player)
-	{
-	UE_LOG(LogTemp, Warning, TEXT("Hi"))
-	}
-	else
-	{
-	UE_LOG(LogTemp, Warning, TEXT("Not Working"))
-	}*/
+
 	if (bCanInteract)
 	{
 		OnInteract(OtherActor);
@@ -509,10 +480,11 @@ void AWeaponBase::SetCanInteract(bool NewInteract)
 	bCanInteract = NewInteract;
 }
 
+//Plays the animation that is set in the BP class
 float AWeaponBase::PlayWeaponAnimation(UAnimMontage* Animation, float InPlayRate, FName StartSectionName)
 {
 	
-		float Duration = 0.0f;
+	float Duration = 0.0f;//We set the duration to zero just in case if we dont have any animations 
 	if (GetPawnOwner())
 	{
 		if (Animation)
@@ -538,7 +510,7 @@ void AWeaponBase::StopWeaponAnimation(UAnimMontage* Animation)
 UAudioComponent* AWeaponBase::PlayWeaponSound(USoundCue* SoundToPlay)
 {
 	
-		UAudioComponent* AC = nullptr;
+	UAudioComponent* AC = nullptr;
 	if (SoundToPlay && GetPawnOwner())
 	{
 		AC = UGameplayStatics::SpawnSoundAttached(SoundToPlay, GetPawnOwner()->GetRootComponent());

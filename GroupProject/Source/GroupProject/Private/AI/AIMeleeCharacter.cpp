@@ -64,6 +64,7 @@ void AAIMeleeCharacter::BeginPlay()
 }
 
 
+//Deals damage to the player
 void AAIMeleeCharacter::PerformMeleeStrike(AActor* HitActor)
 {
 	if (LastMeleeAttackTime > GetWorld()->GetTimeSeconds() - MeleeStrikeCooldown)
@@ -103,6 +104,7 @@ void AAIMeleeCharacter::OnMeleeCompBeginOverlap(class UPrimitiveComponent* Overl
 	/* Stop any running attack timers */
 	TimerHandle_MeleeAttack.Invalidate();
 
+	//Method that damages the player
 	PerformMeleeStrike(OtherActor);
 
 	/* Set re-trigger timer to re-check overlapping pawns at melee attack rate interval */
@@ -111,9 +113,8 @@ void AAIMeleeCharacter::OnMeleeCompBeginOverlap(class UPrimitiveComponent* Overl
 
 void AAIMeleeCharacter::SimulateMeleeStrike_Implementation()
 {
-	
 
-	//Plays the montage 
+	//Plays the montage  - Animation
 	PlayAnimMontage(MeleeAnimMontage);
 
 	PlayCharacterSound(SoundAttackMelee);
@@ -207,7 +208,7 @@ float AAIMeleeCharacter::TakeDamage(float DamageAmount, FDamageEvent const & Dam
 			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
 			if (WaveGM)
 			{
-				
+				//Tells the game mode this enemy has died
 				WaveGM->Killed(EventInstigator, GetController());
 				OnDeath();
 			}

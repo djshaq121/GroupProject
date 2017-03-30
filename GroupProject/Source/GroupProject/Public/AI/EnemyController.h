@@ -23,11 +23,11 @@ class GROUPPROJECT_API AEnemyController : public AAIController
 	UPROPERTY(EditDefaultsOnly, Category = AI)
 		FName LocationToGoKey;
 
+	//List of points to travel to
 	TArray<AActor*> PatrolPoints;
 
-	virtual void Possess(APawn* Pawn) override;
-
 	
+	virtual void Possess(APawn* Pawn) override;
 
 
 
@@ -39,11 +39,13 @@ public:
 
 	AEnemyController();
 
-
+	//Enemy to chase
 	void SetTargetEnemy(APawn* NewTarget);
 
+	//Enemy seen
 	void SetSeenEnemy(APawn * NewTarget);
 
+	//Location to travel to
 	void SetNoiseLocation(FVector Location);
 
 	void SetEnemyLastSeenLocation(FVector Location);

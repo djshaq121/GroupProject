@@ -23,6 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 
+	/*Logic behind where the bullet travels*/
 	virtual void DoFire();
 
 	void FiringGun();

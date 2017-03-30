@@ -13,8 +13,8 @@ AAIShootingCharacter::AAIShootingCharacter()
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
-	PawnSensingComp->SightRadius = 2000;
-	PawnSensingComp->HearingThreshold = 600;
+	PawnSensingComp->SightRadius = 2000;//How far it can see
+	PawnSensingComp->HearingThreshold = 600;//how far it can hear
 	PawnSensingComp->LOSHearingThreshold = 1200;
 
 	//Setting the starting AI state to passive 
@@ -133,7 +133,7 @@ float AAIShootingCharacter::TakeDamage(float DamageAmount, FDamageEvent const & 
 			AWaveGameMode* WaveGM = GetWorld()->GetAuthGameMode<AWaveGameMode>();
 			if (WaveGM)
 			{
-				//APlayerCharacter* Killer = Cast<APlayerCharacter>(Caller);
+				//Tell the game mode that an enemy has died
 				WaveGM->Killed(EventInstigator, GetController());
 			}
 			OnDeath();

@@ -30,20 +30,7 @@ EBTNodeResult::Type UBTSelectPatrolPoint::ExecuteTask(UBehaviorTreeComponent & O
 			BlackboardComp->SetValueAsObject("WonderPointToGo", NextPatrolPoint);
 			return EBTNodeResult::Succeeded;
 		}
-		//if (AICon->CurrentPatrolPoint != AvailablePatrolPoints.Num() - 1)
-		//{
-		//	NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[++AICon->CurrentPatrolPoint]);
-
-		//}
-		//else
-		//{
-		//	//If there are no more points
-
-		//	NextPatrolPoint = Cast<AAIPatrolPoint>(AvailablePatrolPoints[0]);
-		//	AICon->CurrentPatrolPoint = 0;
-		//}
-		//BlackboardComp->SetValueAsObject("LocationToGo", NextPatrolPoint);
-		//return EBTNodeResult::Succeeded;
+		
 	}
 	return EBTNodeResult::Failed;
 }

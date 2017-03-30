@@ -73,6 +73,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Attacking")
 		UCapsuleComponent* MeleeCollisionComp;
 
+	//Called when the enemy dies
 	virtual void OnDeath() override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);

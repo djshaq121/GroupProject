@@ -39,9 +39,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float BaseDamage;
 	
+	/*Max Damage the AI projectile does*/
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float MaxDamage;
 
+	/*Max Damage the AI projectile does*/
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPirvateAccess = "true"))
 	float MinDamage;
 
